@@ -15,7 +15,7 @@ AFILES = $(OFILES)
 ROOTDIR = .
 LIB = -L$(ROOTDIR)/lib -lstarter  -lm 
 
-CXX = g++ -shared -g -O2 -fPIC -fopenmp -fopenmp -std=c++14
+CXX = g++ -g -O1 -fPIC -fopenmp -fopenmp -std=c++14
 
 SWIGCXX = g++ -shared -g -O2 -fPIC -fopenmp -fopenmp -std=c++14
 
@@ -27,6 +27,7 @@ INCLUDES = -I ./include/ $(PYTHONINCLUDE)
 
 all: $(AFILES) 
 	ar rv ./lib/libstarter.a $?
+	$(CXX) base/main.C $(INCLUDES) $(LIB) -o bin/main
 
 .C.o: $<
 	$(CXX) -c $(INCLUDES) $< -o $@
