@@ -1,11 +1,26 @@
 #ifndef IMPLICITFIELDS_H
 #define IMPLICITFIELDS_H
 
+#include <iostream>
+
 #include "Volume.h"
 #include "Vector.h"
 
 namespace lux {
 
+    /******************************************
+     * Section: Simple volumes
+     * 
+     * The classes in this section define
+     * many kinds of volumes that represent
+     * a single, uncombined volume
+     * 
+     * They can be combined with other volumes
+     * See Section: Field Operations
+     ******************************************/
+
+    // Constant Field
+    // Should return the given value for any evaluated point
     template<typename T>
     class ConstantField : public Volume<T> {
 
@@ -24,6 +39,69 @@ namespace lux {
             volumeGradType _gradValue;
 
     };
+    
+    // ------------------------------------------------------------------------------------
+
+
+    /******************************************
+     * Section: Field Operations
+     * 
+     * The classes in this section define 
+     * different operations that can be
+     * performed to combine fields.
+     * Operations are represented as fields
+     * themselves because they can be evaluated
+     * the same at any point in the field.
+     * Combining fields essentially creates a
+     * new field
+     * 
+     * These classes are created through
+     * functions defined in FieldOperations.h
+     * See FieldOperations.h/.C for more info
+     ******************************************/
+
+    // Base class
+    // All field operations will derive from this abstract class 
+    template<typename T>
+    class FieldOperator : public Volume<T> {
+        
+        public:
+
+            // Need to make these public for derived classes like Volume does
+            using typename Volume<T>::volumeDataType;
+            using typename Volume<T>::volumeGradType;
+
+            FieldOperator(const std::shared_ptr<Volume<T>>& a, const std::shared_ptr<Volume<T>>& b) : _a(a), _b(b) {}
+            ~FieldOperator() = default;
+
+            virtual const volumeDataType eval(const Vector& P) const = 0;
+            virtual const volumeGradType grad(const Vector& P) const = 0;
+
+        protected:
+            std::shared_ptr<Volume<T>> _a; 
+            std::shared_ptr<Volume<T>> _b;
+    };
+
+    // AddFields
+    // Two fields can be combined via an add operation
+    template<typename T>
+    class AddField : public FieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+        using typename Volume<T>::volumeGradType;
+
+        public:
+            AddField(const std::shared_ptr<Volume<T>>& a, const std::shared_ptr<Volume<T>>& b) : FieldOperator<T>(a,b) {}
+
+            const volumeDataType eval(const Vector& P) const override { 
+                return this->_a->eval(P) + this->_b->eval(P); 
+            }
+
+            const volumeGradType grad(const Vector& P) const override {
+                return {};
+            }
+
+    };
 
 } 
 
@@ -40,5 +118,11 @@ namespace lux {
  * If it was Volume<float> that would be fine 
  * because we now know that volumeDataType is float
  * We create a local typedef of the type for convenient use here
+ * 
+ * 
+ * AddField(const std::shared_ptr<Volume<T>>& a, const std::shared_ptr<Volume<T>>& b) : FieldOperator<T>(a,b) {}
+ * Since FieldOperator specifies arguments will be passed, derived classes must
+ * have a constructor to pass the arguments up to the base class to store them as
+ * member variables
  * 
  ***************************************************/
