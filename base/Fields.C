@@ -24,9 +24,9 @@ MatrixField MatrixField::operator+( const MatrixField& e2 ) { return MatrixField
 
 
 ScalarField constant( const float v ) { return ScalarField( new ConstantVolume(v) ); }
-VectorField constant( const Vector& v ) { return VectorField(new ConstantVectorVolume(v)); }
-ColorField  constant( const Color& v ) { return ColorField(new ConstantColor(v)); }
-MatrixField constant( const Matrix& v ) { return MatrixField( new ConstantMatrixVolume(v) ); }
+// VectorField constant( const Vector& v ) { return VectorField(new ConstantVectorVolume(v)); }
+// ColorField  constant( const Color& v ) { return ColorField(new ConstantColor(v)); }
+// MatrixField constant( const Matrix& v ) { return MatrixField( new ConstantMatrixVolume(v) ); }
 
 
 
