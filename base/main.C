@@ -2,8 +2,10 @@
 #include <memory.h>
 
 #include "Volume.h"
+#include "ImplicitFields.h"
 #include "Fields.h"
 #include "Vector.h"
+#include "Matrix.h"
 
 using namespace lux;
 
@@ -46,6 +48,30 @@ int main() {
     std::cout << evaluate(a, Vector(3,3,3)) << std::endl; // 4
     std::cout << evaluate(b, Vector(3,3,3)) << std::endl; // 3
     std::cout << evaluate(c, Vector(3,3,3)) << std::endl; // 7
+
+    // Scalar volumes
+    std::shared_ptr<Volume<float>> a2 = std::make_shared<ConstantField<float>>(4);
+    std::shared_ptr<Volume<float>> b2 = std::make_shared<ConstantField<float>>(3);
+
+    // Vector volumes
+    std::shared_ptr<Volume<Vector>> Va2 = std::make_shared<ConstantField<Vector>>(Vector(1,1,1));
+    std::shared_ptr<Volume<Vector>> Vb2 = std::make_shared<ConstantField<Vector>>(Vector(2,2,2));
+
+    // // Matrix volumes
+    std::shared_ptr<Volume<Matrix>> Ma2 = std::make_shared<ConstantField<Matrix>>(Matrix(3));
+    std::shared_ptr<Volume<Matrix>> Mb2 = std::make_shared<ConstantField<Matrix>>(Matrix(4));
+
+    // Evaluate scalar volumes
+    std::cout << a2->eval(Vector(3,3,3)) << std::endl;
+    std::cout << b2->eval(Vector(3,3,3)) << std::endl;
+
+    // Evaluate vector volumes
+    std::cout << (Va2->eval(Vector(3,3,3))).__str__() << std::endl;
+    std::cout << (Vb2->eval(Vector(3,3,3))).__str__() << std::endl;
+
+    // // Evaluate matrix volumes
+    std::cout << (Ma2->eval(Vector(3,3,3))).__str__() << std::endl;
+    std::cout << (Mb2->eval(Vector(3,3,3))).__str__() << std::endl;
 
     return 0;
 }
