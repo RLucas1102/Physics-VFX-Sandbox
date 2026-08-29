@@ -4,22 +4,78 @@
 #include <memory>
 
 #include "Volume.h"
+#include "ImplicitFields.h"
 
 namespace lux {
 
     template <typename T>
-    std::shared_ptr<Volume<T>> add(const std::shared_ptr<Volume<T>> &a, 
-                                   const std::shared_ptr<Volume<T>> &b) 
+    using VSP = std::shared_ptr<Volume<T>>;
+
+    template <typename T>
+    using volumeDataType = typename Volume<T>::volumeDataType;
+
+    // Field Helper Functions
+    // ----------------------------------------------------------------------------
+    template <typename T>
+    volumeDataType<T> evaluate(const VSP<T>& f, const Vector& P) {
+        return f->eval(P);
+    }
+    // ----------------------------------------------------------------------------
+
+    // Field Volume Creation Helper Functions
+    // ----------------------------------------------------------------------------
+    template <typename T>
+    VSP<T> constant(const T& v) {
+        return std::make_shared<ConstantField<T>>(v);
+    }
+    // ----------------------------------------------------------------------------
+
+    // Field Operator Helper Functions
+    // ----------------------------------------------------------------------------
+    template <typename T>
+    VSP<T> add(const VSP<T>& a, 
+               const VSP<T>& b) 
     {
         return std::make_shared<AddField<T>>(a,b);
     }
+    // ----------------------------------------------------------------------------
 
+    // Operator Overloads
+    // ----------------------------------------------------------------------------
     template <typename T>
-    std::shared_ptr<Volume<T>> operator+(const std::shared_ptr<Volume<T>> &a, 
-                                         const std::shared_ptr<Volume<T>> &b)
+    VSP<T> operator+(const VSP<T>& a, 
+                     const VSP<T>& b)
     {
         return add(a,b);
     }
+    // ----------------------------------------------------------------------------
 }
 
 #endif
+
+/***************************************************
+ * Notes:
+ * 
+ * Cannot put definition in a .C file because templates
+ * are just patterns, not classes. The class is
+ * created when it is needed at compile time. If main.C
+ * needs an add<float> function it will find the
+ * declaration, but not the definition because
+ * it was never created when we compiled FieldInterface.C
+ * which would be compiled first in this order.
+ * 
+ * 
+ * template <typename T>
+ * using volumeDataType = typename Volume<T>::volumeDataType;
+ * 
+ * This is different from the one we created in the classes.
+ * Essentially, we are saying to create a type called
+ * volumeDataType here in this file. But, to do so, 
+ * look in Volume<T> for what volumeDataType should 
+ * be. This one is creating a new alias template
+ * 
+ * The other example in ImplicitFields.h is introducing the
+ * type from Volume<T> to the derived class's scope.
+ * This one is importing the type into the class
+ * 
+ ***************************************************/
