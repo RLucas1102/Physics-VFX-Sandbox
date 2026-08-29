@@ -3,6 +3,7 @@
 
 #include "Volume.h"
 #include "ImplicitFields.h"
+#include "FieldInterface.h"
 #include "Fields.h"
 #include "Vector.h"
 #include "Matrix.h"
@@ -77,16 +78,19 @@ int main() {
     // FieldOperator<float> s;
 
     // Create a scalar AddField
-    std::shared_ptr<Volume<float>> c2 = std::make_shared<AddField<float>>(a2, b2); 
+    // std::shared_ptr<Volume<float>> c2 = std::make_shared<AddField<float>>(a2, b2); 
+    std::shared_ptr<Volume<float>> c2 = add(a2, b2);
+    std::shared_ptr<Volume<float>> c3 = a2 + b2;
 
     // Create a vector AddField
-    std::shared_ptr<Volume<Vector>> Vc2 = std::make_shared<AddField<Vector>>(Va2, Vb2); 
+    std::shared_ptr<Volume<Vector>> Vc2 = Va2 + Vb2;
 
     // Create a matrix AddField
-    std::shared_ptr<Volume<Matrix>> Mc2 = std::make_shared<AddField<Matrix>>(Ma2, Mb2); 
+    std::shared_ptr<Volume<Matrix>> Mc2 = Ma2 + Mb2;
 
     // Evaluate added scalar volumes
     std::cout << c2->eval(Vector(3,3,3)) << std::endl; //7
+    std::cout << c3->eval(Vector(3,3,3)) << std::endl; //7
 
     // Evaluate added vector volumes
     std::cout << (Vc2->eval(Vector(3,3,3))).__str__() << std::endl; //(3,3,3)
