@@ -8,6 +8,10 @@
 
 namespace lux {
 
+    // Defining std::shared_ptr<Volume<T>> as type VSP
+    template <typename T>
+    using VSP = std::shared_ptr<Volume<T>>;
+
     /******************************************
      * Section: Simple volumes
      * 
@@ -44,7 +48,7 @@ namespace lux {
 
 
     /******************************************
-     * Section: Field Operations
+     * Section: Binary Field Operations
      * 
      * The classes in this section define 
      * different operations that can be
@@ -62,36 +66,37 @@ namespace lux {
 
     // Base class
     // All field operations will derive from this abstract class 
-    template<typename T>
-    class FieldOperator : public Volume<T> {
+    template<typename T, typename U>
+    class BinaryFieldOperator : public Volume<T> {
         
         public:
 
             // Need to make these public for derived classes like Volume does
+            // Enforcing that the GradType will be defined by T only
             using typename Volume<T>::volumeDataType;
             using typename Volume<T>::volumeGradType;
 
-            FieldOperator(const std::shared_ptr<Volume<T>>& a, const std::shared_ptr<Volume<T>>& b) : _a(a), _b(b) {}
-            ~FieldOperator() = default;
+            BinaryFieldOperator(const VSP<T>& a, const VSP<U>& b) : _a(a), _b(b) {}
+            ~BinaryFieldOperator() = default;
 
             virtual const volumeDataType eval(const Vector& P) const = 0;
             virtual const volumeGradType grad(const Vector& P) const = 0;
 
         protected:
             std::shared_ptr<Volume<T>> _a; 
-            std::shared_ptr<Volume<T>> _b;
+            std::shared_ptr<Volume<U>> _b;
     };
 
     // AddFields
     // Two fields can be combined via an add operation
-    template<typename T>
-    class AddField : public FieldOperator<T> {
+    template<typename T, typename U>
+    class AddField : public BinaryFieldOperator<T, U> {
 
         using typename Volume<T>::volumeDataType;
         using typename Volume<T>::volumeGradType;
 
         public:
-            AddField(const std::shared_ptr<Volume<T>>& a, const std::shared_ptr<Volume<T>>& b) : FieldOperator<T>(a,b) {}
+            AddField(const VSP<T>& a, const VSP<U>& b) : BinaryFieldOperator<T, U>(a,b) {}
 
             const volumeDataType eval(const Vector& P) const override { 
                 return this->_a->eval(P) + this->_b->eval(P); 
