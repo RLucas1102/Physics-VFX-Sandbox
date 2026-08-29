@@ -28,7 +28,7 @@ namespace lux {
         using typename Volume<T>::volumeGradType;
 
         public:
-            ConstantField(const T v) : _value(v), _gradValue() {}
+            ConstantField(const T& v) : _value(v) {}
             ~ConstantField() = default;
 
             const volumeDataType eval(const Vector& P) const override { return _value; }
