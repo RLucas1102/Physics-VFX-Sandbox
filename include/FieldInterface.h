@@ -9,9 +9,6 @@
 namespace lux {
 
     template <typename T>
-    using VSP = std::shared_ptr<Volume<T>>;
-
-    template <typename T>
     using volumeDataType = typename Volume<T>::volumeDataType;
 
     // Field Helper Functions
@@ -36,7 +33,7 @@ namespace lux {
     VSP<T> add(const VSP<T>& a, 
                const VSP<T>& b) 
     {
-        return std::make_shared<AddField<T>>(a,b);
+        return std::make_shared<AddField<T, T>>(a,b);
     }
     // ----------------------------------------------------------------------------
 
@@ -46,7 +43,7 @@ namespace lux {
     VSP<T> operator+(const VSP<T>& a, 
                      const VSP<T>& b)
     {
-        return add(a,b);
+        return std::make_shared<AddField<T, T>>(a,b);
     }
     // ----------------------------------------------------------------------------
 }
