@@ -52,16 +52,16 @@ namespace lux {
      * 
      * The classes in this section define 
      * different operations that can be
-     * performed to combine fields.
+     * performed to combine two fields.
      * Operations are represented as fields
      * themselves because they can be evaluated
      * the same at any point in the field.
      * Combining fields essentially creates a
      * new field
      * 
-     * These classes are created through
-     * functions defined in FieldOperations.h
-     * See FieldOperations.h/.C for more info
+     * These classes are created through helper
+     * functions defined in FieldInterface.h
+     * See FieldInterface.h for more info
      ******************************************/
 
     // Base class
