@@ -89,14 +89,16 @@ namespace lux {
 
     // AddFields
     // Two fields can be combined via an add operation
-    template<typename T, typename U>
-    class AddField : public BinaryFieldOperator<T, U> {
+    // Add fields cannot add fields of different types, so we enforce that here 
+    // by never using U
+    template<typename T>
+    class AddField : public BinaryFieldOperator<T, T> {
 
         using typename Volume<T>::volumeDataType;
         using typename Volume<T>::volumeGradType;
 
         public:
-            AddField(const VSP<T>& a, const VSP<U>& b) : BinaryFieldOperator<T, U>(a,b) {}
+            AddField(const VSP<T>& a, const VSP<T>& b) : BinaryFieldOperator<T, T>(a,b) {}
 
             const volumeDataType eval(const Vector& P) const override { 
                 return this->_a->eval(P) + this->_b->eval(P); 

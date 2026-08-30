@@ -33,7 +33,7 @@ namespace lux {
     VSP<T> add(const VSP<T>& a, 
                const VSP<T>& b) 
     {
-        return std::make_shared<AddField<T, T>>(a,b);
+        return std::make_shared<AddField<T>>(a,b);
     }
     // ----------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ namespace lux {
     VSP<T> operator+(const VSP<T>& a, 
                      const VSP<T>& b)
     {
-        return std::make_shared<AddField<T, T>>(a,b);
+        return std::make_shared<AddField<T>>(a,b);
     }
     // ----------------------------------------------------------------------------
 }
