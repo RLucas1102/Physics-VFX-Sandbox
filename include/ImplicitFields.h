@@ -83,8 +83,8 @@ namespace lux {
             virtual const volumeGradType grad(const Vector& P) const = 0;
 
         protected:
-            std::shared_ptr<Volume<T>> _a; 
-            std::shared_ptr<Volume<U>> _b;
+            VSP<T> _a; 
+            VSP<U> _b;
     };
 
     // AddFields
