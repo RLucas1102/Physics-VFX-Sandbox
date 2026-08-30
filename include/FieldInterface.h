@@ -11,11 +11,19 @@ namespace lux {
     template <typename T>
     using volumeDataType = typename Volume<T>::volumeDataType;
 
+    template <typename T>
+    using volumeGradType = typename Volume<T>::volumeGradType;
+
     // Field Helper Functions
     // ----------------------------------------------------------------------------
     template <typename T>
     volumeDataType<T> evaluate(const VSP<T>& f, const Vector& P) {
         return f->eval(P);
+    }
+
+    template <typename T>
+    volumeGradType<T> gradient(const VSP<T>& f, const Vector& P) {
+        return f->grad(P);
     }
     // ----------------------------------------------------------------------------
 
@@ -73,6 +81,9 @@ namespace lux {
  * 
  * The other example in ImplicitFields.h is introducing the
  * type from Volume<T> to the derived class's scope.
- * This one is importing the type into the class
+ * This one is importing the type into the class. However,
+ * I could put the above syntax into the classes and it
+ * would do essentially the same thing as what is already
+ * there.
  * 
  ***************************************************/

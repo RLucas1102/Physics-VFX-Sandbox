@@ -43,6 +43,10 @@ int main() {
     /**
      * Test: Volumes can call grad functions
      */
+    // Find gradient of a scalar volume
+    std::cout << (gradient(a, Vector(3,3,3))).__str__() << std::endl; //(0,0,0)
+    std::cout << (gradient(Va, Vector(3,3,3))).__str__() << std::endl; //Matrix(0)
+
 
     /**
      * Test: Volumes can be added
