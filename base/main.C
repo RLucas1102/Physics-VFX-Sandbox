@@ -14,8 +14,14 @@ int main() {
      * Test: Volumes can be created 
      */
     // Scalar volumes
+    // Constant
     VSP<float> a = constant(4.0f);
     VSP<float> b = constant(3.0f);
+
+    // Plane
+    Vector normal = Vector(1,0,0);
+    Vector point  = Vector(1,0,1);
+    VSP<float> planeA = plane(normal, point);
 
     // Vector volumes
     VSP<Vector> Va = constant(Vector(1,1,1));
@@ -29,8 +35,13 @@ int main() {
      * Test: Volumes can call evaluate functions
      */
     // Evaluate scalar volumes
+    // Constant
     std::cout << evaluate(a, Vector(3,3,3)) << std::endl; //4
     std::cout << evaluate(b, Vector(3,3,3)) << std::endl; //3
+
+    // Plane
+    std::cout << evaluate(planeA, Vector(0,0,0)) << std::endl; //[(0,0,0) - (1,0,1)] * (1,0,0) = -1
+    std::cout << evaluate(planeA, Vector(3,3,3)) << std::endl; //[(3,3,3) - (1,0,1)] * (1,0,0) = 2
 
     // Evaluate vector volumes
     std::cout << evaluate(Va, Vector(3,3,3)).__str__() << std::endl; //(1,1,1) 
@@ -44,8 +55,12 @@ int main() {
      * Test: Volumes can be added
      */
     // Create a scalar AddField
+    // Adding two constants
     VSP<float> c = add(a, b);
     VSP<float> c2 = a + b;
+
+    // Adding a constant and a plane
+    VSP<float> c3 = a + planeA;
 
     // Create a vector AddField
     VSP<Vector> Vc = Va + Vb;
@@ -54,8 +69,13 @@ int main() {
     VSP<Matrix> Mc = Ma + Mb;
 
     // Evaluate added scalar volumes
+    // Added constants
     std::cout << evaluate(c, Vector(3,3,3)) << std::endl; //7
     std::cout << evaluate(c2, Vector(3,3,3)) << std::endl; //7
+
+    // Added constant and plane
+    std::cout << evaluate(c3, Vector(0,0,0)) << std::endl; //4 + -1 = 3
+    std::cout << evaluate(c3, Vector(3,3,3)) << std::endl; //4 + 2 = 6
 
     // Evaluate added vector volumes
     std::cout << evaluate(Vc, Vector(3,3,3)).__str__() << std::endl; //(3,3,3)
@@ -70,6 +90,8 @@ int main() {
     std::cout << (gradient(a, Vector(3,3,3))).__str__() << std::endl; //(0,0,0)
     std::cout << (gradient(Va, Vector(3,3,3))).__str__() << std::endl; //Matrix(0)
     std::cout << (gradient(c2, Vector(3,3,3))).__str__() << std::endl; //(0,0,0)
+    std::cout << (gradient(planeA, Vector(3,3,3))).__str__() << std::endl; //normal = (1,0,0)
+    std::cout << (gradient(c3, Vector(3,3,3))).__str__() << std::endl; //(0,0,0) + (1,0,0)
 
 
 

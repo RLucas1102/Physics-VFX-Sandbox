@@ -43,6 +43,24 @@ namespace lux {
             volumeGradType _gradValue;
 
     };
+
+    // Plane Field
+    // Creates a plane volume defined by a point on the surface and its normal
+    // Below the plane is inside which will be negative
+    // Above the plane is outside and will be positive
+    class PlaneField : public Volume<float> {
+
+        public:
+            PlaneField(const Vector& n, const Vector& p) : _normal(n.unitvector()), _pointOnSurf(p) {}
+            ~PlaneField() = default;
+
+            const float eval(const Vector& p) const override { return (p - _pointOnSurf) * _normal; }
+            const Vector grad(const Vector& p) const override { return _normal; }
+
+        private:
+            Vector _normal;
+            Vector _pointOnSurf;
+    };
     
     // ------------------------------------------------------------------------------------
 

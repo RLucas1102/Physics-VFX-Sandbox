@@ -33,6 +33,10 @@ namespace lux {
     VSP<T> constant(const T& v) {
         return std::make_shared<ConstantField<T>>(v);
     }
+
+    VSP<float> plane(const Vector& n, const Vector& p) {
+        return std::make_shared<PlaneField>(n, p);
+    }
     // ----------------------------------------------------------------------------
 
     // Field Operator Helper Functions
