@@ -41,14 +41,6 @@ int main() {
     std::cout << evaluate(Mb, Vector(3,3,3)).__str__() << std::endl; //Matrix(4)
 
     /**
-     * Test: Volumes can call grad functions
-     */
-    // Find gradient of a scalar volume
-    std::cout << (gradient(a, Vector(3,3,3))).__str__() << std::endl; //(0,0,0)
-    std::cout << (gradient(Va, Vector(3,3,3))).__str__() << std::endl; //Matrix(0)
-
-
-    /**
      * Test: Volumes can be added
      */
     // Create a scalar AddField
@@ -70,6 +62,16 @@ int main() {
 
     // Evaluate added matrix volumes
     std::cout << evaluate(Mc, Vector(3,3,3)).__str__() << std::endl; //Matrix(7)
+
+    /**
+     * Test: Volumes can call grad functions
+     */
+    // Find gradient of a scalar volume
+    std::cout << (gradient(a, Vector(3,3,3))).__str__() << std::endl; //(0,0,0)
+    std::cout << (gradient(Va, Vector(3,3,3))).__str__() << std::endl; //Matrix(0)
+    std::cout << (gradient(c2, Vector(3,3,3))).__str__() << std::endl; //(0,0,0)
+
+
 
     return 0;
 }

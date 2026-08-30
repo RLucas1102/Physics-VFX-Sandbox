@@ -105,7 +105,7 @@ namespace lux {
             }
 
             const volumeGradType grad(const Vector& P) const override {
-                return {};
+                return this->_a->grad(P) + this->_b->grad(P);
             }
 
     };
