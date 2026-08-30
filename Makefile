@@ -1,15 +1,10 @@
 
 OFILES = base/Matrix.o \
 	 base/Volume.o \
-	 base/Fields.o \
 	 base/LinearAlgebra.o \
 	 base/Camera.o \
 	 base/Color.o \
-	 base/ImplicitVolumeShapes.o \
-	 base/ImplicitVectorShapes.o \
-	 base/ImplicitColors.o \
-	 base/ImplicitMatrixShapes.o 
-
+	 
 AFILES = $(OFILES)
 
 ROOTDIR = .
