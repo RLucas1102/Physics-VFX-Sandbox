@@ -82,6 +82,56 @@ namespace lux {
     
     // ------------------------------------------------------------------------------------
 
+    /******************************************
+     * Section: Unary Field Operations
+     * 
+     * The classes in this section define 
+     * different operations that can be
+     * performed on one field
+     * 
+     * These classes are created through helper
+     * functions defined in FieldInterface.h
+     * See FieldInterface.h for more info
+     ******************************************/
+
+    // Base class
+    // All field operations will derive from this abstract class 
+    template<typename T>
+    class UnaryFieldOperator : public Volume<T> {
+        
+        public:
+
+            // Need to make these public for derived classes like Volume does
+            using typename Volume<T>::volumeDataType;
+
+            UnaryFieldOperator(const VSP<T>& a) : _a(a) {}
+            ~UnaryFieldOperator() = default;
+
+            virtual const volumeDataType eval(const Vector& P) const = 0;
+
+        protected:
+            VSP<T> _a; 
+    };
+
+    // MaskField
+    // Positive values return 1 and negative values return 0
+    template<typename T>
+    class MaskField : public UnaryFieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            MaskField(const VSP<T>& a) : UnaryFieldOperator<T>(a) {}
+
+            const volumeDataType eval(const Vector& P) const override { 
+                if (this->_a->eval(P) > 0) { return 1; }
+                else { return 0; }
+            }
+    };
+
+    
+
+    // ------------------------------------------------------------------------------------
 
     /******************************************
      * Section: Binary Field Operations
@@ -91,7 +141,7 @@ namespace lux {
      * performed to combine two fields.
      * Operations are represented as fields
      * themselves because they can be evaluated
-     * the same at any point in the field.
+     * at any point in the field like primitives.
      * Combining fields essentially creates a
      * new field
      * 
@@ -136,6 +186,8 @@ namespace lux {
                 return this->_a->eval(P) + this->_b->eval(P); 
             }
     };
+
+    // ------------------------------------------------------------------------------------
 
 } 
 
