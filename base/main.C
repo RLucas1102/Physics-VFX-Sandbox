@@ -5,6 +5,7 @@
 #include "FieldInterface.h"
 #include "Vector.h"
 #include "Matrix.h"
+#include "Color.h"
 
 using namespace lux;
 
@@ -35,6 +36,10 @@ int main() {
     // Matrix volumes
     VSP<Matrix> Ma = constant(Matrix(3));
     VSP<Matrix> Mb = constant(Matrix(4));
+
+    // Color volumes
+    // Red
+    VSP<Color> Cm = constant(Color(1,0,0,0));
 
     /**
      * Test: Volumes can call evaluate functions
@@ -93,6 +98,16 @@ int main() {
 
     // Evaluate added matrix volumes
     std::cout << evaluate(Mc, Vector(3,3,3)).__str__() << std::endl; //Matrix(7)
+
+    /**
+     * Test: Volumes can be multiplied
+     */
+
+    VSP<Color> sphereA_red = Cm * sphereA_den;
+
+    //Evaluate color field
+    std::cout << evaluate(sphereA_red, Vector(0,0,0)).__str__() << std::endl; // (1,0,0,0) Red
+    std::cout << evaluate(sphereA_red, Vector(2,2,2)).__str__() << std::endl; // (0,0,0,0) Black
 
     /**
      * Test: Volumes can call grad functions
