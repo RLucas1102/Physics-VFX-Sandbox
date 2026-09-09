@@ -43,7 +43,16 @@ namespace lux {
     }
     // ----------------------------------------------------------------------------
 
-    // Field Operator Helper Functions
+    // Unary Field Operator Helper Functions
+    // ----------------------------------------------------------------------------
+    template <typename T>
+    VSP<T> mask(const VSP<T>& a)
+    {
+        return std::make_shared<MaskField<T>>(a);
+    }
+    // ----------------------------------------------------------------------------
+
+    // Binary Field Operator Helper Functions
     // ----------------------------------------------------------------------------
     template <typename T>
     VSP<T> add(const VSP<T>& a, 
