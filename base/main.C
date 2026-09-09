@@ -26,6 +26,7 @@ int main() {
     // Sphere
     float radius = 1;
     VSP<float> sphereA = sphere(radius);
+    VSP<float> sphereA_den = mask(sphereA);
 
     // Vector volumes
     VSP<Vector> Va = constant(Vector(1,1,1));
@@ -50,6 +51,8 @@ int main() {
     // Sphere
     std::cout << evaluate(sphereA, Vector(0,0,0)) << std::endl; // 1
     std::cout << evaluate(sphereA, Vector(2,2,2)) << std::endl; // -2.4641
+    std::cout << evaluate(sphereA_den, Vector(0,0,0)) << std::endl; // 1
+    std::cout << evaluate(sphereA_den, Vector(2,2,2)) << std::endl; // 0
 
     // Evaluate vector volumes
     std::cout << evaluate(Va, Vector(3,3,3)).__str__() << std::endl; //(1,1,1) 
