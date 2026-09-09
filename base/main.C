@@ -23,6 +23,10 @@ int main() {
     Vector point  = Vector(1,0,1);
     VSP<float> planeA = plane(normal, point);
 
+    // Sphere
+    float radius = 1;
+    VSP<float> sphereA = sphere(radius);
+
     // Vector volumes
     VSP<Vector> Va = constant(Vector(1,1,1));
     VSP<Vector> Vb = constant(Vector(2,2,2));
@@ -42,6 +46,10 @@ int main() {
     // Plane
     std::cout << evaluate(planeA, Vector(0,0,0)) << std::endl; //[(0,0,0) - (1,0,1)] * (1,0,0) = -1
     std::cout << evaluate(planeA, Vector(3,3,3)) << std::endl; //[(3,3,3) - (1,0,1)] * (1,0,0) = 2
+
+    // Sphere
+    std::cout << evaluate(sphereA, Vector(0,0,0)) << std::endl; // 1
+    std::cout << evaluate(sphereA, Vector(2,2,2)) << std::endl; // -2.4641
 
     // Evaluate vector volumes
     std::cout << evaluate(Va, Vector(3,3,3)).__str__() << std::endl; //(1,1,1) 
