@@ -37,6 +37,10 @@ namespace lux {
     VSP<float> plane(const Vector& n, const Vector& p) {
         return std::make_shared<PlaneField>(n, p);
     }
+
+    VSP<float> sphere(const float radius) {
+        return std::make_shared<SphereField>(radius);
+    }
     // ----------------------------------------------------------------------------
 
     // Field Operator Helper Functions
