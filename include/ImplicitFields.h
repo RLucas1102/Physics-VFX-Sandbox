@@ -90,15 +90,12 @@ namespace lux {
         public:
 
             // Need to make these public for derived classes like Volume does
-            // Enforcing that the GradType will be defined by T only
             using typename Volume<T>::volumeDataType;
-            using typename Volume<T>::volumeGradType;
 
             BinaryFieldOperator(const VSP<T>& a, const VSP<U>& b) : _a(a), _b(b) {}
             ~BinaryFieldOperator() = default;
 
             virtual const volumeDataType eval(const Vector& P) const = 0;
-            virtual const volumeGradType grad(const Vector& P) const = 0;
 
         protected:
             VSP<T> _a; 
@@ -113,7 +110,6 @@ namespace lux {
     class AddField : public BinaryFieldOperator<T, T> {
 
         using typename Volume<T>::volumeDataType;
-        using typename Volume<T>::volumeGradType;
 
         public:
             AddField(const VSP<T>& a, const VSP<T>& b) : BinaryFieldOperator<T, T>(a,b) {}
@@ -121,11 +117,6 @@ namespace lux {
             const volumeDataType eval(const Vector& P) const override { 
                 return this->_a->eval(P) + this->_b->eval(P); 
             }
-
-            const volumeGradType grad(const Vector& P) const override {
-                return this->_a->grad(P) + this->_b->grad(P);
-            }
-
     };
 
 } 
