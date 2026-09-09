@@ -46,8 +46,6 @@ namespace lux {
 
     // Plane Field
     // Creates a plane volume defined by a point on the surface and its normal
-    // Below the plane is inside which will be negative
-    // Above the plane is outside and will be positive
     class PlaneField : public Volume<float> {
 
         public:
@@ -60,6 +58,26 @@ namespace lux {
         private:
             Vector _normal;
             Vector _pointOnSurf;
+    };
+
+    // Sphere Field
+    // Creates a sphere volume defined by a radius
+    class SphereField : public Volume<float> {
+
+        public:
+            SphereField(const float radius): _radius(radius) {}
+            ~SphereField() = default;
+
+            const float eval(const Vector& p) const override { return _radius - p.magnitude(); }
+            const Vector grad(const Vector& p) const override {
+                Vector result;
+                if (p.magnitude() != 0) {result = -p.unitvector(); }
+                else {result = Vector(0, 1, 0); }
+                return result;
+            }
+
+        private:
+            float _radius;
     };
     
     // ------------------------------------------------------------------------------------
