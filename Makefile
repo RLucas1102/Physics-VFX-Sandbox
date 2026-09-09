@@ -20,15 +20,19 @@ SWIGEXEC = swig4.0
 
 INCLUDES = -I ./include/ $(PYTHONINCLUDE)  
 
-all: $(AFILES) 
+test: $(AFILES) 
 	ar rv ./lib/libstarter.a $?
-	$(CXX) base/main.C $(INCLUDES) $(LIB) -o bin/main
+	$(CXX) base/main.C $(INCLUDES) $(LIB) -o bin/test
+
+base: $(AFILES) 
+	ar rv ./lib/libstarter.a $?
+	$(CXX) base/viewer.C $(INCLUDES) $(LIB) -o bin/viewer
 
 .C.o: $<
 	$(CXX) -c $(INCLUDES) $< -o $@
 
 clean:
-	rm -rf *.o bin/main base/*.o core ./lib/libstarter.a  *~ swig/*~ swig/*.so swig/*.o swig/*.cxx swig/*.pyc swig/bishop.py* doc/html doc/latex python/*.pyc 
+	rm -rf *.o bin/viewer bin/test base/*.o core ./lib/libstarter.a  *~ swig/*~ swig/*.so swig/*.o swig/*.cxx swig/*.pyc swig/bishop.py* doc/html doc/latex python/*.pyc 
 
 genswig:	swig/bishop.i	$(OFILES)
 	$(SWIGEXEC) -c++ -python -shadow -I./include/ swig/bishop.i
