@@ -60,6 +60,13 @@ namespace lux {
     {
         return std::make_shared<AddField<T>>(a,b);
     }
+
+    template <typename T, typename U>
+    VSP<T> multiply(const VSP<T>& a,
+                    const VSP<U>& b)
+    {
+        return std::make_shared<MultiplyField<T,U>>(a,b);
+    }
     // ----------------------------------------------------------------------------
 
     // Operator Overloads
@@ -69,6 +76,13 @@ namespace lux {
                      const VSP<T>& b)
     {
         return std::make_shared<AddField<T>>(a,b);
+    }
+
+    template <typename T, typename U>
+    VSP<T> operator*(const VSP<T>& a,
+                     const VSP<U>& b)
+    {
+        return std::make_shared<MultiplyField<T,U>>(a,b);
     }
     // ----------------------------------------------------------------------------
 }
