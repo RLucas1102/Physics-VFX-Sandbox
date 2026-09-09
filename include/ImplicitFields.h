@@ -187,6 +187,25 @@ namespace lux {
             }
     };
 
+    // MultiplyFields
+    // Two fields can be combined via a multiplication operation
+    // MultiplyField can take in two different fields
+    // Implemented to take the type of the leftmost field
+    // Ex: Color * Float = Volume<Color>
+    template<typename T, typename U>
+    class MultiplyField : public BinaryFieldOperator<T, U> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            MultiplyField(const VSP<T>& a, const VSP<U>& b) : BinaryFieldOperator<T, U>(a,b) {}
+
+            const volumeDataType eval(const Vector& P) const override { 
+                return this->_a->eval(P) * this->_b->eval(P); 
+            }
+    };
+
+
     // ------------------------------------------------------------------------------------
 
 } 
