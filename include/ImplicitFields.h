@@ -52,7 +52,7 @@ namespace lux {
             PlaneField(const Vector& n, const Vector& p) : _normal(n.unitvector()), _pointOnSurf(p) {}
             ~PlaneField() = default;
 
-            const float eval(const Vector& p) const override { return (p - _pointOnSurf) * _normal; }
+            const float eval(const Vector& p) const override { return -(p - _pointOnSurf) * _normal; }
             const Vector grad(const Vector& p) const override { return _normal; }
 
         private:
