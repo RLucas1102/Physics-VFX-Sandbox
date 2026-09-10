@@ -102,6 +102,27 @@ namespace lux {
     {
         return std::make_shared<MultiplyField<T,U>>(a,b);
     }
+
+    template <typename T>
+    VSP<T> Union(const VSP<T>& a, 
+                 const VSP<T>& b) 
+    {
+        return std::make_shared<UnionField<T>>(a,b);
+    }
+
+    template <typename T>
+    VSP<T> Intersection(const VSP<T>& a, 
+                        const VSP<T>& b) 
+    {
+        return std::make_shared<IntersectionField<T>>(a,b);
+    }
+
+    template <typename T>
+    VSP<T> Cutout(const VSP<T>& a, 
+                  const VSP<T>& b) 
+    {
+        return std::make_shared<CutoutField<T>>(a,b);
+    }
     // ----------------------------------------------------------------------------
 
     // Operator Overloads

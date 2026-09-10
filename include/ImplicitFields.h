@@ -381,6 +381,52 @@ namespace lux {
             }
     };
 
+    // UnionFields
+    // Two fields can be combined via a max operation and join them together
+    template<typename T>
+    class UnionField : public BinaryFieldOperator<T, T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            UnionField(const VSP<T>& a, const VSP<T>& b) : BinaryFieldOperator<T, T>(a,b) {}
+
+            const volumeDataType eval(const Vector& P) const override { 
+                return std::max(this->_a->eval(P), this->_b->eval(P)); 
+            }
+    };
+
+    // IntersectionFields
+    // Two fields can be combined via a min operation and join them where they both exist
+    template<typename T>
+    class IntersectionField : public BinaryFieldOperator<T, T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            IntersectionField(const VSP<T>& a, const VSP<T>& b) : BinaryFieldOperator<T, T>(a,b) {}
+
+            const volumeDataType eval(const Vector& P) const override { 
+                return std::min(this->_a->eval(P), this->_b->eval(P)); 
+            }
+    };
+
+    // CutoutFields
+    // Two fields can be combined via a min operation and then negating one field to cut the shape
+    template<typename T>
+    class CutoutField : public BinaryFieldOperator<T, T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            CutoutField(const VSP<T>& a, const VSP<T>& b) : BinaryFieldOperator<T, T>(a,b) {}
+
+            const volumeDataType eval(const Vector& P) const override { 
+                return std::min(this->_a->eval(P), -this->_b->eval(P)); 
+            }
+    };
+
+
 
     // ------------------------------------------------------------------------------------
 
