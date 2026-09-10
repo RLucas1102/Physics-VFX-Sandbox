@@ -40,13 +40,23 @@ int main(int argc, char** argv) {
     img->clear(1920/2, 1080/2, 4);
 
     // Sphere
-    float radius = 1;
-    VSP<float> sphereA  = sphere(radius);
-    VSP<Color> sphereC = constant(Color(1,0,0,0));
+    //float radius = 1;
+    //VSP<float> sphereA  = sphere(radius);
+    //VSP<Color> sphereC = constant(Color(1,0,0,0));
+
+    //Plane
+    // Vector n = Vector(0,1,0);
+    // Vector p = Vector(0,-1,0);
+    // VSP<float> planeA = plane(n, p);
+    // VSP<Color> planeC = constant(Color(0,1,0,0));
+
+    VSP<float> objectA = planeA;
+    VSP<Color> objectC = planeC;
+
     VSP<Color> background = constant(Color(0,1,0,0));
 
-    VSP<Color> color = background * mask(-sphereA) + sphereC * mask(sphereA);
-    VSP<float> density = mask(sphereA);
+    VSP<Color> color = background * mask(-objectA) + objectC * mask(objectA);
+    VSP<float> density = mask(objectA);
 
     for (int j = 0; j < img->GetNy(); j++)
     {
