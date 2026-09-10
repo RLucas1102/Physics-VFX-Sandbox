@@ -149,6 +149,35 @@ namespace lux {
         private:
             float _radius, _smooth;
     };
+
+    // Icosahedron Field
+    // Creates an Icosahedron volume
+    class IcosahedronField : public Volume<float> {
+
+        public:
+            IcosahedronField() {}
+            ~IcosahedronField() = default;
+
+            const float eval(const Vector& p) const override {
+                Vector v = p;
+                float result = 0;
+                if (v.magnitude() > 1.8 * M_PI) { result = -1.8 * M_PI; }
+                else {
+                    float x = v[0];
+                    float y = v[1];
+                    float z = v[2];
+                    float term1 = std::cos(x + _T*y) + std::cos(x - _T*y);
+                    float term2 = std::cos(y + _T*z) + std::cos(y - _T*z);
+                    float term3 = std::cos(z - _T*x) + std::cos(z + _T*x);
+                    result = term1 + term2 + term3 - 2;              
+                }
+
+                return result;
+            }
+
+        private:
+            float _T = 1.61803399;
+    };
     
     
     // ------------------------------------------------------------------------------------

@@ -21,12 +21,12 @@ int main(int argc, char** argv) {
     // Define a camera
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
     cam->setFov(60);
-    cam->setEyeViewUp( Vector(0,0,10), Vector(0,0,-1), Vector(0,1,0) );
+    cam->setEyeViewUp( Vector(0,0,20), Vector(0,0,-1), Vector(0,1,0) );
 
     // Define a raymarcher
     double near = 0;
     double far = 25;
-    double steps = 100;
+    double steps = 1000;
     std::shared_ptr<Raymarcher> rm = std::make_shared<Raymarcher>();
     rm->SetT(1);
     rm->SetTmin(0.5);
@@ -65,13 +65,17 @@ int main(int argc, char** argv) {
     // VSP<Color> coneC = constant(Color(0, 0, 1, 0));
     
     //Box
-    float radius = 1;
-    float smoothness = 2;
-    VSP<float> boxA = box(radius, smoothness);
-    VSP<Color> boxC = constant(Color(0, 1, 1, 0));
+    // float radius = 1;
+    // float smoothness = 2;
+    // VSP<float> boxA = box(radius, smoothness);
+    // VSP<Color> boxC = constant(Color(0, 1, 1, 0));
 
-    VSP<float> objectA = boxA;
-    VSP<Color> objectC = boxC;
+    //Icosahedron
+    VSP<float> icoA = icosahedron();
+    VSP<Color> icoC = constant(Color(1, 0, 1, 0));
+
+    VSP<float> objectA = icoA;
+    VSP<Color> objectC = icoC;
 
     VSP<Color> background = constant(Color(0,1,0,0));
 

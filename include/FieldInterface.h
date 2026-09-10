@@ -53,6 +53,10 @@ namespace lux {
     VSP<float> box(const float radius, const float smooth) {
         return std::make_shared<BoxField>(radius, smooth);
     }
+
+    VSP<float> icosahedron() {
+        return std::make_shared<IcosahedronField>();
+    }
     // ----------------------------------------------------------------------------
 
     // Unary Field Operator Helper Functions
