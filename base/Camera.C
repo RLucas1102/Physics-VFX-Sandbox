@@ -92,3 +92,15 @@ bool Camera::isVisible( const Vector& P ) const
 
    return true;
 }
+
+Vector Camera::calculateDirection(const int i, const int j, const int Nu, const int Nv) const
+{
+   double u = (2*(double)i / (double)Nu - 1) * htanfov;
+   double v = (2*(double)j / (double)Nv - 1) * vtanfov;
+
+   Vector np = u * axis_right + v * axis_up + axis_view;
+   np = np.unitvector();
+
+   return np;
+
+}

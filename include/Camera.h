@@ -41,6 +41,9 @@ class Camera
 
     bool isVisible( const lux::Vector& P ) const;
 
+    // For a given pixel, calculate its direction vector it will shoot out into world
+    Vector calculateDirection(const int i, const int j, const int Nu, const int Nv) const;
+
     char *__str__(); 
 
   protected:
