@@ -50,6 +50,12 @@ namespace lux {
     {
         return std::make_shared<MaskField<T>>(a);
     }
+
+    template <typename T>
+    VSP<T> negate(const VSP<T>& a)
+    {
+        return std::make_shared<NegateField<T>>(a);
+    }    
     // ----------------------------------------------------------------------------
 
     // Binary Field Operator Helper Functions
@@ -83,6 +89,12 @@ namespace lux {
                      const VSP<U>& b)
     {
         return std::make_shared<MultiplyField<T,U>>(a,b);
+    }
+
+    template <typename T>
+    VSP<T> operator-(const VSP<T>& a)
+    {
+        return std::make_shared<NegateField<T>>(a);
     }
     // ----------------------------------------------------------------------------
 }

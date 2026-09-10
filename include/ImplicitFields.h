@@ -129,6 +129,19 @@ namespace lux {
             }
     };
 
+    // NegateField
+    // Returns the negated evaluated field value at P
+    template<typename T>
+    class NegateField : public UnaryFieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            NegateField(const VSP<T>& a) : UnaryFieldOperator<T>(a) {}
+
+            const volumeDataType eval(const Vector& P) const override { return -this->_a->eval(P); }
+    };
+
     
 
     // ------------------------------------------------------------------------------------
