@@ -87,9 +87,33 @@ namespace lux {
     }   
     
     template <typename T>
-    VSP<T> exp(const VSP<T>& a)
+    VSP<T> Exp(const VSP<T>& a)
     {
         return std::make_shared<ExpField<T>>(a);
+    }
+
+    template <typename T>
+    VSP<T> Log(const VSP<T>& a)
+    {
+        return std::make_shared<LogField<T>>(a);
+    }
+
+    template <typename T>
+    VSP<T> Sin(const VSP<T>& a)
+    {
+        return std::make_shared<SinField<T>>(a);
+    }
+    
+    template <typename T>
+    VSP<T> Cos(const VSP<T>& a)
+    {
+        return std::make_shared<CosField<T>>(a);
+    }
+
+    template <typename T>
+    VSP<T> Pow(const VSP<T>& a, const float val)
+    {
+        return std::make_shared<PowField<T>>(a, val);
     }
     // ----------------------------------------------------------------------------
 
@@ -102,11 +126,25 @@ namespace lux {
         return std::make_shared<AddField<T>>(a,b);
     }
 
+    template <typename T>
+    VSP<T> sub(const VSP<T>& a, 
+               const VSP<T>& b) 
+    {
+        return std::make_shared<SubtractField<T>>(a,b);
+    }
+
     template <typename T, typename U>
     VSP<T> multiply(const VSP<T>& a,
                     const VSP<U>& b)
     {
         return std::make_shared<MultiplyField<T,U>>(a,b);
+    }
+
+    template <typename T, typename U>
+    VSP<T> divide(const VSP<T>& a,
+                  const VSP<U>& b)
+    {
+        return std::make_shared<DivideField<T,U>>(a,b);
     }
 
     template <typename T>
@@ -149,11 +187,25 @@ namespace lux {
         return std::make_shared<AddField<T>>(a,b);
     }
 
+    template <typename T>
+    VSP<T> operator-(const VSP<T>& a, 
+                     const VSP<T>& b)
+    {
+        return std::make_shared<SubtractField<T>>(a,b);
+    }
+
     template <typename T, typename U>
     VSP<T> operator*(const VSP<T>& a,
                      const VSP<U>& b)
     {
         return std::make_shared<MultiplyField<T,U>>(a,b);
+    }
+
+    template <typename T, typename U>
+    VSP<T> operator/(const VSP<T>& a,
+                     const VSP<U>& b)
+    {
+        return std::make_shared<DivideField<T,U>>(a,b);
     }
 
     template <typename T>

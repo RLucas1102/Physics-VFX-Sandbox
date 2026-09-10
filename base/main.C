@@ -68,6 +68,13 @@ int main() {
     std::cout << evaluate(Mb, Vector(3,3,3)).__str__() << std::endl; //Matrix(4)
 
     /**
+     * Test: Volumes can be subtracted
+     */
+    VSP<float> c4 = a - b;
+    std::cout << evaluate(c4, Vector(3,3,3)) << std::endl; // 1
+
+
+    /**
      * Test: Volumes can be added
      */
     // Create a scalar AddField
@@ -105,11 +112,47 @@ int main() {
     VSP<Color> sphereA_red = Cm * sphereA_den;
 
     /**
+     * Test: Volumes can be divided
+     */
+    VSP<float> c5 = a / b;
+    std::cout << evaluate(c5, Vector(3,3,3)) << std::endl; // 1.33
+
+    /**
      * Test: Volumes can be negated
      */
 
     VSP<float> aMinus = -a;
     std::cout << evaluate(aMinus, Vector(3,3,3)) << std::endl; // -4
+
+    /**
+     * Test: Volumes can be Log
+     */
+    VSP<float> aLog = Log(a);
+    std::cout << evaluate(aLog, Vector(3,3,3)) << std::endl; //1.38
+
+    /**
+     * Test: Volumes can be Exp
+     */
+    VSP<float> aExp = Exp(a);
+    std::cout << evaluate(aExp, Vector(3,3,3)) << std::endl; // 54.598
+
+    /**
+     * Test: Volumes can be Sin
+     */
+    VSP<float> aSin = Sin(a);
+    std::cout << evaluate(aSin, Vector(3,3,3)) << std::endl; // -0.7568 radians
+
+    /**
+     * Test: Volumes can be Cos
+     */
+    VSP<float> aCos = Cos(a);
+    std::cout << evaluate(aCos, Vector(3,3,3)) << std::endl; // -0.65364 radians
+
+    /**
+     * Test: Volumes can be Pow
+     */
+    VSP<float> aPow = Pow(a, 2);
+    std::cout << evaluate(aPow, Vector(3,3,3)) << std::endl; // 16
 
     //Evaluate color field
     std::cout << evaluate(sphereA_red, Vector(0,0,0)).__str__() << std::endl; // (1,0,0,0) Red

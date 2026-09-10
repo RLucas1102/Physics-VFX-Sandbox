@@ -318,6 +318,61 @@ namespace lux {
             const volumeDataType eval(const Vector& P) const override { return std::exp(this->_a->eval(P)); }
     };
 
+    // LogField
+    // Returns the natural log(value) at P of a field
+    template<typename T>
+    class LogField : public UnaryFieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            LogField(const VSP<T>& a) : UnaryFieldOperator<T>(a) {}
+
+            const volumeDataType eval(const Vector& P) const override { return std::log(this->_a->eval(P)); }
+    };
+
+    // SinField
+    // Returns the Sin(value) at P of a field in radians
+    template<typename T>
+    class SinField : public UnaryFieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            SinField(const VSP<T>& a) : UnaryFieldOperator<T>(a) {}
+
+            const volumeDataType eval(const Vector& P) const override { return std::sin(this->_a->eval(P)); }
+    };
+
+    // CosField
+    // Returns the Cos(value) at P of a field in radians
+    template<typename T>
+    class CosField : public UnaryFieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            CosField(const VSP<T>& a) : UnaryFieldOperator<T>(a) {}
+
+            const volumeDataType eval(const Vector& P) const override { return std::cos(this->_a->eval(P)); }
+    };
+
+    // PowField
+    // Returns the Pow(value, scalar) at P of a field
+    template<typename T>
+    class PowField : public UnaryFieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            PowField(const VSP<T>& a, const float val) : UnaryFieldOperator<T>(a), _val(val) {}
+
+            const volumeDataType eval(const Vector& P) const override { return std::pow(this->_a->eval(P), _val); }
+
+        private:
+            float _val;
+    };
+
     
 
     // ------------------------------------------------------------------------------------
@@ -376,6 +431,21 @@ namespace lux {
             }
     };
 
+    // SubtractFields
+    // Two fields can be combined via a subtract operation
+    template<typename T>
+    class SubtractField : public BinaryFieldOperator<T, T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            SubtractField(const VSP<T>& a, const VSP<T>& b) : BinaryFieldOperator<T, T>(a,b) {}
+
+            const volumeDataType eval(const Vector& P) const override { 
+                return this->_a->eval(P) - this->_b->eval(P); 
+            }
+    };
+
     // MultiplyFields
     // Two fields can be combined via a multiplication operation
     // MultiplyField can take in two different fields
@@ -391,6 +461,24 @@ namespace lux {
 
             const volumeDataType eval(const Vector& P) const override { 
                 return this->_a->eval(P) * this->_b->eval(P); 
+            }
+    };
+
+    // DivideFields
+    // Two fields can be combined via a divide operation
+    // DivideField can take in two different fields
+    // Implemented to take the type of the leftmost field
+    // Ex: Color / Float = Volume<Color>
+    template<typename T, typename U>
+    class DivideField : public BinaryFieldOperator<T, U> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            DivideField(const VSP<T>& a, const VSP<U>& b) : BinaryFieldOperator<T, U>(a,b) {}
+
+            const volumeDataType eval(const Vector& P) const override { 
+                return this->_a->eval(P) / this->_b->eval(P); 
             }
     };
 
