@@ -202,7 +202,26 @@ namespace lux {
             float _radMajor, _radMinor;
             Vector _normal;
     };
-    
+
+    // Cylinder Field
+    // Creates a cylinder volume defined by a radius and normal
+    class CylinderField : public Volume<float> {
+
+        public:
+            CylinderField(const float radius, const Vector& n): _radius(radius), _normal(n.unitvector()) {}
+            ~CylinderField() = default;
+
+            const float eval(const Vector& p) const override { 
+                Vector X = p;
+                float xn = X *_normal;
+                float mag = (X - (xn * _normal)).magnitude();
+                return _radius - mag;
+            }
+
+        private:
+            float _radius;
+            Vector _normal;
+    };
     
     // ------------------------------------------------------------------------------------
 

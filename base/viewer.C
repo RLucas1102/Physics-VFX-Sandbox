@@ -75,14 +75,20 @@ int main(int argc, char** argv) {
     // VSP<Color> icoC = constant(Color(1, 0, 1, 0));
 
     //Ellipse
-    Vector n = Vector(0,1,0);
-    float rMajor = 5;
-    float rMinor = 3;
-    VSP<float> ellipseA = ellipse(rMajor, rMinor, n);
-    VSP<Color> ellipseC = constant(Color(1, 1, 0, 0));
+    // Vector n = Vector(0,1,0);
+    // float rMajor = 5;
+    // float rMinor = 3;
+    // VSP<float> ellipseA = ellipse(rMajor, rMinor, n);
+    // VSP<Color> ellipseC = constant(Color(1, 1, 0, 0));
 
-    VSP<float> objectA = ellipseA;
-    VSP<Color> objectC = ellipseC;
+    //Cylinder
+    // Vector n = Vector(0,1,0);
+    // float radius = 1;
+    // VSP<float> cylinderA = cylinder(radius, n);
+    // VSP<Color> cylinderC = constant(Color(0.5, 0.75, 0.1, 0));
+
+    VSP<float> objectA = cylinderA;
+    VSP<Color> objectC = cylinderC;
 
     VSP<Color> background = constant(Color(0,1,0,0));
 

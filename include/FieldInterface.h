@@ -61,6 +61,10 @@ namespace lux {
     VSP<float> ellipse(const float rM, const float rm, const Vector& n) {
         return std::make_shared<EllipseField>(rM, rm, n);
     }
+
+    VSP<float> cylinder(const float radius, const Vector& n) {
+        return std::make_shared<CylinderField>(radius, n);
+    }
     // ----------------------------------------------------------------------------
 
     // Unary Field Operator Helper Functions
