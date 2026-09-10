@@ -99,9 +99,19 @@ int main(int argc, char** argv) {
     VSP<float> objects = constant(-1000.0f);
     VSP<Color> objects_color = constant(Color(0,0,0,0));
 
-    objects = Blend(cylinderA, cylinderA2, 2.0, 2.0);
+    cylinderA = translate(cylinderA, Vector(2,0,0));
+    objects = Union(objects, cylinderA);
     objects_color = objects_color*mask(-cylinderA) + cylinderC*mask(cylinderA);
-    objects_color = objects_color*mask(-cylinderA2) + cylinderC2*mask(cylinderA2); 
+
+    cylinderA2 = translate(cylinderA2, Vector(0,2,0));
+    objects = Union(objects, cylinderA2);
+    objects_color = objects_color*mask(-cylinderA2) + cylinderC2*mask(cylinderA2);
+
+    // objects = Blend(cylinderA, cylinderA2, 2.0, 2.0);
+    // objects = Blend(objects, cylinderA, 2.0, 2.0);
+    // objects = Blend(objects, cylinderA2, 2.0, 2.0);
+    // objects_color = objects_color*mask(-cylinderA) + cylinderC*mask(cylinderA);
+    // objects_color = objects_color*mask(-cylinderA2) + cylinderC2*mask(cylinderA2); 
 
     VSP<Color> color = objects_color;
     VSP<float> density = mask(objects);

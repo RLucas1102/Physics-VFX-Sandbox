@@ -115,6 +115,12 @@ namespace lux {
     {
         return std::make_shared<PowField<T>>(a, val);
     }
+
+    template <typename T>
+    VSP<T> translate(const VSP<T>& a, const Vector& xt)
+    {
+        return std::make_shared<TranslateField<T>>(a, xt);
+    }
     // ----------------------------------------------------------------------------
 
     // Binary Field Operator Helper Functions

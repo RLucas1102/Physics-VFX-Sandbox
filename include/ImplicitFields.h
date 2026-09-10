@@ -373,6 +373,22 @@ namespace lux {
             float _val;
     };
 
+    // TranslateField
+    // Returns the Translate(F) by Vector Xt 
+    template<typename T>
+    class TranslateField : public UnaryFieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            TranslateField(const VSP<T>& a, const Vector& xt) : UnaryFieldOperator<T>(a), _Xt(xt) {}
+
+            const volumeDataType eval(const Vector& P) const override { return this->_a->eval(P - _Xt); }
+
+        private:
+            Vector _Xt;
+    };
+
     
 
     // ------------------------------------------------------------------------------------
