@@ -25,8 +25,8 @@ int main(int argc, char** argv) {
 
     // Define a raymarcher
     double near = 0;
-    double far = 50;
-    double steps = 20;
+    double far = 25;
+    double steps = 1000;
     std::shared_ptr<Raymarcher> rm = std::make_shared<Raymarcher>();
     rm->SetT(1);
     rm->SetTmin(0.5);
@@ -51,14 +51,21 @@ int main(int argc, char** argv) {
     // VSP<Color> planeC = constant(Color(0,1,0,0));
 
     //Torus
-    Vector n = Vector(0,0,-1);
-    float rMajor = 2;
-    float rMinor = 1;
-    VSP<float> torusA = torus(rMajor, rMinor, n);
-    VSP<Color> torusC = constant(Color(1, 1, 0, 0));
+    // Vector n = Vector(0,0,-1);
+    // float rMajor = 2;
+    // float rMinor = 1;
+    // VSP<float> torusA = torus(rMajor, rMinor, n);
+    // VSP<Color> torusC = constant(Color(1, 1, 0, 0));
 
-    VSP<float> objectA = torusA;
-    VSP<Color> objectC = torusC;
+    //Cone
+    Vector n = Vector(0,-1,0);
+    float h = 2;
+    float theta = 25 * M_PI / 180;
+    VSP<float> coneA = cone(h, theta, n);
+    VSP<Color> coneC = constant(Color(0, 0, 1, 0));
+
+    VSP<float> objectA = coneA;
+    VSP<Color> objectC = coneC;
 
     VSP<Color> background = constant(Color(0,1,0,0));
 
@@ -67,6 +74,7 @@ int main(int argc, char** argv) {
 
     for (int j = 0; j < img->GetNy(); j++)
     {
+        #pragma omp parallel for
         for (int i = 0; i < img->GetNx(); i++)
         {
             Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());

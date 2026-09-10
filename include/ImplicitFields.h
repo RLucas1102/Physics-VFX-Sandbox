@@ -102,6 +102,30 @@ namespace lux {
             float _radMajor, _radMinor;
             Vector _normal;
     };
+
+    // Cone Field
+    // Creates a Cone volume defined by a h, theta, and normal
+    class ConeField : public Volume<float> {
+
+        public:
+            ConeField(const float h, const float theta, const Vector& n): _height(h), _theta(theta), _normal(n.unitvector()) {}
+            ~ConeField() = default;
+
+            const float eval(const Vector& p) const override { 
+                Vector X = p;
+                float result = 0;
+                float xn = X * _normal;
+                if(xn < 0) { result = xn; }
+                else if (xn > _height) { result = _height - xn; }
+                else if (xn > 0 && xn < _height) { result = xn - X.magnitude() * std::cos(_theta); }
+                return result;
+            }
+
+        private:
+            float _height, _theta;
+            Vector _normal;
+    };
+    
     
     // ------------------------------------------------------------------------------------
 
