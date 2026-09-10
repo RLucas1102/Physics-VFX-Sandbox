@@ -305,6 +305,19 @@ namespace lux {
             const volumeDataType eval(const Vector& P) const override { return -this->_a->eval(P); }
     };
 
+    // ExpField
+    // Returns the e^value at P of a field
+    template<typename T>
+    class ExpField : public UnaryFieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            ExpField(const VSP<T>& a) : UnaryFieldOperator<T>(a) {}
+
+            const volumeDataType eval(const Vector& P) const override { return std::exp(this->_a->eval(P)); }
+    };
+
     
 
     // ------------------------------------------------------------------------------------
@@ -424,6 +437,22 @@ namespace lux {
             const volumeDataType eval(const Vector& P) const override { 
                 return std::min(this->_a->eval(P), -this->_b->eval(P)); 
             }
+    };
+
+    // BlendFields
+    // Two fields can be combined via Blinn blend which is a smooth union operation
+    template<typename T>
+    class BlendField : public BinaryFieldOperator<T, T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            BlendField(const VSP<T>& a, const VSP<T>& b) : BinaryFieldOperator<T, T>(a,b){}
+
+            const volumeDataType eval(const Vector& P) const override { 
+                return this->_a->eval(P) + this->_b->eval(P) - 2;
+            }
+
     };
 
 

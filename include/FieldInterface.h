@@ -84,7 +84,13 @@ namespace lux {
     VSP<T> negate(const VSP<T>& a)
     {
         return std::make_shared<NegateField<T>>(a);
-    }    
+    }   
+    
+    template <typename T>
+    VSP<T> exp(const VSP<T>& a)
+    {
+        return std::make_shared<ExpField<T>>(a);
+    }
     // ----------------------------------------------------------------------------
 
     // Binary Field Operator Helper Functions
@@ -122,6 +128,13 @@ namespace lux {
                   const VSP<T>& b) 
     {
         return std::make_shared<CutoutField<T>>(a,b);
+    }
+
+    template <typename T>
+    VSP<T> Blend(const VSP<T>& a, 
+                 const VSP<T>& b)
+    {
+        return std::make_shared<BlendField<T>>(a,b);
     }
     // ----------------------------------------------------------------------------
 

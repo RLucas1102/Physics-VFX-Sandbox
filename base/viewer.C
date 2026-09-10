@@ -51,11 +51,11 @@ int main(int argc, char** argv) {
     // VSP<Color> planeC = constant(Color(0,1,0,0));
 
     //Torus
-    Vector n = Vector(0,0,-1);
-    float rMajor = 2;
-    float rMinor = 1;
-    VSP<float> torusA = torus(rMajor, rMinor, n);
-    VSP<Color> torusC = constant(Color(1, 1, 0, 0));
+    // Vector n = Vector(0,0,-1);
+    // float rMajor = 2;
+    // float rMinor = 0.5;
+    // VSP<float> torusA = torus(rMajor, rMinor, n);
+    // VSP<Color> torusC = constant(Color(1, 1, 0, 0));
 
     //Cone
     // Vector n = Vector(0,-1,0);
@@ -65,10 +65,10 @@ int main(int argc, char** argv) {
     // VSP<Color> coneC = constant(Color(0, 0, 1, 0));
     
     //Box
-    float radius = 1;
-    float smoothness = 2;
-    VSP<float> boxA = box(radius, smoothness);
-    VSP<Color> boxC = constant(Color(0, 1, 1, 0));
+    // float radius = 1;
+    // float smoothness = 2;
+    // VSP<float> boxA = box(radius, smoothness);
+    // VSP<Color> boxC = constant(Color(0, 1, 1, 0));
 
     //Icosahedron
     // VSP<float> icoA = icosahedron();
@@ -82,10 +82,15 @@ int main(int argc, char** argv) {
     // VSP<Color> ellipseC = constant(Color(1, 1, 0, 0));
 
     //Cylinder
-    // Vector n = Vector(0,1,0);
-    // float radius = 1;
-    // VSP<float> cylinderA = cylinder(radius, n);
-    // VSP<Color> cylinderC = constant(Color(0.5, 0.75, 0.1, 0));
+    Vector n = Vector(0,1,0);
+    float radius = 1;
+    VSP<float> cylinderA = cylinder(radius, n);
+    VSP<Color> cylinderC = constant(Color(0.5, 0.75, 0.1, 0));
+
+    Vector n2 = Vector(1,0,0);
+    float radius2 = 1;
+    VSP<float> cylinderA2 = cylinder(radius2, n2);
+    VSP<Color> cylinderC2 = constant(Color(0.5, 0.75, 0.1, 0));
 
     //Steiner patch
     //VSP<float> stpA = steiner();
@@ -94,9 +99,11 @@ int main(int argc, char** argv) {
     VSP<float> objects = constant(-1000.0f);
     VSP<Color> objects_color = constant(Color(0,0,0,0));
 
-    objects = Cutout(torusA, boxA);
-    objects_color = objects_color*mask(-torusA) + torusC*mask(torusA);
-    objects_color = objects_color*mask(-boxA) + boxC*mask(boxA); 
+    VSP<float> cylinderAExp = exp(constant(2.0f) * cylinderA);
+    VSP<float> cylinderA2Exp = exp(constant(2.0f) * cylinderA2);
+    objects = Blend(cylinderAExp, cylinderA2Exp);
+    objects_color = objects_color*mask(-cylinderA) + cylinderC*mask(cylinderA);
+    objects_color = objects_color*mask(-cylinderA2) + cylinderC2*mask(cylinderA2); 
 
     VSP<Color> color = objects_color;
     VSP<float> density = mask(objects);
