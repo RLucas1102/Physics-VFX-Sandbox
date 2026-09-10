@@ -125,6 +125,30 @@ namespace lux {
             float _height, _theta;
             Vector _normal;
     };
+
+    // Box Field
+    // Creates a Box volume defined by a radius and smoothness parameter
+    class BoxField : public Volume<float> {
+
+        public:
+            BoxField(const float radius, const float smooth): _radius(radius), _smooth(smooth) {}
+            ~BoxField() = default;
+
+            const float eval(const Vector& p) const override {
+                Vector v = p;
+                float x = v[0];
+                float y = v[1];
+                float z = v[2];
+                float xp = std::pow(x, _smooth * 2);
+                float yp = std::pow(y, _smooth * 2);
+                float zp = std::pow(z, _smooth * 2);
+                float rp = std::pow(_radius, _smooth * 2);
+                return rp - xp - yp - zp;
+            }
+
+        private:
+            float _radius, _smooth;
+    };
     
     
     // ------------------------------------------------------------------------------------
