@@ -57,6 +57,10 @@ namespace lux {
     VSP<float> icosahedron() {
         return std::make_shared<IcosahedronField>();
     }
+
+    VSP<float> ellipse(const float rM, const float rm, const Vector& n) {
+        return std::make_shared<EllipseField>(rM, rm, n);
+    }
     // ----------------------------------------------------------------------------
 
     // Unary Field Operator Helper Functions

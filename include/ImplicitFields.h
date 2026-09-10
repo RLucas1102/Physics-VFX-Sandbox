@@ -178,6 +178,30 @@ namespace lux {
         private:
             float _T = 1.61803399;
     };
+
+    // Ellipse Field
+    // Creates an Ellipse volume defined by a radius major, minor, and normal
+    class EllipseField : public Volume<float> {
+
+        public:
+            EllipseField(const float rM, const float rm, const Vector& n): _radMajor(rM), _radMinor(rm), _normal(n.unitvector()) {}
+            ~EllipseField() = default;
+
+            const float eval(const Vector& p) const override { 
+                Vector X = p;
+                float z = X * _normal;
+                Vector xPerp = X - z * _normal;
+                float rM2 = std::pow(_radMajor, 2);
+                float xPerpMag2 = std::pow(xPerp.magnitude(), 2);
+                float z2 = std::pow(z, 2);
+                float rm2 = std::pow(_radMinor, 2);
+                return 1 - (z2/rM2) - (xPerpMag2/rm2);
+            }
+
+        private:
+            float _radMajor, _radMinor;
+            Vector _normal;
+    };
     
     
     // ------------------------------------------------------------------------------------
