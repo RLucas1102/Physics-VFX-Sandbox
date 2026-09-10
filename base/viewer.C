@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
     Vector n2 = Vector(1,0,0);
     float radius2 = 1;
     VSP<float> cylinderA2 = cylinder(radius2, n2);
-    VSP<Color> cylinderC2 = constant(Color(0.5, 0.75, 0.1, 0));
+    VSP<Color> cylinderC2 = constant(Color(0.5, 0.25, .7, 0));
 
     //Steiner patch
     //VSP<float> stpA = steiner();
@@ -99,9 +99,7 @@ int main(int argc, char** argv) {
     VSP<float> objects = constant(-1000.0f);
     VSP<Color> objects_color = constant(Color(0,0,0,0));
 
-    VSP<float> cylinderAExp = exp(constant(2.0f) * cylinderA);
-    VSP<float> cylinderA2Exp = exp(constant(2.0f) * cylinderA2);
-    objects = Blend(cylinderAExp, cylinderA2Exp);
+    objects = Blend(cylinderA, cylinderA2, 2.0, 2.0);
     objects_color = objects_color*mask(-cylinderA) + cylinderC*mask(cylinderA);
     objects_color = objects_color*mask(-cylinderA2) + cylinderC2*mask(cylinderA2); 
 

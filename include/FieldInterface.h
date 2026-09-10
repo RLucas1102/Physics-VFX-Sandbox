@@ -132,9 +132,11 @@ namespace lux {
 
     template <typename T>
     VSP<T> Blend(const VSP<T>& a, 
-                 const VSP<T>& b)
+                 const VSP<T>& b,
+                 const float alpha1,
+                 const float alpha2)
     {
-        return std::make_shared<BlendField<T>>(a,b);
+        return std::make_shared<BlendField<T>>(a,b, alpha1, alpha2);
     }
     // ----------------------------------------------------------------------------
 

@@ -447,11 +447,16 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            BlendField(const VSP<T>& a, const VSP<T>& b) : BinaryFieldOperator<T, T>(a,b){}
+            BlendField(const VSP<T>& a, const VSP<T>& b, const float alpha1, const float alpha2) : 
+            BinaryFieldOperator<T, T>(a,b), _alpha1(alpha1), _alpha2(alpha2){}
 
             const volumeDataType eval(const Vector& P) const override { 
-                return this->_a->eval(P) + this->_b->eval(P) - 2;
+                return std::exp(_alpha1 * this->_a->eval(P)) + std::exp(_alpha2 * this->_b->eval(P)) - 2;
             }
+
+        private:
+            float _alpha1;
+            float _alpha2;
 
     };
 
