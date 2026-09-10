@@ -102,8 +102,14 @@ int main() {
     /**
      * Test: Volumes can be multiplied
      */
-
     VSP<Color> sphereA_red = Cm * sphereA_den;
+
+    /**
+     * Test: Volumes can be negated
+     */
+
+    VSP<float> aMinus = -a;
+    std::cout << evaluate(aMinus, Vector(3,3,3)) << std::endl; // -4
 
     //Evaluate color field
     std::cout << evaluate(sphereA_red, Vector(0,0,0)).__str__() << std::endl; // (1,0,0,0) Red
