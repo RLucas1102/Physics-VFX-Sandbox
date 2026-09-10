@@ -50,8 +50,15 @@ int main(int argc, char** argv) {
     // VSP<float> planeA = plane(n, p);
     // VSP<Color> planeC = constant(Color(0,1,0,0));
 
-    VSP<float> objectA = planeA;
-    VSP<Color> objectC = planeC;
+    //Torus
+    Vector n = Vector(0,0,-1);
+    float rMajor = 2;
+    float rMinor = 1;
+    VSP<float> torusA = torus(rMajor, rMinor, n);
+    VSP<Color> torusC = constant(Color(1, 1, 0, 0));
+
+    VSP<float> objectA = torusA;
+    VSP<Color> objectC = torusC;
 
     VSP<Color> background = constant(Color(0,1,0,0));
 

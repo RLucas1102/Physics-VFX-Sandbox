@@ -41,6 +41,10 @@ namespace lux {
     VSP<float> sphere(const float radius) {
         return std::make_shared<SphereField>(radius);
     }
+
+    VSP<float> torus(const float rM, const float rm, const Vector& n) {
+        return std::make_shared<TorusField>(rM, rm, n);
+    }
     // ----------------------------------------------------------------------------
 
     // Unary Field Operator Helper Functions

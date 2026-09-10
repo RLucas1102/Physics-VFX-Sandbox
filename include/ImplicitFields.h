@@ -79,6 +79,29 @@ namespace lux {
         private:
             float _radius;
     };
+
+    // Torus Field
+    // Creates a Torus volume defined by a radius major, minor, and normal
+    class TorusField : public Volume<float> {
+
+        public:
+            TorusField(const float rM, const float rm, const Vector& n): _radMajor(rM), _radMinor(rm), _normal(n.unitvector()) {}
+            ~TorusField() = default;
+
+            const float eval(const Vector& p) const override { 
+                Vector X = p;
+                Vector xPerp = X - (X * _normal) * _normal;
+                float rM2 = std::pow(_radMajor, 2);
+                float xPerpMag2 = std::pow(xPerp.magnitude(), 2);
+                float xMag2 = std::pow(X.magnitude(), 2);
+                float rm2 = std::pow(_radMinor, 2);
+                return (4 * rM2 *xPerpMag2) - std::pow(xMag2 + rM2 - rm2, 2);
+            }
+
+        private:
+            float _radMajor, _radMinor;
+            Vector _normal;
+    };
     
     // ------------------------------------------------------------------------------------
 
