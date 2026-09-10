@@ -222,6 +222,26 @@ namespace lux {
             float _radius;
             Vector _normal;
     };
+
+    // Steiner Field
+    // Creates a Steiner patch volume
+    class SteinerField : public Volume<float> {
+
+        public:
+            SteinerField() {}
+            ~SteinerField() = default;
+
+            const float eval(const Vector& p) const override {
+                Vector v = p;
+                float x = v[0];
+                float y = v[1];
+                float z = v[2];
+                float x2 = std::pow(x, 2);
+                float y2 = std::pow(y, 2);
+                float z2 = std::pow(z, 2);
+                return -(x2*y2 + x2*z2 + y2*z2 - x*y*z);
+            }
+    };
     
     // ------------------------------------------------------------------------------------
 

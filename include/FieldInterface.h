@@ -65,6 +65,11 @@ namespace lux {
     VSP<float> cylinder(const float radius, const Vector& n) {
         return std::make_shared<CylinderField>(radius, n);
     }
+
+    VSP<float> steiner() {
+        return std::make_shared<SteinerField>();
+    }
+
     // ----------------------------------------------------------------------------
 
     // Unary Field Operator Helper Functions
