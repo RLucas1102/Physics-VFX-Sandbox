@@ -29,8 +29,13 @@ int main(int argc, char** argv) {
 
     // Define a camera
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
+    
+    Vector pos = Vector(0,2,6);
+    Vector view = Vector(0,1.25,0) - pos;
+    Vector axis = Vector(0,1,0);
+
     cam->setFov(60);
-    cam->setEyeViewUp( Vector(0,1,6), Vector(0,0,-1), Vector(0,1,0) );
+    cam->setEyeViewUp( pos, view, Vector(0,1,0) );
 
     // Define a raymarcher
     double near = 4;
@@ -45,6 +50,8 @@ int main(int argc, char** argv) {
     rm->SetKappa(0.1);
 
     // Define an image
+    int n_frames = 20;
+    float theta = 360/n_frames * M_PI / 180;
     std::shared_ptr<ImgProc> img = std::make_shared<ImgProc>();
     img->clear(1920/4, 1080/4, 4);
 
@@ -185,33 +192,49 @@ int main(int argc, char** argv) {
     VSP<Color> color = objects_color;
     VSP<float> density = mask(objects);
 
-    for (int j = 0; j < img->GetNy(); j++)
+    for (int k = 0; k < n_frames; k++)
     {
-        #pragma omp parallel for
-        for (int i = 0; i < img->GetNx(); i++)
+        for (int j = 0; j < img->GetNy(); j++)
         {
-            Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());
-            Color output = rm->RayMarchPixel(direction, cam->eye(), density, color);
-            img->SetValue(i, j, std::vector<float>{output[0], output[1], output[2], output[3]});
+            #pragma omp parallel for
+            for (int i = 0; i < img->GetNx(); i++)
+            {
+                Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());
+                Color output = rm->RayMarchPixel(direction, cam->eye(), density, color);
+                img->SetValue(i, j, std::vector<float>{output[0], output[1], output[2], output[3]});
+            }
+            
         }
+
+        img->Write("images/test." + std::to_string(k) + ".png");
+
+        Vector X = pos;
+        float Cos = std::cos(theta);
+        float ax = axis * X;
+        Vector xa = X^axis;
+        pos = X * Cos + axis * ax * (1 - Cos) + xa * std::sin(theta);
+
+        view = Vector(0,1.25,0) - pos;
+
+        cam->setEyeViewUp( pos, view, Vector(0,1,0) );
         
     }
 
-   StarterViewer* viewer = CreateViewer();
+//    StarterViewer* viewer = CreateViewer();
 
-   std::vector<std::string> args;
+//    std::vector<std::string> args;
 
-   for(int i=0;i<argc;i++)
-   {
-      std::string s(argv[i]);
-      args.push_back(s);
-   }
+//    for(int i=0;i<argc;i++)
+//    {
+//       std::string s(argv[i]);
+//       args.push_back(s);
+//    }
 
-   viewer->Init(args);
+//    viewer->Init(args);
 
-   viewer->SetDisplayImage(*img);
+//    viewer->SetDisplayImage(*img);
 
-   viewer->MainLoop();
+//    viewer->MainLoop();
 
     return 0;
 }
