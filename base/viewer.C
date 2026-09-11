@@ -57,10 +57,10 @@ int main(int argc, char** argv) {
     rm->SetKappa(0.1);
 
     // Define an image
-    int n_frames = 20;
+    int n_frames = strtol(argv[1], NULL, 10);
     float theta = 360/n_frames * M_PI / 180;
     std::shared_ptr<ImgProc> img = std::make_shared<ImgProc>();
-    img->clear(1920/4, 1080/4, 4);
+    img->clear(1920, 1080, 4);
 
     // Scene
     VSP<float> objects = constant(-100.0f);
@@ -199,7 +199,7 @@ int main(int argc, char** argv) {
     VSP<Color> color = scale(objects_color, 2);
     VSP<float> density = scale(mask(objects), 2);
 
-    for (int k = 0; k < n_frames; k++)
+    for (int k = strtol(argv[2], NULL, 10); k < strtol(argv[3], NULL, 10); k++)
     {
         for (int j = 0; j < img->GetNy(); j++)
         {
@@ -214,7 +214,7 @@ int main(int argc, char** argv) {
         }
 
         std::stringstream ss;
-        ss << "humanoid." << std::setw(4) << std::setfill('0') << k << ".exr";
+        ss << "images/humanoid." << std::setw(4) << std::setfill('0') << k << ".exr";
         std::string filename = ss.str();
         img->Write(filename);
 
