@@ -209,6 +209,10 @@ int main(int argc, char** argv) {
     Vector xa = X^axis;
     pos = X * Cos + axis * ax * (1 - Cos) + xa * std::sin(start_frame * theta);
 
+    view = Vector(0,2.50,0) - pos;
+
+    cam->setEyeViewUp( pos, view, Vector(0,1,0) );
+
     for (int k = start_frame; k < end_frame; k++)
     {
         for (int j = 0; j < img->GetNy(); j++)
