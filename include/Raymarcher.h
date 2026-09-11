@@ -11,7 +11,7 @@ namespace lux {
     class Raymarcher
     {
         private:
-            double _T, _Tmin, _sNear, _sFar, _ds, _kappa;
+            double _T, _Tmin, _sNear, _sFar, _dsMax, _dsMin, _kappa;
 
         public:
             Raymarcher();
@@ -26,7 +26,8 @@ namespace lux {
             void SetTmin(double Tmin) { _Tmin = Tmin; }
             void SetSnear(double sNear) { _sNear = sNear; }
             void SetSfar(double sFar) { _sFar = sFar; }
-            void SetDs(double ds) { _ds = ds; }
+            void SetDsMax(double ds) { _dsMax = ds; }
+            void SetDsMin(double ds) {_dsMin = ds; }
             void SetKappa(double kappa) { _kappa = kappa; }
 
     };
