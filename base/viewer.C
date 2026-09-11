@@ -29,6 +29,11 @@ const VSP<Color> GREEN = constant(Color(0,1,0,0));
 
 int main(int argc, char** argv) {
 
+    // Animation settings
+    int n_frames = strtol(argv[1], NULL, 10);
+    int start_frame = strtol(argv[2], NULL, 10);
+    int end_frame = strtol(argv[3], NULL, 10);
+
     // Define a camera
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
     
@@ -57,7 +62,6 @@ int main(int argc, char** argv) {
     rm->SetKappa(0.1);
 
     // Define an image
-    int n_frames = strtol(argv[1], NULL, 10);
     float theta = 360/n_frames * M_PI / 180;
     std::shared_ptr<ImgProc> img = std::make_shared<ImgProc>();
     img->clear(1920, 1080, 4);
@@ -199,7 +203,13 @@ int main(int argc, char** argv) {
     VSP<Color> color = scale(objects_color, 2);
     VSP<float> density = scale(mask(objects), 2);
 
-    for (int k = strtol(argv[2], NULL, 10); k < strtol(argv[3], NULL, 10); k++)
+    Vector X = pos;
+    float Cos = std::cos(start_frame * theta);
+    float ax = axis * X;
+    Vector xa = X^axis;
+    pos = X * Cos + axis * ax * (1 - Cos) + xa * std::sin(start_frame * theta);
+
+    for (int k = start_frame; k < end_frame; k++)
     {
         for (int j = 0; j < img->GetNy(); j++)
         {
@@ -218,10 +228,10 @@ int main(int argc, char** argv) {
         std::string filename = ss.str();
         img->Write(filename);
 
-        Vector X = pos;
-        float Cos = std::cos(theta);
-        float ax = axis * X;
-        Vector xa = X^axis;
+        X = pos;
+        Cos = std::cos(theta);
+        ax = axis * X;
+        xa = X^axis;
         pos = X * Cos + axis * ax * (1 - Cos) + xa * std::sin(theta);
 
         view = Vector(0,2.50,0) - pos;
