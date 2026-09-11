@@ -431,6 +431,22 @@ namespace lux {
             Vector _axis;
     };
 
+    // DilateField
+    // Inflates or deflates volumes
+    template<typename T>
+    class DilateField : public UnaryFieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            DilateField(const VSP<T>& a, const float val) : UnaryFieldOperator<T>(a), _val(val) {}
+
+            const volumeDataType eval(const Vector& P) const override { return this->_a->eval(P) + _val; }
+
+        private:
+            float _val;
+    };
+
     
 
     // ------------------------------------------------------------------------------------

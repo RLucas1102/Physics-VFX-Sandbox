@@ -65,10 +65,10 @@ int main(int argc, char** argv) {
     // VSP<Color> coneC = constant(Color(0, 0, 1, 0));
     
     //Box
-    // float radius = 1;
-    // float smoothness = 2;
-    // VSP<float> boxA = box(radius, smoothness);
-    // VSP<Color> boxC = constant(Color(0, 1, 1, 0));
+    float radius3 = 1;
+    float smoothness = 2;
+    VSP<float> boxA = box(radius3, smoothness);
+    VSP<Color> boxC = constant(Color(0, 1, 1, 0));
 
     //Icosahedron
     // VSP<float> icoA = icosahedron();
@@ -100,15 +100,19 @@ int main(int argc, char** argv) {
     VSP<Color> objects_color = constant(Color(0,0,0,0));
 
     //cylinderA = scale(cylinderA, 0.5);
-    cylinderA = rotate(cylinderA, 45, Vector(0, 0, 1));
-    cylinderA = translate(cylinderA, Vector(2,0,0));
-    objects = Union(objects, cylinderA);
-    objects_color = objects_color*mask(-cylinderA) + cylinderC*mask(cylinderA);
+    // cylinderA = rotate(cylinderA, 45, Vector(0, 0, 1));
+    // cylinderA = translate(cylinderA, Vector(2,0,0));
+    // objects = Union(objects, cylinderA);
+    // objects_color = objects_color*mask(-cylinderA) + cylinderC*mask(cylinderA);
 
-    cylinderA2 = scale(cylinderA2, 2);
-    cylinderA2 = translate(cylinderA2, Vector(0,2,0));
-    objects = Union(objects, cylinderA2);
-    objects_color = objects_color*mask(-cylinderA2) + cylinderC2*mask(cylinderA2);
+    // cylinderA2 = scale(cylinderA2, 2);
+    // cylinderA2 = translate(cylinderA2, Vector(0,2,0));
+    // objects = Union(objects, cylinderA2);
+    // objects_color = objects_color*mask(-cylinderA2) + cylinderC2*mask(cylinderA2);
+
+    boxA = dilate(boxA, 100);
+    objects = Union(objects, boxA);
+    objects_color = objects_color*mask(-boxA) + boxC*mask(boxA);
 
     // objects = Blend(cylinderA, cylinderA2, 2.0, 2.0);
     // objects = Blend(objects, cylinderA, 2.0, 2.0);

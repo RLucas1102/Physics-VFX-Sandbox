@@ -133,6 +133,12 @@ namespace lux {
     {
         return std::make_shared<RotateField<T>>(a, theta, axis);
     }
+
+    template <typename T>
+    VSP<T> dilate(const VSP<T>& a, const float val)
+    {
+        return std::make_shared<DilateField<T>>(a, val);
+    }
     // ----------------------------------------------------------------------------
 
     // Binary Field Operator Helper Functions
