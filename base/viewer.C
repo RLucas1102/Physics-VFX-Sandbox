@@ -1,6 +1,8 @@
-#include <iostream>
 #include <memory.h>
 #include <vector>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 
 #include "Volume.h"
 #include "FieldInterface.h"
@@ -30,23 +32,28 @@ int main(int argc, char** argv) {
     // Define a camera
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
     
-    Vector pos = Vector(0,2,6);
-    Vector view = Vector(0,1.25,0) - pos;
+    float zdist = 14;
+    float xwidth = 8;
+    Vector pos = Vector(0,4,zdist);
+    Vector view = Vector(0,2.50,0) - pos;
     Vector axis = Vector(0,1,0);
 
     cam->setFov(60);
     cam->setEyeViewUp( pos, view, Vector(0,1,0) );
 
     // Define a raymarcher
-    double near = 4;
-    double far = 10;
+    double near = zdist - xwidth / 2.0;
+    double far = near + xwidth;
     double steps = 330;
     std::shared_ptr<Raymarcher> rm = std::make_shared<Raymarcher>();
+    float min_ds = (far - near) / 330;
+    float max_ds = min_ds * 1.5;
+    rm->SetDsMin(min_ds);
+    rm->SetDsMax(max_ds);
     rm->SetT(1);
     rm->SetTmin(0.001);
     rm->SetSnear(near);
     rm->SetSfar(far);
-    rm->SetDs((far - near)/steps);
     rm->SetKappa(0.1);
 
     // Define an image
@@ -189,8 +196,8 @@ int main(int argc, char** argv) {
     objects_color = objects_color*mask(-powerball_2) + GREEN*mask(powerball_2);
 
 
-    VSP<Color> color = objects_color;
-    VSP<float> density = mask(objects);
+    VSP<Color> color = scale(objects_color, 2);
+    VSP<float> density = scale(mask(objects), 2);
 
     for (int k = 0; k < n_frames; k++)
     {
@@ -206,7 +213,10 @@ int main(int argc, char** argv) {
             
         }
 
-        img->Write("images/test." + std::to_string(k) + ".png");
+        std::stringstream ss;
+        ss << "humanoid." << std::setw(4) << std::setfill('0') << k << ".exr";
+        std::string filename = ss.str();
+        img->Write(filename);
 
         Vector X = pos;
         float Cos = std::cos(theta);
@@ -214,7 +224,7 @@ int main(int argc, char** argv) {
         Vector xa = X^axis;
         pos = X * Cos + axis * ax * (1 - Cos) + xa * std::sin(theta);
 
-        view = Vector(0,1.25,0) - pos;
+        view = Vector(0,2.50,0) - pos;
 
         cam->setEyeViewUp( pos, view, Vector(0,1,0) );
         
