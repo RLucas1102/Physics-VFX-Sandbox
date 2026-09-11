@@ -113,7 +113,7 @@ void StarterViewer::Init( const std::vector<std::string>& args )
       argv[i] = new char[args[i].length() + 1];
       std::strcpy(argv[i], args[i].c_str());
    }
-
+   
    string window_title = title;
 
    glutInit( &argc, argv );
@@ -131,15 +131,18 @@ void StarterViewer::Init( const std::vector<std::string>& args )
    glutMouseFunc( &cbMouseFunc );
    glutReshapeFunc( &cbReshapeFunc );
 
-   // Need to add guards here
-   if (argc > 2)
-   {
+   if (argc > 2) {
       if(std::strcmp(argv[1], "-image") == 0) {
-         SetDisplayImage(argv[2]);
+            SetDisplayImage(argv[2]);
+      }
+      else {
+         std::cout << "ERROR: To load an image run './pathtobin/imageviewer' -image 'filename.ext'" << std::endl;
+         std::cout << "NOTE: Ensure the correct filename and path to filename was given" << std::endl;
       }
    }
    else {
-      image.clear(); // Initialize image to appear black
+      image.clear();
+      std::cout << "NOTE: To load an image run './pathtobin/imageviewer' -image 'filename.ext'" << std::endl;
    }
 
    initialized = true;
@@ -211,6 +214,8 @@ void StarterViewer::Keyboard( unsigned char key, int x, int y )
          camera_fov *= 1.01;
          if( camera_fov > 170.0){ camera_fov = 170.0; }
 	 break;
+      case 'j':
+         image.Write("images/demomakeanewfile.jpg");
       case '+':
       case '=':
          ComputeEyeShift(0.07);
