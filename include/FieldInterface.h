@@ -139,6 +139,17 @@ namespace lux {
     {
         return std::make_shared<DilateField<T>>(a, val);
     }
+
+    template <typename T>
+    VSP<T> shell(const VSP<T>& a, const float val)
+    {
+        return std::make_shared<ShellField<T>>(a, val);
+    }
+
+    template <typename T>
+    VSP<T> clamp(const VSP<T>& a, const float fmin, const float fmax) {
+        return std::make_shared<ClampField<T>>(a, fmin, fmax);
+    }
     // ----------------------------------------------------------------------------
 
     // Binary Field Operator Helper Functions

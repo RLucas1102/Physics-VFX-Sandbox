@@ -447,6 +447,47 @@ namespace lux {
             float _val;
     };
 
+    // ShellField
+    // Hollows out a volume and gives it a thickness
+    template<typename T>
+    class ShellField : public UnaryFieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            ShellField(const VSP<T>& a, const float val) : UnaryFieldOperator<T>(a), _val(val) {}
+
+            const volumeDataType eval(const Vector& P) const override { 
+                return std::min(this->_a->eval(P) + _val / 2, -(this->_a->eval(P) - _val / 2));
+            }
+
+        private:
+            float _val;
+    };
+
+    // ClampField
+    // Bounds volume values within a range
+    template<typename T>
+    class ClampField : public UnaryFieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            ClampField(const VSP<T>& a, const float fmin, const float fmax) : 
+            UnaryFieldOperator<T>(a), _fmin(fmin), _fmax(fmax) {}
+
+            const volumeDataType eval(const Vector& P) const override { 
+                float result = 0;
+                if (this->_a->eval(P) <= _fmin) { result = _fmin; }
+                else if (this->_a->eval(P) > _fmin && this->_a->eval(P) < _fmax){ result = this->_a->eval(P); }
+                else if (this->_a->eval(P) >= _fmax) { result = _fmax; }
+                return result;
+            }
+
+        private:
+            float _fmin;
+            float _fmax;
+    };
     
 
     // ------------------------------------------------------------------------------------

@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     // Define a camera
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
     cam->setFov(60);
-    cam->setEyeViewUp( Vector(0,0,20), Vector(0,0,-1), Vector(0,1,0) );
+    cam->setEyeViewUp( Vector(0,0,10), Vector(0,0,-1), Vector(0,1,0) );
 
     // Define a raymarcher
     double near = 0;
@@ -110,9 +110,12 @@ int main(int argc, char** argv) {
     // objects = Union(objects, cylinderA2);
     // objects_color = objects_color*mask(-cylinderA2) + cylinderC2*mask(cylinderA2);
 
-    boxA = dilate(boxA, 100);
+    boxA = shell(boxA, 10);
+    boxA = Cutout(boxA, plane(Vector(-1,0,0), Vector(0,0,0)));
+    boxA = rotate(boxA, 45, Vector(0,1,0));
     objects = Union(objects, boxA);
     objects_color = objects_color*mask(-boxA) + boxC*mask(boxA);
+
 
     // objects = Blend(cylinderA, cylinderA2, 2.0, 2.0);
     // objects = Blend(objects, cylinderA, 2.0, 2.0);
@@ -121,7 +124,7 @@ int main(int argc, char** argv) {
     // objects_color = objects_color*mask(-cylinderA2) + cylinderC2*mask(cylinderA2); 
 
     VSP<Color> color = objects_color;
-    VSP<float> density = mask(objects);
+    VSP<float> density = clamp(objects/constant(2), 0, 1);
 
     for (int j = 0; j < img->GetNy(); j++)
     {
