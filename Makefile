@@ -12,7 +12,7 @@ AFILES = $(OFILES)
 
 ROOTDIR = .
 LIB = -L$(ROOTDIR)/lib -lstarter -lm 
-GLLDFLAGS = -lglut -lGL -lm -lGLU -lOpenImageIO
+GLLDFLAGS = -lglut -lGL -lm -lGLU -lOpenImageIO -lOpenImageIO_Util
 
 CXX = g++ -g -O1 -fPIC -fopenmp -fopenmp -std=c++17
 
