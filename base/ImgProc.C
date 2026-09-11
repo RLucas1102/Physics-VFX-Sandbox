@@ -139,7 +139,13 @@ bool ImgProc::Write( const std::string& filename) const {
     
     out->open(filename.c_str(), spec);
     
-    out->write_image(TypeDesc::FLOAT, _img);
+    // Find the size of each scanline based on the type stored in image (float) [1]
+    int scanlinesize = spec.width * spec.nchannels * sizeof(_img[0]);
+
+    out->write_image(TypeDesc::FLOAT, 
+                     _img + (spec.height - 1) * spec.width * spec.nchannels, // offset to end;
+                     AutoStride,                                             // x stride
+                    -scanlinesize);                                          // y stride
     
     out->close();
     
