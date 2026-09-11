@@ -127,6 +127,12 @@ namespace lux {
     {
         return std::make_shared<ScaleField<T>>(a, val);
     }
+
+    template <typename T>
+    VSP<T> rotate(const VSP<T>& a, const float theta, const Vector& axis)
+    {
+        return std::make_shared<RotateField<T>>(a, theta, axis);
+    }
     // ----------------------------------------------------------------------------
 
     // Binary Field Operator Helper Functions

@@ -5,6 +5,7 @@
 
 #include "Volume.h"
 #include "Vector.h"
+#include "Matrix.h"
 
 namespace lux {
 
@@ -403,6 +404,31 @@ namespace lux {
 
         private:
             float _val;
+    };
+
+    // RotateField
+    // Returns the Rotate(f) by a given angle around a given axis
+    template<typename T>
+    class RotateField : public UnaryFieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            RotateField(const VSP<T>& a, const float theta, const Vector& axis) : 
+            UnaryFieldOperator<T>(a), _theta(-theta), _axis(axis.unitvector()) {}
+
+            const volumeDataType eval(const Vector& P) const override { 
+                Vector X = P;
+                float Cos = std::cos(_theta);
+                float ax = _axis * X;
+                Vector xa = X^_axis;
+                Vector result = X * Cos + _axis * ax * (1 - Cos) + xa * std::sin(_theta);
+                return this->_a->eval(result);
+            }
+
+        private:
+            float _theta;
+            Vector _axis;
     };
 
     

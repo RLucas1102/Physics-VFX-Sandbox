@@ -100,6 +100,7 @@ int main(int argc, char** argv) {
     VSP<Color> objects_color = constant(Color(0,0,0,0));
 
     //cylinderA = scale(cylinderA, 0.5);
+    cylinderA = rotate(cylinderA, 45, Vector(0, 0, 1));
     cylinderA = translate(cylinderA, Vector(2,0,0));
     objects = Union(objects, cylinderA);
     objects_color = objects_color*mask(-cylinderA) + cylinderC*mask(cylinderA);
