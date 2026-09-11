@@ -121,6 +121,12 @@ namespace lux {
     {
         return std::make_shared<TranslateField<T>>(a, xt);
     }
+
+    template <typename T>
+    VSP<T> scale(const VSP<T>& a, const float val)
+    {
+        return std::make_shared<ScaleField<T>>(a, val);
+    }
     // ----------------------------------------------------------------------------
 
     // Binary Field Operator Helper Functions

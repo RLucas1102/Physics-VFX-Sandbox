@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     // Define a camera
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
     cam->setFov(60);
-    cam->setEyeViewUp( Vector(0,0,10), Vector(0,0,-1), Vector(0,1,0) );
+    cam->setEyeViewUp( Vector(0,0,20), Vector(0,0,-1), Vector(0,1,0) );
 
     // Define a raymarcher
     double near = 0;
@@ -99,10 +99,12 @@ int main(int argc, char** argv) {
     VSP<float> objects = constant(-1000.0f);
     VSP<Color> objects_color = constant(Color(0,0,0,0));
 
+    //cylinderA = scale(cylinderA, 0.5);
     cylinderA = translate(cylinderA, Vector(2,0,0));
     objects = Union(objects, cylinderA);
     objects_color = objects_color*mask(-cylinderA) + cylinderC*mask(cylinderA);
 
+    cylinderA2 = scale(cylinderA2, 2);
     cylinderA2 = translate(cylinderA2, Vector(0,2,0));
     objects = Union(objects, cylinderA2);
     objects_color = objects_color*mask(-cylinderA2) + cylinderC2*mask(cylinderA2);

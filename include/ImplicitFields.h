@@ -389,6 +389,22 @@ namespace lux {
             Vector _Xt;
     };
 
+    // ScaleField
+    // Returns the Scale(f) by float _val
+    template<typename T>
+    class ScaleField : public UnaryFieldOperator<T> {
+
+        using typename Volume<T>::volumeDataType;
+
+        public:
+            ScaleField(const VSP<T>& a, const float val) : UnaryFieldOperator<T>(a), _val(val) {}
+
+            const volumeDataType eval(const Vector& P) const override { return this->_a->eval(P / _val); }
+
+        private:
+            float _val;
+    };
+
     
 
     // ------------------------------------------------------------------------------------
