@@ -189,35 +189,3 @@ const Matrix lux::FDGradient( const Vector& x, const Vector& y, const Vector& z 
       return m.transpose();
 }
 
-
-
-
-
-
-ScalarField lux::SF( Volume<float>* v )  { return ScalarField(v); }
-VectorField lux::VF( Volume<Vector>* v ) { return VectorField(v); }
-ColorField  lux::CF( Volume<Color>* v )  { return ColorField(v); }
-MatrixField lux::MF( Volume<Matrix>* v ) { return MatrixField(v); }
-
-
-ScalarField::ScalarField() :  std::shared_ptr<Volume<float> >() {}
-ScalarField::ScalarField( Volume<float>* f ) :  std::shared_ptr<Volume<float> >( f ) {}
-ScalarField::~ScalarField(){}
-
-
-VectorField::VectorField() :  std::shared_ptr<Volume<Vector> >() {}
-VectorField::VectorField( Volume<Vector>* f ) :  std::shared_ptr<Volume<Vector> >( f ) {}
-VectorField::~VectorField(){}
-
-
-ColorField::ColorField() :  std::shared_ptr<Volume<Color> >(){}
-ColorField::ColorField( Volume<Color>* f ) :  std::shared_ptr<Volume<Color> >( f ) {}
-ColorField::~ColorField() {}
-
-
-MatrixField::MatrixField() : std::shared_ptr<Volume<Matrix> >(){}
-MatrixField::MatrixField( Volume<Matrix>* f ) : std::shared_ptr<Volume<Matrix> >(f) {}
-MatrixField::~MatrixField() {}
-
-
-
