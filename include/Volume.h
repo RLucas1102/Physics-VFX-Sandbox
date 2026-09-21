@@ -188,6 +188,13 @@ class Volume : public VolumeBase
    void setFDStep( double dx, double dy, double dz ){ gradParams.setStep( dx, dy, dz); }
 }; 
 
+
+//-----------------------------------------------------------------------------
+
+// Defining std::shared_ptr<Volume<T>> as type VSP
+template <typename T>
+using VSP = std::shared_ptr<Volume<T>>;
+
 }
 
 #endif
