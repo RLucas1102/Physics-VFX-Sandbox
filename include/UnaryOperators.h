@@ -27,7 +27,7 @@ namespace lux {
             // Need to make these public for derived classes like Volume does
             using typename Volume<T>::volumeDataType;
 
-            UnaryFieldOperator(const VSP<T>& a) : _a(a) {}
+            UnaryFieldOperator(const VSP<T>& a);
             ~UnaryFieldOperator() = default;
 
             virtual const volumeDataType eval(const Vector& P) const = 0;
@@ -44,12 +44,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            MaskField(const VSP<T>& a) : UnaryFieldOperator<T>(a) {}
+            MaskField(const VSP<T>& a);
 
-            const volumeDataType eval(const Vector& P) const override { 
-                if (this->_a->eval(P) > 0) { return 1; }
-                else { return 0; }
-            }
+            const volumeDataType eval(const Vector& P) const override;
     };
 
     // NegateField
@@ -60,9 +57,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            NegateField(const VSP<T>& a) : UnaryFieldOperator<T>(a) {}
+            NegateField(const VSP<T>& a);
 
-            const volumeDataType eval(const Vector& P) const override { return -this->_a->eval(P); }
+            const volumeDataType eval(const Vector& P) const override;
     };
 
     // ExpField
@@ -73,10 +70,11 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            ExpField(const VSP<T>& a) : UnaryFieldOperator<T>(a) {}
+            ExpField(const VSP<T>& a);
 
-            const volumeDataType eval(const Vector& P) const override { return std::exp(this->_a->eval(P)); }
+            const volumeDataType eval(const Vector& P) const override;
     };
+    
 
     // LogField
     // Returns the natural log(value) at P of a field
@@ -86,9 +84,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            LogField(const VSP<T>& a) : UnaryFieldOperator<T>(a) {}
+            LogField(const VSP<T>& a);
 
-            const volumeDataType eval(const Vector& P) const override { return std::log(this->_a->eval(P)); }
+            const volumeDataType eval(const Vector& P) const override;
     };
 
     // SinField
@@ -99,9 +97,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            SinField(const VSP<T>& a) : UnaryFieldOperator<T>(a) {}
+            SinField(const VSP<T>& a);
 
-            const volumeDataType eval(const Vector& P) const override { return std::sin(this->_a->eval(P)); }
+            const volumeDataType eval(const Vector& P) const override;
     };
 
     // CosField
@@ -112,9 +110,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            CosField(const VSP<T>& a) : UnaryFieldOperator<T>(a) {}
+            CosField(const VSP<T>& a);
 
-            const volumeDataType eval(const Vector& P) const override { return std::cos(this->_a->eval(P)); }
+            const volumeDataType eval(const Vector& P) const override;
     };
 
     // PowField
@@ -125,9 +123,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            PowField(const VSP<T>& a, const float val) : UnaryFieldOperator<T>(a), _val(val) {}
+            PowField(const VSP<T>& a, const float val);
 
-            const volumeDataType eval(const Vector& P) const override { return std::pow(this->_a->eval(P), _val); }
+            const volumeDataType eval(const Vector& P) const override;
 
         private:
             float _val;
@@ -141,9 +139,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            TranslateField(const VSP<T>& a, const Vector& xt) : UnaryFieldOperator<T>(a), _Xt(xt) {}
+            TranslateField(const VSP<T>& a, const Vector& xt);
 
-            const volumeDataType eval(const Vector& P) const override { return this->_a->eval(P - _Xt); }
+            const volumeDataType eval(const Vector& P) const override;
 
         private:
             Vector _Xt;
@@ -157,9 +155,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            ScaleField(const VSP<T>& a, const float val) : UnaryFieldOperator<T>(a), _val(val) {}
+            ScaleField(const VSP<T>& a, const float val);
 
-            const volumeDataType eval(const Vector& P) const override { return this->_a->eval(P / _val); }
+            const volumeDataType eval(const Vector& P) const override;
 
         private:
             float _val;
@@ -173,17 +171,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            RotateField(const VSP<T>& a, const float theta, const Vector& axis) : 
-            UnaryFieldOperator<T>(a), _theta(-theta), _axis(axis.unitvector()) {}
+            RotateField(const VSP<T>& a, const float theta, const Vector& axis);
 
-            const volumeDataType eval(const Vector& P) const override { 
-                Vector X = P;
-                float Cos = std::cos(_theta);
-                float ax = _axis * X;
-                Vector xa = X^_axis;
-                Vector result = X * Cos + _axis * ax * (1 - Cos) + xa * std::sin(_theta);
-                return this->_a->eval(result);
-            }
+            const volumeDataType eval(const Vector& P) const override;
 
         private:
             float _theta;
@@ -198,9 +188,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            DilateField(const VSP<T>& a, const float val) : UnaryFieldOperator<T>(a), _val(val) {}
+            DilateField(const VSP<T>& a, const float val);
 
-            const volumeDataType eval(const Vector& P) const override { return this->_a->eval(P) + _val; }
+            const volumeDataType eval(const Vector& P) const override;
 
         private:
             float _val;
@@ -214,11 +204,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            ShellField(const VSP<T>& a, const float val) : UnaryFieldOperator<T>(a), _val(val) {}
+            ShellField(const VSP<T>& a, const float val);
 
-            const volumeDataType eval(const Vector& P) const override { 
-                return std::min(this->_a->eval(P) + _val / 2, -(this->_a->eval(P) - _val / 2));
-            }
+            const volumeDataType eval(const Vector& P) const override;
 
         private:
             float _val;
@@ -232,16 +220,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            ClampField(const VSP<T>& a, const float fmin, const float fmax) : 
-            UnaryFieldOperator<T>(a), _fmin(fmin), _fmax(fmax) {}
+            ClampField(const VSP<T>& a, const float fmin, const float fmax);
 
-            const volumeDataType eval(const Vector& P) const override { 
-                float result = 0;
-                if (this->_a->eval(P) <= _fmin) { result = _fmin; }
-                else if (this->_a->eval(P) > _fmin && this->_a->eval(P) < _fmax){ result = this->_a->eval(P); }
-                else if (this->_a->eval(P) >= _fmax) { result = _fmax; }
-                return result;
-            }
+            const volumeDataType eval(const Vector& P) const override;
 
         private:
             float _fmin;
