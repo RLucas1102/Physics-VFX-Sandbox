@@ -2,6 +2,7 @@
 OFILES = base/Matrix.o \
 	 base/Volume.o \
 	 base/ImplicitFields.o\
+	 base/BinaryOperators.o\
 	 base/LinearAlgebra.o \
 	 base/Camera.o \
 	 base/Color.o \
