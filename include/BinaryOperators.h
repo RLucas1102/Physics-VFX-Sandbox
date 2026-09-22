@@ -32,7 +32,7 @@ namespace lux {
             // Need to make these public for derived classes like Volume does
             using typename Volume<T>::volumeDataType;
 
-            BinaryFieldOperator(const VSP<T>& a, const VSP<U>& b) : _a(a), _b(b) {}
+            BinaryFieldOperator(const VSP<T>& a, const VSP<U>& b);
             ~BinaryFieldOperator() = default;
 
             virtual const volumeDataType eval(const Vector& P) const = 0;
@@ -52,11 +52,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            AddField(const VSP<T>& a, const VSP<T>& b) : BinaryFieldOperator<T, T>(a,b) {}
+            AddField(const VSP<T>& a, const VSP<T>& b);
 
-            const volumeDataType eval(const Vector& P) const override { 
-                return this->_a->eval(P) + this->_b->eval(P); 
-            }
+            const volumeDataType eval(const Vector& P) const override;
     };
 
     // SubtractFields
@@ -67,11 +65,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            SubtractField(const VSP<T>& a, const VSP<T>& b) : BinaryFieldOperator<T, T>(a,b) {}
+            SubtractField(const VSP<T>& a, const VSP<T>& b);
 
-            const volumeDataType eval(const Vector& P) const override { 
-                return this->_a->eval(P) - this->_b->eval(P); 
-            }
+            const volumeDataType eval(const Vector& P) const override;
     };
 
     // MultiplyFields
@@ -85,11 +81,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            MultiplyField(const VSP<T>& a, const VSP<U>& b) : BinaryFieldOperator<T, U>(a,b) {}
+            MultiplyField(const VSP<T>& a, const VSP<U>& b);
 
-            const volumeDataType eval(const Vector& P) const override { 
-                return this->_a->eval(P) * this->_b->eval(P); 
-            }
+            const volumeDataType eval(const Vector& P) const override;
     };
 
     // DivideFields
@@ -103,11 +97,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            DivideField(const VSP<T>& a, const VSP<U>& b) : BinaryFieldOperator<T, U>(a,b) {}
+            DivideField(const VSP<T>& a, const VSP<U>& b);
 
-            const volumeDataType eval(const Vector& P) const override { 
-                return this->_a->eval(P) / this->_b->eval(P); 
-            }
+            const volumeDataType eval(const Vector& P) const override;
     };
 
     // UnionFields
@@ -118,11 +110,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            UnionField(const VSP<T>& a, const VSP<T>& b) : BinaryFieldOperator<T, T>(a,b) {}
+            UnionField(const VSP<T>& a, const VSP<T>& b);
 
-            const volumeDataType eval(const Vector& P) const override { 
-                return std::max(this->_a->eval(P), this->_b->eval(P)); 
-            }
+            const volumeDataType eval(const Vector& P) const override;
     };
 
     // IntersectionFields
@@ -133,11 +123,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            IntersectionField(const VSP<T>& a, const VSP<T>& b) : BinaryFieldOperator<T, T>(a,b) {}
+            IntersectionField(const VSP<T>& a, const VSP<T>& b);
 
-            const volumeDataType eval(const Vector& P) const override { 
-                return std::min(this->_a->eval(P), this->_b->eval(P)); 
-            }
+            const volumeDataType eval(const Vector& P) const override;
     };
 
     // CutoutFields
@@ -148,11 +136,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            CutoutField(const VSP<T>& a, const VSP<T>& b) : BinaryFieldOperator<T, T>(a,b) {}
+            CutoutField(const VSP<T>& a, const VSP<T>& b);
 
-            const volumeDataType eval(const Vector& P) const override { 
-                return std::min(this->_a->eval(P), -this->_b->eval(P)); 
-            }
+            const volumeDataType eval(const Vector& P) const override;
     };
 
     // BlendFields
@@ -163,12 +149,9 @@ namespace lux {
         using typename Volume<T>::volumeDataType;
 
         public:
-            BlendField(const VSP<T>& a, const VSP<T>& b, const float alpha1, const float alpha2) : 
-            BinaryFieldOperator<T, T>(a,b), _alpha1(alpha1), _alpha2(alpha2){}
+            BlendField(const VSP<T>& a, const VSP<T>& b, const float alpha1, const float alpha2);
 
-            const volumeDataType eval(const Vector& P) const override { 
-                return std::exp(_alpha1 * this->_a->eval(P)) + std::exp(_alpha2 * this->_b->eval(P)) - 2;
-            }
+            const volumeDataType eval(const Vector& P) const override;
 
         private:
             float _alpha1;
