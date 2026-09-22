@@ -1,3 +1,14 @@
+/******************************************
+ * FieldInterface.h
+ * 
+ * Lucas Robenolt
+ * 
+ * These are all helper functions to 
+ * instantiate volumes and operators
+ * in order to keep the actual classes
+ * separate
+ ******************************************/
+
 #ifndef FIELDINTERFACE_H
 #define FIELDINTERFACE_H
 

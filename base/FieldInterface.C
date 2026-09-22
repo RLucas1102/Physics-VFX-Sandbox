@@ -1,3 +1,14 @@
+/******************************************
+ * FieldInterface.C
+ * 
+ * Lucas Robenolt
+ * 
+ * These are all helper functions to 
+ * instantiate volumes and operators
+ * in order to keep the actual classes
+ * separate
+ ******************************************/
+
 #include <memory>
 
 #include "Volume.h"
