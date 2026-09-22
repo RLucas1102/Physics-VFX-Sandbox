@@ -160,7 +160,9 @@ const typename Volume<T>::volumeDataType CutoutField<T>::eval(const Vector& P) c
 // -----------------
 template<typename T>
 BlendField<T>::BlendField(const VSP<T>& a, const VSP<T>& b, const float alpha1, const float alpha2) : 
-    BinaryFieldOperator<T, T>(a,b), _alpha1(alpha1), _alpha2(alpha2) 
+    BinaryFieldOperator<T, T>(a,b), 
+    _alpha1(alpha1), 
+    _alpha2(alpha2) 
 {    
 }
 
