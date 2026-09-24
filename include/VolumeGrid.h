@@ -1,6 +1,11 @@
 #ifndef VOLUMEGRID_H
 #define VOLUMEGRID_H
 
+#include <openvdb/openvdb.h>
+#include <openvdb/tools/Interpolation.h>
+
+#include <memory.h>
+
 #include "Volume.h"
 #include "Vector.h"
 
@@ -28,6 +33,8 @@ namespace lux {
 
     };
 
+    using VGSP = std::shared_ptr<VolumeGrid>;
+
     //-----------------------------------------------------------------------------
 
     // Grid Field
@@ -35,8 +42,6 @@ namespace lux {
     class GridField : public Volume<float> {
 
         public:
-
-            using VGSP = std::shared_ptr<VolumeGrid>;
 
             GridField(const VGSP& g);
             ~GridField() = default;

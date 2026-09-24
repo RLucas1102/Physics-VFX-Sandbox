@@ -1,11 +1,5 @@
-#include <openvdb/openvdb.h>
-#include <openvdb/tools/Interpolation.h>
 
-#include <memory.h>
-
-#include "Volume.h"
 #include "VolumeGrid.h"
-#include "Vector.h"
 
 using namespace lux;
 
