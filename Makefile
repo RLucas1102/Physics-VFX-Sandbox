@@ -1,6 +1,7 @@
 
 OFILES = base/Matrix.o \
 	 base/Volume.o \
+	 base/VolumeGrid.o \
 	 base/ImplicitFields.o\
 	 base/BinaryOperators.o\
 	 base/UnaryOperators.o\
@@ -16,7 +17,7 @@ AFILES = $(OFILES)
 
 ROOTDIR = .
 LIB = -L$(ROOTDIR)/lib -lstarter -lm 
-GLLDFLAGS = -lglut -lGL -lm -lGLU -lOpenImageIO -lOpenImageIO_Util
+GLLDFLAGS = -lglut -lGL -lm -lGLU -lOpenImageIO -lOpenImageIO_Util -lopenvdb -ltbb -lz
 
 CXX = g++ -g -O1 -fPIC -fopenmp -fopenmp -std=c++17
 
@@ -26,11 +27,11 @@ PYTHONINCLUDE = -I/usr/include/python3.8
 
 SWIGEXEC = swig4.0
 
-INCLUDES = -I ./include/ $(PYTHONINCLUDE) -I /usr/local/include -I /usr/include
+INCLUDES = -I ./include/ $(PYTHONINCLUDE) -I /usr/local/include -I /usr/include -I ./ext/include
 
 test: $(AFILES) 
 	ar rv ./lib/libstarter.a $?
-	$(CXX) base/main.C $(INCLUDES) $(LIB) -o bin/test
+	$(CXX) base/gridTest.C $(INCLUDES) $(LIB) $(GLLDFLAGS) -o bin/gridTest
 
 base: $(AFILES) 
 	ar rv ./lib/libstarter.a $?
@@ -40,7 +41,7 @@ base: $(AFILES)
 	$(CXX) -c $(INCLUDES) $< -o $@
 
 clean:
-	rm -rf *.o bin/viewer bin/test base/*.o core ./lib/libstarter.a  *~ swig/*~ swig/*.so swig/*.o swig/*.cxx swig/*.pyc swig/bishop.py* doc/html doc/latex python/*.pyc 
+	rm -rf *.o bin/viewer bin/gridTest base/*.o core ./lib/libstarter.a  *~ swig/*~ swig/*.so swig/*.o swig/*.cxx swig/*.pyc swig/bishop.py* doc/html doc/latex python/*.pyc 
 
 genswig:	swig/bishop.i	$(OFILES)
 	$(SWIGEXEC) -c++ -python -shadow -I./include/ swig/bishop.i
