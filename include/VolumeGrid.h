@@ -28,6 +28,27 @@ namespace lux {
 
     };
 
+    //-----------------------------------------------------------------------------
+
+    // Grid Field
+    // Convert grid into a GridField to work with other fields
+    class GridField : public Volume<float> {
+
+        public:
+
+            using VGSP = std::shared_ptr<VolumeGrid>;
+
+            GridField(const VGSP& g);
+            ~GridField() = default;
+
+            const float eval(const Vector& p) const override;
+
+        private:
+            VGSP _g;
+    };
+
+    //-----------------------------------------------------------------------------
+
 }
 
 #endif
