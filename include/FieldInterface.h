@@ -12,6 +12,14 @@
 #ifndef FIELDINTERFACE_H
 #define FIELDINTERFACE_H
 
+#include <memory>
+
+#include "Volume.h"
+#include "VolumeGrid.h"
+#include "ImplicitFields.h"
+#include "UnaryOperators.h"
+#include "BinaryOperators.h"
+
 namespace lux {
 
     template <typename T>
@@ -52,6 +60,8 @@ namespace lux {
     VSP<float> cylinder(const float radius, const Vector& n);
 
     VSP<float> steiner();
+
+    VSP<float> grid(const VGSP g);
 
     // ----------------------------------------------------------------------------
 

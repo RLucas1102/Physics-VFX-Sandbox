@@ -9,13 +9,7 @@
  * separate
  ******************************************/
 
-#include <memory>
-
-#include "Volume.h"
 #include "FieldInterface.h"
-#include "ImplicitFields.h"
-#include "UnaryOperators.h"
-#include "BinaryOperators.h"
 
 namespace lux {
 
@@ -74,6 +68,10 @@ VSP<float> cylinder(const float radius, const Vector& n) {
 
 VSP<float> steiner() {
     return std::make_shared<SteinerField>();
+}
+
+VSP<float> grid(const VGSP g) {
+    return std::make_shared<GridField>(g);
 }
 
 // ----------------------------------------------------------------------------
