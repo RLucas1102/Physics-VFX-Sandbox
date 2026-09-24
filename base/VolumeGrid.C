@@ -49,3 +49,15 @@ void VolumeGrid::stamp(const VSP<float> &f)
     }
     
 }
+
+//-----------------------------------------------------------------------------
+
+GridField::GridField(const VGSP &g) :
+    _g(g)
+{
+}
+
+const float GridField::eval(const Vector &p) const
+{
+    return _g->triLerp(p);
+}
