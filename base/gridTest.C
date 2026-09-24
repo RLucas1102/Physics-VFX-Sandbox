@@ -18,6 +18,10 @@ int main() {
 
     myVGrid->stamp(c);
 
-    std::cout << myVGrid->triLerp(Vector(0,0,0)) << std::endl; // 4
+    // std::cout << myVGrid->triLerp(Vector(0,0,0)) << std::endl; // 4
+
+    VSP<float> gf = std::make_shared<GridField>(myVGrid);
+
+    std::cout << evaluate(gf, Vector(0,0,0)) << std::endl;
 
 }
