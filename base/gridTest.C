@@ -1,9 +1,5 @@
-#include <openvdb/openvdb.h>
-
 #include <iostream>
-#include <memory.h>
 
-#include "VolumeGrid.h"
 #include "FieldInterface.h"
 
 using namespace lux;
@@ -20,7 +16,7 @@ int main() {
 
     // std::cout << myVGrid->triLerp(Vector(0,0,0)) << std::endl; // 4
 
-    VSP<float> gf = std::make_shared<GridField>(myVGrid);
+    VSP<float> gf = grid(myVGrid);
 
     std::cout << evaluate(gf, Vector(0,0,0)) << std::endl;
 
