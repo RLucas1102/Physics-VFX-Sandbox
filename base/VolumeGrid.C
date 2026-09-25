@@ -11,14 +11,18 @@ void VolumeGrid::init(const openvdb::Coord &llc, const openvdb::Coord &urc, cons
 
     _grid->setTransform(openvdb::math::Transform::createLinearTransform(vx_size));
 
+    _grid->setGridClass(openvdb::GRID_FOG_VOLUME);
+
     _bbox = std::make_shared<openvdb::CoordBBox>(llc, urc);
 }
 
 float VolumeGrid::triLerp(const Vector &P)
 {
-    const openvdb::Vec3R xyz(P.X(), P.Y(), P.Z());
+    const openvdb::Vec3d xyz(P.X(), P.Y(), P.Z());
+
+    auto index = _grid->worldToIndex(xyz);
     
-    float v = openvdb::tools::BoxSampler::sample(_grid->tree(), xyz);
+    float v = openvdb::tools::BoxSampler::sample(_grid->tree(), index);
 
     return v;
 }
