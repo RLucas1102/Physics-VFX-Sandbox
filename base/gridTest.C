@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
     // Define a camera
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
     
-    float zdist = 20;
+    float zdist = 10;
     float xwidth = 8;
     Vector pos = Vector(0,0,zdist);
     Vector lookAt = Vector(0,0,0);
@@ -45,20 +45,21 @@ int main(int argc, char** argv) {
     img->clear(1920/4, 1080/4, 4);
 
     // Define a scene
-    VSP<float> objects = constant(-100.0f);
-    VSP<Color> objects_color = constant(Color(0,0,0,0));
-
     std::shared_ptr<VolumeGrid> object_grid = std::make_shared<VolumeGrid>();
 
-    object_grid->init(openvdb::Coord(-10, -10, -10), openvdb::Coord(10, 10, 10), 0.1, -1000);
+    int val = strtol(argv[1], NULL, 10);
+    object_grid->init(openvdb::Coord(-val, -val, -val), openvdb::Coord(val, val, val), 0.1, -1000);
 
     VSP<float> c = torus(1, 0.5, Vector(0,0,-1));
     VSP<Color> col = constant(Color(1,0,0,0));
+    // col = col * mask(c) + col * mask(-c);
 
     object_grid->stamp(c);
 
     VSP<float> gf = grid(object_grid);
     col = col * mask(gf) + col * mask(-gf);
+
+    c = gf;
     
     for (int j = 0; j < img->GetNy(); j++)
     {
@@ -66,7 +67,7 @@ int main(int argc, char** argv) {
         for (int i = 0; i < img->GetNx(); i++)
         {
             Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());
-            Color output = rm->RayMarchPixel(direction, cam->eye(), gf, col);
+            Color output = rm->RayMarchPixel(direction, cam->eye(), c, col);
             img->SetValue(i, j, std::vector<float>{output[0], output[1], output[2], output[3]});
         }
         
