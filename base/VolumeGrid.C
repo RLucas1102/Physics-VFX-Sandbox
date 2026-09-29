@@ -3,11 +3,15 @@
 
 using namespace lux;
 
-void VolumeGrid::init(const openvdb::Coord &llc, const openvdb::Coord &urc, const float &vx_size, const float &dg)
+template<typename T>
+void VolumeGrid<T>::init(const openvdb::Coord &llc, 
+                         const openvdb::Coord &urc, 
+                         const float &vx_size, 
+                         const typename GridTypes<T>::GridValue &dg)
 {
     openvdb::initialize();
 
-    _grid = openvdb::FloatGrid::create(dg);
+    _grid = GridTypes<T>::create(dg);
 
     _grid->setTransform(openvdb::math::Transform::createLinearTransform(vx_size));
 
@@ -16,20 +20,22 @@ void VolumeGrid::init(const openvdb::Coord &llc, const openvdb::Coord &urc, cons
     _bbox = std::make_shared<openvdb::CoordBBox>(llc, urc);
 }
 
-float VolumeGrid::triLerp(const Vector &P)
+template<typename T>
+typename GridTypes<T>::GridValue VolumeGrid<T>::triLerp(const Vector &P)
 {
     const openvdb::Vec3d xyz(P.X(), P.Y(), P.Z());
 
     auto index = _grid->worldToIndex(xyz);
     
-    float v = openvdb::tools::BoxSampler::sample(_grid->tree(), index);
+    auto v = GridTypes<T>::fromGrid(openvdb::tools::BoxSampler::sample(_grid->tree(), index));
 
     return v;
 }
 
-void VolumeGrid::stamp(const VSP<float> &f)
+template<typename T>
+void VolumeGrid<T>::stamp(const VSP<T> &f)
 {
-    typename openvdb::FloatGrid::Accessor accessor = _grid->getAccessor();
+    typename GridTypes<T>::GridAccessor accessor = _grid->getAccessor();
 
     openvdb::Vec3d size = _grid->transform().voxelSize();
 
@@ -38,7 +44,7 @@ void VolumeGrid::stamp(const VSP<float> &f)
             for (openvdb::Int32 k = _bbox->getStart().z(); k <= _bbox->getEnd().z(); k++) {
                 Vector p(i * size.x(), j * size.y(), k * size.z());
 
-                float val = f->eval(p);
+                auto val = GridTypes<T>::toGrid(f->eval(p));
 
                 accessor.setValue(openvdb::Coord(i,j,k), val);
 
@@ -50,12 +56,49 @@ void VolumeGrid::stamp(const VSP<float> &f)
 
 //-----------------------------------------------------------------------------
 
-GridField::GridField(const VGSP &g) :
+template<typename T>
+GridField<T>::GridField(const VGSP<T> &g) :
     _g(g)
 {
 }
 
-const float GridField::eval(const Vector &p) const
+template<typename T>
+const typename Volume<T>::volumeDataType GridField<T>::eval(const Vector &p) const
 {
     return _g->triLerp(p);
 }
+
+// ----------------------------------------------------------------------------
+
+// Explicit instantiations
+
+// VolumeGrid
+template class VolumeGrid<float>;
+template class VolumeGrid<Color>;
+
+// GridField
+template class GridField<float>;
+template class GridField<Color>;
+
+// ----------------------------------------------------------------------------
+
+/***************************************************
+ * Notes:
+ * 
+ * [0] Making functions in struct static to call without
+ *     instantiating an object of struct type
+ * 
+ * [1] For GridField, I was struggling with compiling the eval.
+ *     Even though the types, volumeDataType and GridValue,
+ *     evaluate to a float or color depending on the input type,
+ *     my child eval must return the same type as parent.
+ *     (volumeDataType != GridValue)
+ * 
+ * [2] using GridType = typename GridTypes<T>::GridType;
+ *     using GridValue = typename GridTypes<T>::GridValue;
+ *     Have to define the types like this and cannot
+ *     just use the GridType directly
+ *      
+ *
+ * 
+ ***************************************************/
