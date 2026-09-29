@@ -70,8 +70,9 @@ VSP<float> steiner() {
     return std::make_shared<SteinerField>();
 }
 
-VSP<float> grid(const VGSP g) {
-    return std::make_shared<GridField>(g);
+template<typename T>
+VSP<T> grid(const VGSP<T>& g) {
+    return std::make_shared<GridField<T>>(g);
 }
 
 // ----------------------------------------------------------------------------
@@ -275,6 +276,10 @@ template VSP<float> constant(const float& v);
 template VSP<Vector> constant(const Vector& v);
 template VSP<Matrix> constant(const Matrix& v);
 template VSP<Color> constant(const Color& v);
+
+// Grid
+template VSP<float> grid(const VGSP<float>& g);
+template VSP<Color> grid(const VGSP<Color>& g);
 
 // Mask
 template VSP<float> mask(const VSP<float>& a);

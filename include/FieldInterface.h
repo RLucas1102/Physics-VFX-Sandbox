@@ -61,7 +61,8 @@ namespace lux {
 
     VSP<float> steiner();
 
-    VSP<float> grid(const VGSP g);
+    template<typename T>
+    VSP<T> grid(const VGSP<T>& g);
 
     // ----------------------------------------------------------------------------
 
