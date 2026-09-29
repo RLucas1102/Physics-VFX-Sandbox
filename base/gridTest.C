@@ -45,21 +45,25 @@ int main(int argc, char** argv) {
     img->clear(1920/4, 1080/4, 4);
 
     // Define a scene
-    std::shared_ptr<VolumeGrid> object_grid = std::make_shared<VolumeGrid>();
+    VGSP<float> object_grid = std::make_shared<VolumeGrid<float>>();
+    VGSP<Color> color_grid = std::make_shared<VolumeGrid<Color>>();
 
     int val = strtol(argv[1], NULL, 10);
     object_grid->init(openvdb::Coord(-val, -val, -val), openvdb::Coord(val, val, val), 0.1, -1000);
+    color_grid->init(openvdb::Coord(-val, -val, -val), openvdb::Coord(val, val, val), 0.1, Color(0,0,0,0));
 
     VSP<float> c = torus(1, 0.5, Vector(0,0,-1));
     VSP<Color> col = constant(Color(1,0,0,0));
-    // col = col * mask(c) + col * mask(-c);
+    col = col * mask(c) + col * mask(-c);
 
     object_grid->stamp(c);
+    color_grid->stamp(col);
 
     VSP<float> gf = grid(object_grid);
-    col = col * mask(gf) + col * mask(-gf);
+    VSP<Color> c_gf = grid(color_grid);
 
     c = gf;
+    col = c_gf;
     
     for (int j = 0; j < img->GetNy(); j++)
     {
