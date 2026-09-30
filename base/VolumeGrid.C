@@ -9,8 +9,6 @@ void VolumeGrid<T>::init(const openvdb::Coord &llc,
                          const float &vx_size, 
                          const typename GridTypes<T>::GridValue &dg)
 {
-    openvdb::initialize();
-
     _grid = GridTypes<T>::create(dg);
 
     _grid->setTransform(openvdb::math::Transform::createLinearTransform(vx_size));
@@ -37,8 +35,6 @@ template<typename T>
 void VolumeGrid<T>::stamp(const VSP<T> &f)
 {
     typename GridTypes<T>::GridAccessor accessor = _grid->getAccessor();
-
-    openvdb::Vec3d size = _grid->transform().voxelSize();
 
     for ( auto iter = _bbox->beginXYZ(); iter != _bbox->endXYZ(); ++iter)
     {
