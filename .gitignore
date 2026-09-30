@@ -1,2 +1,9 @@
 #Vscode BS
 /.vscode
+
+#Object files
+base/*.o
+
+#Lib and bin
+/lib
+/bin
