@@ -25,8 +25,9 @@ typename GridTypes<T>::GridValue VolumeGrid<T>::triLerp(const Vector &P)
 {
     const openvdb::Vec3d xyz(P.X(), P.Y(), P.Z());
 
-    auto index = _grid->worldToIndex(xyz);
+    openvdb::Vec3d index = _grid->worldToIndex(xyz);
     
+    // GridTypes<T>::GridValue = ...
     auto v = GridTypes<T>::fromGrid(openvdb::tools::BoxSampler::sample(_grid->tree(), index));
 
     return v;
@@ -39,19 +40,19 @@ void VolumeGrid<T>::stamp(const VSP<T> &f)
 
     openvdb::Vec3d size = _grid->transform().voxelSize();
 
-    for (openvdb::Int32 i = _bbox->getStart().x(); i <= _bbox->getEnd().x(); i++) {
-        for (openvdb::Int32 j = _bbox->getStart().y(); j <= _bbox->getEnd().y(); j++) {
-            for (openvdb::Int32 k = _bbox->getStart().z(); k <= _bbox->getEnd().z(); k++) {
-                Vector p(i * size.x(), j * size.y(), k * size.z());
+    for ( auto iter = _bbox->beginXYZ(); iter != _bbox->endXYZ(); ++iter)
+    {
+        openvdb::Vec3d world = _grid->indexToWorld(*iter);
 
-                auto val = GridTypes<T>::toGrid(f->eval(p));
+        Vector p(world.x(), world.y(), world.z());
 
-                accessor.setValue(openvdb::Coord(i,j,k), val);
+        // GridTypes<T>::GridValue = ...
+        auto val = GridTypes<T>::toGrid(f->eval(p));
 
-            }
-        }
+        accessor.setValue(*iter, val);
     }
     
+
 }
 
 //-----------------------------------------------------------------------------
