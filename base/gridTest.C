@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
     // Define a camera
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
     
-    float zdist = 10;
+    float zdist = 20;
     float xwidth = 8;
     Vector pos = Vector(0,0,zdist);
     Vector lookAt = Vector(0,0,0);
@@ -49,25 +49,24 @@ int main(int argc, char** argv) {
 
     // Define a scene
     std::shared_ptr<Mesh> teapot = std::make_shared<Mesh>();
-    teapot->loadObj("models/teapot/teapot.obj");
+    teapot->loadObj("models/bunnyFixed/bunny_fixed.obj");
     VGSP<float> object_grid = std::make_shared<VolumeGrid<float>>();
     VGSP<Color> color_grid = std::make_shared<VolumeGrid<Color>>();
 
     int val = strtol(argv[1], NULL, 10);
-    object_grid->init(openvdb::Coord(-val, -val, -val), openvdb::Coord(val, val, val), 0.1, -1000);
-    color_grid->init(openvdb::Coord(-val, -val, -val), openvdb::Coord(val, val, val), 0.1, Color(0,0,0,0));
-
-    VSP<float> c = torus(1, 0.5, Vector(0,0,-1));
-    VSP<Color> col = constant(Color(1,0,0,0));
-    col = col * mask(c) + col * mask(-c);
-
-    object_grid->stamp(c);
-    color_grid->stamp(col);
+    // object_grid->init(openvdb::Coord(-val, -val, -val), openvdb::Coord(val, val, val), 0.1, -1000);
+    object_grid->init(createLevelSet(teapot, 0.1, 3));
+    color_grid->init(object_grid->getBBox(), 0.1, Color(0,0,0,0));
 
     VSP<float> gf = grid(object_grid);
+    VSP<Color> col = constant(Color(1,0,0,0));
+    col = col * mask(gf) + col * mask(-gf);
+
+    color_grid->stamp(col);
+
     VSP<Color> c_gf = grid(color_grid);
 
-    c = gf;
+    VSP<float> c = -gf;
     col = c_gf;
     
     for (int j = 0; j < img->GetNy(); j++)
