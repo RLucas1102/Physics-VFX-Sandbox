@@ -43,12 +43,14 @@ void Mesh::loadObj(const char *filename)
 
 }
 
-openvdb::FloatGrid::Ptr Mesh::createLevelSet(const openvdb::math::Transform &xform, float halfwidth) const
+openvdb::FloatGrid::Ptr Mesh::createLevelSet(float vx_size, float halfwidth) const
 {
-    return openvdb::tools::meshToLevelSet<openvdb::FloatGrid>(xform, _vertices, _faces, halfwidth);
+    auto transform = openvdb::math::Transform::createLinearTransform(vx_size);
+    
+    return openvdb::tools::meshToLevelSet<openvdb::FloatGrid>(*transform, _vertices, _faces, halfwidth);
 }
 
-openvdb::FloatGrid::Ptr lux::createLevelSet(const Mesh &mesh, const openvdb::math::Transform &xform, float halfwidth)
+openvdb::FloatGrid::Ptr lux::createLevelSet(const std::shared_ptr<Mesh> &mesh, float vx_size, float halfwidth)
 {
-    return mesh.createLevelSet(xform, halfwidth);
+    return mesh->createLevelSet(vx_size, halfwidth);
 }

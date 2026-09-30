@@ -18,7 +18,7 @@ namespace lux
 
             void loadObj(const char* filename);
 
-            openvdb::FloatGrid::Ptr createLevelSet(const openvdb::math::Transform &xform, 
+            openvdb::FloatGrid::Ptr createLevelSet(float vx_size, 
                                                    float halfwidth = float(openvdb::LEVEL_SET_HALF_WIDTH)) const;
 
         private:
@@ -27,8 +27,8 @@ namespace lux
 
     };
     
-    openvdb::FloatGrid::Ptr createLevelSet(const Mesh& mesh, 
-                                           const openvdb::math::Transform &xform, 
+    openvdb::FloatGrid::Ptr createLevelSet(const std::shared_ptr<Mesh>& mesh, 
+                                           float vx_size, 
                                            float halfwidth = float(openvdb::LEVEL_SET_HALF_WIDTH));    
 
 } // namespace lux
