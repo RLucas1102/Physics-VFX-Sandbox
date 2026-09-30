@@ -5,11 +5,14 @@
 #include "StarterViewer.h"
 #include "Raymarcher.h"
 #include "Camera.h"
+#include "Mesh.h"
 
 using namespace lux;
 using namespace starter;
 
 int main(int argc, char** argv) {
+
+    openvdb::initialize();
 
     // Define a camera
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
@@ -45,6 +48,8 @@ int main(int argc, char** argv) {
     img->clear(1920/4, 1080/4, 4);
 
     // Define a scene
+    std::shared_ptr<Mesh> teapot = std::make_shared<Mesh>();
+    teapot->loadObj("models/teapot/teapot.obj");
     VGSP<float> object_grid = std::make_shared<VolumeGrid<float>>();
     VGSP<Color> color_grid = std::make_shared<VolumeGrid<Color>>();
 
