@@ -28,12 +28,16 @@ namespace lux {
         using GridAccessor = openvdb::FloatGrid::Accessor;
         using GridValue = float;
 
-        static float fromGrid(const float& val) { return val; }
+        static float fromGrid(float val) { return val; }
 
-        static float toGrid(const float& val) { return val; }
+        static float toGrid(float val) { return val; }
 
-        static GridType create(const float& dg) {
+        static GridType create(float dg) {
             return openvdb::FloatGrid::create(dg);
+        }
+
+        static GridType deepCopyGrid(const openvdb::FloatGrid::Ptr& grid) {
+            return openvdb::gridPtrCast<openvdb::FloatGrid>(grid->deepCopyGrid());
         }
 
     };
@@ -77,13 +81,19 @@ namespace lux {
             VolumeGrid() {};
             ~VolumeGrid() = default;
 
+            void init(const openvdb::CoordBBox& bbox,
+                      float vx_size,
+                      const GridValue& dg);
+
+            void init(const openvdb::FloatGrid::Ptr& grid);
+
             void init(const openvdb::Coord& llc, 
                       const openvdb::Coord& urc, 
-                      const float& vx_size, 
+                      float vx_size, 
                       const GridValue& dg);
 
             GridType getGridRaw() const { return _grid; }
-            auto getBBox() const { return _bbox; }
+            openvdb::CoordBBox getBBox() const { return *_bbox; }
             openvdb::math::Transform getGridXform() const { return _grid->transform(); }
 
             GridValue triLerp(const Vector& P);
