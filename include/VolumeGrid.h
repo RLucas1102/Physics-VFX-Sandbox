@@ -84,6 +84,7 @@ namespace lux {
 
             GridType getGridRaw() const { return _grid; }
             auto getBBox() const { return _bbox; }
+            openvdb::math::Transform getGridXform() const { return _grid->transform(); }
 
             GridValue triLerp(const Vector& P);
 
