@@ -5,6 +5,7 @@
 #include <openvdb/tools/Interpolation.h>
 
 #include <memory.h>
+#include <iostream>
 
 #include "Volume.h"
 #include "Vector.h"
@@ -12,10 +13,14 @@
 
 namespace lux {
 
+    //-----------------------------------------------------------------------------
+
     // Setting up logic to be able to determine the data type of the Grid
+    // Primary template
     template <typename U>
     struct GridTypes;
 
+    // Specialization for float
     template<>
     struct GridTypes<float>
     {
@@ -33,6 +38,7 @@ namespace lux {
 
     };
 
+    // Specialization for Color
     template<>
     struct GridTypes<Color>
     {
@@ -57,6 +63,9 @@ namespace lux {
 
     //-----------------------------------------------------------------------------
     
+    // Volume Grid
+    // Create a grid with values at each cell of the grid that to represent a volume
+    // Uses openvdb grid
     template<typename T>
     class VolumeGrid {
 
