@@ -7,13 +7,13 @@ using namespace lux;
 // ------------
 // Volume Grid
 // ------------
-template<typename T>
-void VolumeGrid<T>::init(const openvdb::Coord &llc, 
-                         const openvdb::Coord &urc, 
-                         float vx_size, 
-                         const typename GridTypes<T>::GridValue &dg)
+template<typename GridType>
+void VolumeGrid<GridType>::init(const openvdb::Coord &llc, 
+                                const openvdb::Coord &urc, 
+                                float vx_size, 
+                                const GridValue &dg)
 {
-    _grid = GridTypes<T>::create(dg);
+    _grid = GridType::create(dg);
 
     _grid->setTransform(openvdb::math::Transform::createLinearTransform(vx_size));
 
@@ -22,12 +22,12 @@ void VolumeGrid<T>::init(const openvdb::Coord &llc,
     _bbox = std::make_shared<openvdb::CoordBBox>(llc, urc);
 }
 
-template <typename T>
-void VolumeGrid<T>::init(const openvdb::CoordBBox &bbox, 
-                         float vx_size,
-                         const typename GridTypes<T>::GridValue& dg)
+template <typename GridType>
+void VolumeGrid<GridType>::init(const openvdb::CoordBBox &bbox, 
+                                float vx_size,
+                                const typename GridTypes<T>::GridValue& dg)
 {
-    _grid = GridTypes<T>::create(dg);
+    _grid = GridType::create(dg);
 
     _grid->setTransform(openvdb::math::Transform::createLinearTransform(vx_size));
 
@@ -37,33 +37,32 @@ void VolumeGrid<T>::init(const openvdb::CoordBBox &bbox,
 
 }
 
-template<>
-void VolumeGrid<float>::init(const openvdb::FloatGrid::Ptr& grid)
+template<typename GridType>
+void VolumeGrid<GridType>::init(const GridPtr& grid)
 {
-    _grid = GridTypes<float>::deepCopyGrid(grid); //_grid is of GridTypes<>::GridType (see VolumeGrid.h)
-
+    _grid = GridType::deepCopyGrid(grid);
+    
     _grid->setGridClass(openvdb::GRID_LEVEL_SET);
 
     _bbox = std::make_shared<openvdb::CoordBBox>(grid->evalActiveVoxelBoundingBox());
 }
 
-template<typename T>
-typename GridTypes<T>::GridValue VolumeGrid<T>::triLerp(const Vector &P)
+template<typename GridType>
+GridValue VolumeGrid<GridType>::triLerp(const Vector &P)
 {
     const openvdb::Vec3d xyz(P.X(), P.Y(), P.Z());
 
     openvdb::Vec3d index = _grid->worldToIndex(xyz);
     
-    // GridTypes<T>::GridValue = ...
-    auto v = GridTypes<T>::fromGrid(openvdb::tools::BoxSampler::sample(_grid->tree(), index));
+    GridValue v = openvdb::tools::BoxSampler::sample(_grid->tree(), index);
 
     return v;
 }
 
-template<typename T>
-void VolumeGrid<T>::stamp(const VSP<T> &f)
+template<typename GridType>
+void VolumeGrid<GridType>::stamp(const VSP<T> &f)
 {
-    typename GridTypes<T>::GridAccessor accessor = _grid->getAccessor();
+    typename GridType::Accessor accessor = _grid->getAccessor();
 
     for ( auto iter = _bbox->beginXYZ(); iter != _bbox->endXYZ(); ++iter)
     {
@@ -71,8 +70,7 @@ void VolumeGrid<T>::stamp(const VSP<T> &f)
 
         Vector p(world.x(), world.y(), world.z());
 
-        // GridTypes<T>::GridValue = ...
-        auto val = GridTypes<T>::toGrid(f->eval(p));
+        auto val = f->eval(p);
 
         accessor.setValue(*iter, val);
     }
@@ -81,32 +79,12 @@ void VolumeGrid<T>::stamp(const VSP<T> &f)
 
 //-----------------------------------------------------------------------------
 
-// -----------
-// Grid Field
-// -----------
-template<typename T>
-GridField<T>::GridField(const VGSP<T> &g) :
-    _g(g)
-{
-}
-
-template<typename T>
-const typename Volume<T>::volumeDataType GridField<T>::eval(const Vector &p) const
-{
-    return _g->triLerp(p);
-}
-
-// ----------------------------------------------------------------------------
 
 // Explicit instantiations
 
 // VolumeGrid
-template class VolumeGrid<float>;
-template class VolumeGrid<Color>;
-
-// GridField
-template class GridField<float>;
-template class GridField<Color>;
+template class VolumeGrid<openvdb::FloatGrid>;
+template class VolumeGrid<openvdb::Vec3SGrid>;
 
 // ----------------------------------------------------------------------------
 

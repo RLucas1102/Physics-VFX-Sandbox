@@ -12,71 +12,17 @@
 #include "Color.h"
 
 namespace lux {
-
-    //-----------------------------------------------------------------------------
-
-    // Setting up logic to be able to determine the data type of the Grid
-    // Primary template
-    template <typename U>
-    struct GridTypes;
-
-    // Specialization for float
-    template<>
-    struct GridTypes<float>
-    {
-        using GridType = openvdb::FloatGrid::Ptr;
-        using GridAccessor = openvdb::FloatGrid::Accessor;
-        using GridValue = float;
-
-        static float fromGrid(float val) { return val; }
-
-        static float toGrid(float val) { return val; }
-
-        static GridType create(float dg) {
-            return openvdb::FloatGrid::create(dg);
-        }
-
-        static GridType deepCopyGrid(const openvdb::FloatGrid::Ptr& grid) {
-            return openvdb::gridPtrCast<openvdb::FloatGrid>(grid->deepCopyGrid());
-        }
-
-    };
-
-    // Specialization for Color
-    template<>
-    struct GridTypes<Color>
-    {
-        using GridType = openvdb::Vec3SGrid::Ptr;
-        using GridAccessor = openvdb::Vec3SGrid::Accessor;
-        using GridValue = Color;
-
-        static Color fromGrid(const openvdb::Vec3s& val) {
-            return Color(val.x(), val.y(), val.z(), 0);
-        }
-
-        static openvdb::Vec3s toGrid(const Color& val ) {
-            return openvdb::Vec3s(val.X(), val.Y(), val.Z());
-        }
-
-        static GridType create(const Color& dg) {
-            openvdb::Vec3s Dg = openvdb::Vec3s(dg.X(), dg.Y(), dg.Z());
-            return openvdb::Vec3SGrid::create(Dg);
-        }
-
-    };
-
-    //-----------------------------------------------------------------------------
     
     // Volume Grid
     // Create a grid with values at each cell of the grid that to represent a volume
     // Uses openvdb grid
-    template<typename T>
+    template<typename GridType>
     class VolumeGrid {
 
         public:
 
-            using GridType = typename GridTypes<T>::GridType;
-            using GridValue = typename GridTypes<T>::GridValue;
+            using GridPtr = typename GridType::Ptr;
+            using GridValue = typename GridType::ValueType;
 
             VolumeGrid() {};
             ~VolumeGrid() = default;
@@ -91,10 +37,10 @@ namespace lux {
                       float vx_size,
                       const GridValue& dg);
 
-            void init(const openvdb::FloatGrid::Ptr& grid);
+            void init(const GridPtr& grid);
             
             // Accessors
-            GridType getGridRaw() const { return _grid; }
+            GridPtr getGridRaw() const { return _grid; }
             openvdb::CoordBBox getBBox() const { return *_bbox; }
             openvdb::math::Transform getGridXform() const { return _grid->transform(); }
 
@@ -106,33 +52,13 @@ namespace lux {
             void stamp(const VSP<T>& f);
             
         private:
-            GridType _grid;
+            GridPtr _grid;
             std::shared_ptr<openvdb::CoordBBox> _bbox;
 
     };
 
-    template<typename T>
-    using VGSP = std::shared_ptr<VolumeGrid<T>>;
-
-    //-----------------------------------------------------------------------------
-
-    // Grid Field
-    // Convert grid into a GridField to work with other fields
-    template<typename T>
-    class GridField : public Volume<T> {
-
-        public:
-
-            using typename Volume<T>::volumeDataType;
-
-            GridField(const VGSP<T>& g);
-            ~GridField() = default;
-
-            const volumeDataType eval(const Vector& p) const override;
-
-        private:
-            VGSP<T> _g;
-    };
+    template<typename GridType>
+    using VGSP = std::shared_ptr<VolumeGrid<GridType>>;
 
     //-----------------------------------------------------------------------------
 

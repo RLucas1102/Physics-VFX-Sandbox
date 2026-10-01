@@ -61,9 +61,6 @@ namespace lux {
 
     VSP<float> steiner();
 
-    template<typename T>
-    VSP<T> grid(const VGSP<T>& g);
-
     // ----------------------------------------------------------------------------
 
     // Unary Field Operator Helper Functions
