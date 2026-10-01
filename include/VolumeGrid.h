@@ -81,23 +81,28 @@ namespace lux {
             VolumeGrid() {};
             ~VolumeGrid() = default;
 
-            void init(const openvdb::CoordBBox& bbox,
-                      float vx_size,
-                      const GridValue& dg);
-
-            void init(const openvdb::FloatGrid::Ptr& grid);
-
+            // Initialization functions for grids
             void init(const openvdb::Coord& llc, 
                       const openvdb::Coord& urc, 
                       float vx_size, 
                       const GridValue& dg);
 
+            void init(const openvdb::CoordBBox& bbox,
+                      float vx_size,
+                      const GridValue& dg);
+
+            void init(const openvdb::FloatGrid::Ptr& grid);
+            
+            // Accessors
             GridType getGridRaw() const { return _grid; }
             openvdb::CoordBBox getBBox() const { return *_bbox; }
             openvdb::math::Transform getGridXform() const { return _grid->transform(); }
 
+            // Perform trilinear interpolation on a given world coordinate
+            // World coordinate will be converted to index coords
             GridValue triLerp(const Vector& P);
 
+            // Evaluated given field at every point in grid and store value
             void stamp(const VSP<T>& f);
             
         private:

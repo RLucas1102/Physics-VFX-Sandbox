@@ -3,6 +3,10 @@
 
 using namespace lux;
 
+
+// ------------
+// Volume Grid
+// ------------
 template<typename T>
 void VolumeGrid<T>::init(const openvdb::Coord &llc, 
                          const openvdb::Coord &urc, 
@@ -16,16 +20,6 @@ void VolumeGrid<T>::init(const openvdb::Coord &llc,
     _grid->setGridClass(openvdb::GRID_FOG_VOLUME);
 
     _bbox = std::make_shared<openvdb::CoordBBox>(llc, urc);
-}
-
-template<>
-void VolumeGrid<float>::init(const openvdb::FloatGrid::Ptr& grid)
-{
-    _grid = GridTypes<float>::deepCopyGrid(grid);
-
-    _grid->setGridClass(openvdb::GRID_LEVEL_SET);
-
-    _bbox = std::make_shared<openvdb::CoordBBox>(grid->evalActiveVoxelBoundingBox());
 }
 
 template <typename T>
@@ -43,6 +37,15 @@ void VolumeGrid<T>::init(const openvdb::CoordBBox &bbox,
 
 }
 
+template<>
+void VolumeGrid<float>::init(const openvdb::FloatGrid::Ptr& grid)
+{
+    _grid = GridTypes<float>::deepCopyGrid(grid); //_grid is of GridTypes<>::GridType (see VolumeGrid.h)
+
+    _grid->setGridClass(openvdb::GRID_LEVEL_SET);
+
+    _bbox = std::make_shared<openvdb::CoordBBox>(grid->evalActiveVoxelBoundingBox());
+}
 
 template<typename T>
 typename GridTypes<T>::GridValue VolumeGrid<T>::triLerp(const Vector &P)
@@ -78,6 +81,9 @@ void VolumeGrid<T>::stamp(const VSP<T> &f)
 
 //-----------------------------------------------------------------------------
 
+// -----------
+// Grid Field
+// -----------
 template<typename T>
 GridField<T>::GridField(const VGSP<T> &g) :
     _g(g)
