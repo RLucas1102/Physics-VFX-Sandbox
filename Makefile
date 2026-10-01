@@ -1,12 +1,11 @@
 
 OFILES = base/Matrix.o \
 	 base/Volume.o \
-	 base/VolumeGrid.o \
-	 base/Mesh.o \
 	 base/ImplicitFields.o\
 	 base/BinaryOperators.o\
 	 base/UnaryOperators.o\
 	 base/FieldInterface.o\
+	 base/VolumeGrid.o \
 	 base/LinearAlgebra.o \
 	 base/Camera.o \
 	 base/Color.o \
