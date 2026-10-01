@@ -31,7 +31,6 @@ namespace lux {
                       float vx_size, 
                       const GridV& dg);
 
-        
             // Perform trilinear interpolation on a given world coordinate
             // World coordinate will be converted to index coords
             GridV triLerp(const Vector& P);
@@ -51,12 +50,40 @@ namespace lux {
     template<typename GridType>
     using VGSP = std::shared_ptr<VolumeGrid<GridType>>;
 
-    // Helper Functions
     //-----------------------------------------------------------------------------
+
+    // Grid Field
+    // Convert grid into a GridField to work with other fields
+    template<typename GridT, typename GridV>
+    class GridField : public Volume<GridV> {
+
+        public:
+
+            using typename Volume<GridV>::volumeDataType;
+
+            GridField(const VGSP<GridT>& g);
+            ~GridField() = default;
+
+            const volumeDataType eval(const Vector& p) const override;
+
+        private:
+            VGSP<GridT> _g;
+    };
+
+    //-----------------------------------------------------------------------------
+
+    // Helper Functions
+    // Functions for VolumeGrid and GridField that are useful for other classes to use
 
     // Create grid
     template<typename GridType>
     VGSP<GridType> grid();
+
+    // Create grid field
+    template<typename GridT, typename GridV>
+    VSP<GridV> gridField(const VGSP<GridT>& g);
+
+    //-----------------------------------------------------------------------------
 
 }
 
