@@ -3,7 +3,7 @@
 
 #include "Color.h"
 #include "Vector.h"
-#include "ImplicitFields.h"
+#include "FieldInterface.h"
 #include "VolumeGrid.h"
 
 namespace lux {
