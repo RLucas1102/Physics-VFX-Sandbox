@@ -2,17 +2,15 @@
 
 #include "Color.h"
 #include "FieldInterface.h"
+#include "VolumeGrid.h"
 #include "StarterViewer.h"
 #include "Raymarcher.h"
 #include "Camera.h"
-#include "Mesh.h"
 
 using namespace lux;
 using namespace starter;
 
 int main(int argc, char** argv) {
-
-    openvdb::initialize();
 
     // Define a camera
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
@@ -48,26 +46,15 @@ int main(int argc, char** argv) {
     img->clear(1920/4, 1080/4, 4);
 
     // Define a scene
-    std::shared_ptr<Mesh> teapot = std::make_shared<Mesh>();
-    teapot->loadObj("models/bunnyFixed/bunny_fixed.obj");
-    VGSP<float> object_grid = std::make_shared<VolumeGrid<float>>();
-    VGSP<Color> color_grid = std::make_shared<VolumeGrid<Color>>();
+    VSP<float> torusC = torus(2.0f, 1.0f, Vector(0,0,1));
+    VSP<Color> torus_color = constant(Color(1,0,0,0));
+    torus_color = torus_color * mask(torusC);
 
-    int val = strtol(argv[1], NULL, 10);
-    // object_grid->init(openvdb::Coord(-val, -val, -val), openvdb::Coord(val, val, val), 0.1, -1000);
-    object_grid->init(createLevelSet(teapot, 0.1, 3));
-    color_grid->init(object_grid->getBBox(), 0.1, Color(0,0,0,0));
+    // Create a grid
+    VGSP<openvdb::FloatGrid> myGrid = grid<openvdb::FloatGrid>();
 
-    VSP<float> gf = grid(object_grid);
-    VSP<Color> col = constant(Color(1,0,0,0));
-    col = col * mask(gf) + col * mask(-gf);
-
-    color_grid->stamp(col);
-
-    VSP<Color> c_gf = grid(color_grid);
-
-    VSP<float> c = -gf;
-    col = c_gf;
+    float val = 10;
+    myGrid->init(openvdb::Coord(-val, -val, -val), openvdb::Coord(val, val, val), 0.1, -1000);
     
     for (int j = 0; j < img->GetNy(); j++)
     {
@@ -75,7 +62,7 @@ int main(int argc, char** argv) {
         for (int i = 0; i < img->GetNx(); i++)
         {
             Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());
-            Color output = rm->RayMarchPixel(direction, cam->eye(), c, col);
+            Color output = rm->RayMarchPixel(direction, cam->eye(), torusC, torus_color);
             img->SetValue(i, j, std::vector<float>{output[0], output[1], output[2], output[3]});
         }
         
