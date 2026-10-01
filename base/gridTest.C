@@ -53,11 +53,14 @@ int main(int argc, char** argv) {
     // Create a grid
     VGSP<openvdb::FloatGrid> myGrid = grid<openvdb::FloatGrid>();
 
-    float val = 10;
+    float val = 100;
     myGrid->init(openvdb::Coord(-val, -val, -val), openvdb::Coord(val, val, val), 0.1, -1000);
     myGrid->stamp(sphereC);
-    std::cout << myGrid->triLerp(Vector(0,0,0)) << std::endl;
-    std::cout << myGrid->triLerp(Vector(0,4,0)) << std::endl;
+
+    VSP<float> gf = gridField<openvdb::FloatGrid, float>(myGrid);
+
+    std::cout << evaluate(gf, Vector(0,0,0)) << std::endl;
+    std::cout << evaluate(gf, Vector(0,4,0)) << std::endl;
     
     for (int j = 0; j < img->GetNy(); j++)
     {
@@ -65,7 +68,7 @@ int main(int argc, char** argv) {
         for (int i = 0; i < img->GetNx(); i++)
         {
             Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());
-            Color output = rm->RayMarchPixel(direction, cam->eye(), sphereC, sphere_color);
+            Color output = rm->RayMarchPixel(direction, cam->eye(), gf, sphere_color);
             img->SetValue(i, j, std::vector<float>{output[0], output[1], output[2], output[3]});
         }
         
