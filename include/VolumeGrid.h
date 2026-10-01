@@ -6,6 +6,9 @@
 #include <openvdb/openvdb.h>
 #include <openvdb/tools/Interpolation.h>
 
+#include "Volume.h"
+#include "Vector.h"
+
 namespace lux {
 
     // Volume Grid
@@ -27,6 +30,14 @@ namespace lux {
                       const openvdb::Coord& urc, 
                       float vx_size, 
                       const GridV& dg);
+
+        
+            // Perform trilinear interpolation on a given world coordinate
+            // World coordinate will be converted to index coords
+            GridV triLerp(const Vector& P);
+
+            // Evaluated given field at every point in grid and store value
+            void stamp(const VSP<GridV>& f);
 
         private:
             GridT _grid;

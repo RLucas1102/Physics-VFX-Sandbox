@@ -20,6 +20,36 @@ void lux::VolumeGrid<GridType>::init(const openvdb::Coord &llc,
     _bbox = std::make_shared<openvdb::CoordBBox>(llc, urc);
 }
 
+template<typename GridType>
+typename VolumeGrid<GridType>::GridV VolumeGrid<GridType>::triLerp(const Vector &P)
+{
+    const openvdb::Vec3d xyz(P.X(), P.Y(), P.Z());
+
+    openvdb::Vec3d index = _grid->worldToIndex(xyz);
+    
+    GridV v = openvdb::tools::BoxSampler::sample(_grid->tree(), index);
+
+    return v;
+}
+
+template<typename GridType>
+void VolumeGrid<GridType>::stamp(const VSP<GridV> &f)
+{
+    typename GridType::Accessor accessor = _grid->getAccessor();
+
+    for ( auto iter = _bbox->beginXYZ(); iter != _bbox->endXYZ(); ++iter)
+    {
+        openvdb::Vec3d world = _grid->indexToWorld(*iter);
+
+        Vector p(world.x(), world.y(), world.z());
+
+        GridV val = f->eval(p);
+
+        accessor.setValue(*iter, val);
+    }
+
+}
+
 //-----------------------------------------------------------------------------
 
 // -----------------
