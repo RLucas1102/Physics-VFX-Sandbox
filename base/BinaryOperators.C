@@ -17,9 +17,6 @@
  * See FieldInterface.h for more info
  ******************************************/
 
-#include "Volume.h"
-#include "Vector.h"
-#include "Matrix.h"
 #include "BinaryOperators.h"
 
 using namespace lux;
@@ -181,24 +178,28 @@ template class AddField<float>;
 template class AddField<Vector>;
 template class AddField<Matrix>;
 template class AddField<Color>;
+template class AddField<openvdb::Vec3s>;
 
 // Subtract Field
 template class SubtractField<float>;
 template class SubtractField<Vector>;
 template class SubtractField<Matrix>;
 template class SubtractField<Color>;
+template class SubtractField<openvdb::Vec3s>;
 
 // Multiply Field
 template class MultiplyField<float, float>;
 template class MultiplyField<Vector, float>;
 template class MultiplyField<Matrix, float>;
 template class MultiplyField<Color, float>;
+template class MultiplyField<openvdb::Vec3s, float>;
 
 // Divide Field
 template class DivideField<float, float>;
 template class DivideField<Vector, float>;
 template class DivideField<Matrix, float>;
 template class DivideField<Color, float>;
+template class DivideField<openvdb::Vec3s, float>;
 
 // Union Field
 template class UnionField<float>;
