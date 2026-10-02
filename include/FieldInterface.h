@@ -14,8 +14,9 @@
 
 #include <memory>
 
+#include <openvdb/openvdb.h>
+
 #include "Volume.h"
-#include "VolumeGrid.h"
 #include "ImplicitFields.h"
 #include "UnaryOperators.h"
 #include "BinaryOperators.h"
@@ -112,6 +113,9 @@ namespace lux {
     VSP<T> clamp(const VSP<T>& a, 
                  const float fmin, 
                  const float fmax);
+
+    template <typename U>
+    VSP<Color> toColor(const VSP<U>& a);
 
     // ----------------------------------------------------------------------------
 

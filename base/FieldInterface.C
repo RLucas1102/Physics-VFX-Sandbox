@@ -152,6 +152,12 @@ VSP<T> clamp(const VSP<T>& a, const float fmin, const float fmax)
     return std::make_shared<ClampField<T>>(a, fmin, fmax);
 }
 
+template <typename U>
+VSP<Color> toColor(const VSP<U>& a)
+{
+    return std::make_shared<ToColorField<U>>(a);
+}
+
 // ----------------------------------------------------------------------------
 
 // Binary Field Operator Helper Functions
@@ -261,6 +267,7 @@ template volumeDataType<float> evaluate(const VSP<float>& f, const Vector& P);
 template volumeDataType<Vector> evaluate(const VSP<Vector>& f, const Vector& P);
 template volumeDataType<Matrix> evaluate(const VSP<Matrix>& f, const Vector& P);
 template volumeDataType<Color> evaluate(const VSP<Color>& f, const Vector& P);
+template volumeDataType<openvdb::Vec3s> evaluate(const VSP<openvdb::Vec3s>& f, const Vector& P);
 
 // Gradient
 template volumeGradType<float> gradient(const VSP<float>& f, const Vector& P);
@@ -271,6 +278,7 @@ template VSP<float> constant(const float& v);
 template VSP<Vector> constant(const Vector& v);
 template VSP<Matrix> constant(const Matrix& v);
 template VSP<Color> constant(const Color& v);
+template VSP<openvdb::Vec3s> constant(const openvdb::Vec3s& v);
 
 // Mask
 template VSP<float> mask(const VSP<float>& a);
@@ -280,6 +288,7 @@ template VSP<float> negate(const VSP<float>& a);
 template VSP<Vector> negate(const VSP<Vector>& a);
 template VSP<Matrix> negate(const VSP<Matrix>& a);
 template VSP<Color> negate(const VSP<Color>& a);
+template VSP<openvdb::Vec3s> negate(const VSP<openvdb::Vec3s>& a);
 
 // Exp
 template VSP<float> Exp(const VSP<float>& a);
@@ -302,6 +311,7 @@ template VSP<float> translate(const VSP<float>& a, const Vector& xt);
 // Scale
 template VSP<float> scale(const VSP<float>& a, const float val);
 template VSP<Color> scale(const VSP<Color>& a, const float val);
+template VSP<openvdb::Vec3s> scale(const VSP<openvdb::Vec3s>& a, const float val);
 
 // Rotate
 template VSP<float> rotate(const VSP<float>& a, const float theta, const Vector& axis);
@@ -315,29 +325,37 @@ template VSP<float> shell(const VSP<float>& a, const float val);
 // Clamp
 template VSP<float> clamp(const VSP<float>& a, const float fmin, const float fmax); 
 
+// toColor
+template VSP<Color> toColor(const VSP<openvdb::Vec3s>& a);
+
 // Add
 template VSP<float> add(const VSP<float>& a, const VSP<float>& b);
 template VSP<Vector> add(const VSP<Vector>& a, const VSP<Vector>& b);
 template VSP<Matrix> add(const VSP<Matrix>& a, const VSP<Matrix>& b);
-template VSP<Color> add(const VSP<Color>& a, const VSP<Color>& b); 
+template VSP<Color> add(const VSP<Color>& a, const VSP<Color>& b);
+template VSP<openvdb::Vec3s> add(const VSP<openvdb::Vec3s>& a, const VSP<openvdb::Vec3s>& b);
+ 
 
 // Subtract
 template VSP<float> sub(const VSP<float>& a, const VSP<float>& b);
 template VSP<Vector> sub(const VSP<Vector>& a, const VSP<Vector>& b);
 template VSP<Matrix> sub(const VSP<Matrix>& a, const VSP<Matrix>& b);
 template VSP<Color> sub(const VSP<Color>& a, const VSP<Color>& b); 
+template VSP<openvdb::Vec3s> sub(const VSP<openvdb::Vec3s>& a, const VSP<openvdb::Vec3s>& b); 
 
 // Multiply
 template VSP<float> multiply(const VSP<float>& a, const VSP<float>& b);
 template VSP<Vector> multiply(const VSP<Vector>& a, const VSP<float>& b);
 template VSP<Matrix> multiply(const VSP<Matrix>& a, const VSP<float>& b);
 template VSP<Color> multiply(const VSP<Color>& a, const VSP<float>& b);
+template VSP<openvdb::Vec3s> multiply(const VSP<openvdb::Vec3s>& a, const VSP<float>& b);
 
 // Divide
 template VSP<float> divide(const VSP<float>& a, const VSP<float>& b);
 template VSP<Vector> divide(const VSP<Vector>& a, const VSP<float>& b);
 template VSP<Matrix> divide(const VSP<Matrix>& a, const VSP<float>& b);
 template VSP<Color> divide(const VSP<Color>& a, const VSP<float>& b);
+template VSP<openvdb::Vec3s> divide(const VSP<openvdb::Vec3s>& a, const VSP<float>& b);
 
 // Union
 template VSP<float> Union(const VSP<float>& a, const VSP<float>& b);
@@ -356,30 +374,35 @@ template VSP<float> operator+(const VSP<float>& a, const VSP<float>& b);
 template VSP<Vector> operator+(const VSP<Vector>& a, const VSP<Vector>& b);
 template VSP<Matrix> operator+(const VSP<Matrix>& a, const VSP<Matrix>& b);
 template VSP<Color> operator+(const VSP<Color>& a, const VSP<Color>& b);
+template VSP<openvdb::Vec3s> operator+(const VSP<openvdb::Vec3s>& a, const VSP<openvdb::Vec3s>& b);
 
 // Subtract operator
 template VSP<float> operator-(const VSP<float>& a, const VSP<float>& b);
 template VSP<Vector> operator-(const VSP<Vector>& a, const VSP<Vector>& b);
 template VSP<Matrix> operator-(const VSP<Matrix>& a, const VSP<Matrix>& b);
 template VSP<Color> operator-(const VSP<Color>& a, const VSP<Color>& b);
+template VSP<openvdb::Vec3s> operator-(const VSP<openvdb::Vec3s>& a, const VSP<openvdb::Vec3s>& b);
 
 // Multiply operator
 template VSP<float> operator*(const VSP<float>& a, const VSP<float>& b);
 template VSP<Vector> operator*(const VSP<Vector>& a, const VSP<float>& b);
 template VSP<Matrix> operator*(const VSP<Matrix>& a, const VSP<float>& b);
 template VSP<Color> operator*(const VSP<Color>& a, const VSP<float>& b);
+template VSP<openvdb::Vec3s> operator*(const VSP<openvdb::Vec3s>& a, const VSP<float>& b);
 
 // Divide operator
 template VSP<float> operator/(const VSP<float>& a, const VSP<float>& b);
 template VSP<Vector> operator/(const VSP<Vector>& a, const VSP<float>& b);
 template VSP<Matrix> operator/(const VSP<Matrix>& a, const VSP<float>& b);
 template VSP<Color> operator/(const VSP<Color>& a, const VSP<float>& b);
+template VSP<openvdb::Vec3s> operator/(const VSP<openvdb::Vec3s>& a, const VSP<float>& b);
 
 // Negate operator
 template VSP<float> operator-(const VSP<float>& a);
 template VSP<Vector> operator-(const VSP<Vector>& a);
 template VSP<Matrix> operator-(const VSP<Matrix>& a);
 template VSP<Color> operator-(const VSP<Color>& a);
+template VSP<openvdb::Vec3s> operator-(const VSP<openvdb::Vec3s>& a);
 
 }
 
