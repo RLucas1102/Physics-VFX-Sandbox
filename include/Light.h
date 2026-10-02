@@ -16,7 +16,7 @@ namespace lux {
     // Define the number of steps and extinction coeffcient for lights
     struct DSMSettings
     {
-        double ds = 0.1;
+        double ds = 1;
         float kappa = 0.01;
     };
     
@@ -65,6 +65,15 @@ namespace lux {
 
             PointLight() {}
             PointLight(const Vector& inPos, const Color& inCol);
+
+            // Accessors
+            Vector     getPos() const {return _pos;}
+            Color      getCol() const {return _col;}
+            VSP<float> getDSM() const {return _DSM;}
+
+            // Mutators
+            void setPos(const Vector& inPos) {_pos = inPos;}
+            void setCol(const Color& inCol)  {_col = inCol;}
 
             void createDSM(const VSP<float>& gridField, 
                            const openvdb::CoordBBox& bbox,
