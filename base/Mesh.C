@@ -2,6 +2,9 @@
 
 using namespace lux;
 
+// -----
+// Mesh
+// -----
 void Mesh::loadObj(const char *filename)
 {
     std::string line;
@@ -50,7 +53,20 @@ openvdb::FloatGrid::Ptr Mesh::createLevelSet(float vx_size, float halfwidth) con
     return openvdb::tools::meshToLevelSet<openvdb::FloatGrid>(*transform, _vertices, _faces, halfwidth);
 }
 
+//-----------------------------------------------------------------------------
+
+// -----------------
+// Helper Functions
+// -----------------
+
+MeshSP lux::mesh()
+{
+    return std::make_shared<Mesh>();
+}
+
 openvdb::FloatGrid::Ptr lux::createLevelSet(const std::shared_ptr<Mesh> &mesh, float vx_size, float halfwidth)
 {
     return mesh->createLevelSet(vx_size, halfwidth);
 }
+
+//-----------------------------------------------------------------------------
