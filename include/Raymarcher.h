@@ -2,6 +2,7 @@
 #define RAYMARCHER_H
 
 #include <memory>
+#include <vector>
 
 #include "Color.h"
 #include "Vector.h"
@@ -29,7 +30,7 @@ namespace lux {
             // Main algorithm for ray marching a pixel with a light
             Color RayMarchPixelLight(const Vector& direction, const Vector& eye,
                                      const VSP<float>& density, const VSP<Color>& Cm,
-                                     const PLight& light);
+                                     const std::vector<PLight>& lights);
 
             // Mutators
             void SetT(double T) { _T = T; }
