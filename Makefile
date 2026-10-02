@@ -18,8 +18,8 @@ OFILES = base/Matrix.o \
 AFILES = $(OFILES)
 
 ROOTDIR = .
-LIB = -L$(ROOTDIR)/lib -lstarter -lm 
-GLLDFLAGS = -lglut -lGL -lm -lGLU -lOpenImageIO -lOpenImageIO_Util -lopenvdb -ltbb -lz
+LIB = -L$(ROOTDIR)/lib -lstarter -lm -L /opt/openvdb-13.1.0/lib -lopenvdb
+GLLDFLAGS = -lglut -lGL -lm -lGLU -lOpenImageIO -lOpenImageIO_Util -ltbb -lz
 
 CXX = g++ -g -fPIC -fopenmp -fopenmp -std=c++17
 
@@ -29,7 +29,7 @@ PYTHONINCLUDE = -I/usr/include/python3.8
 
 SWIGEXEC = swig4.0
 
-INCLUDES = -I ./include/ $(PYTHONINCLUDE) -I /usr/local/include -I /usr/include -I ./ext/include
+INCLUDES = -I /opt/openvdb-13.1.0/include -I ./include/ $(PYTHONINCLUDE) -I /usr/local/include -I /usr/include -I ./ext/include
 
 test: $(AFILES) 
 	ar rv ./lib/libstarter.a $?
