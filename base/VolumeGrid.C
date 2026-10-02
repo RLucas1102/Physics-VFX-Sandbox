@@ -20,6 +20,16 @@ void lux::VolumeGrid<GridType>::init(const openvdb::Coord &llc,
     _bbox = std::make_shared<openvdb::CoordBBox>(llc, urc);
 }
 
+template <typename GridT>
+void VolumeGrid<GridT>::initLevelSet(const GridT &grid)
+{
+    _grid = grid->deepCopy();
+
+    _grid->setGridClass(openvdb::GRID_LEVEL_SET);
+
+    _bbox = std::make_shared<openvdb::CoordBBox>(grid->evalActiveVoxelBoundingBox());
+}
+
 template<typename GridType>
 typename VolumeGrid<GridType>::GridV VolumeGrid<GridType>::triLerp(const Vector &P)
 {

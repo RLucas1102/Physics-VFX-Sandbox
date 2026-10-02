@@ -31,6 +31,8 @@ namespace lux {
                       float vx_size, 
                       const GridV& dg);
 
+            void initLevelSet(const GridT& grid);
+
             // Perform trilinear interpolation on a given world coordinate
             // World coordinate will be converted to index coords
             GridV triLerp(const Vector& P);
@@ -85,6 +87,6 @@ namespace lux {
 
     //-----------------------------------------------------------------------------
 
-}
+} // namespace lux
 
 #endif
