@@ -7,6 +7,7 @@ OFILES = base/Matrix.o \
 	 base/FieldInterface.o\
 	 base/VolumeGrid.o \
 	 base/Mesh.o \
+	 base/Light.o \
 	 base/LinearAlgebra.o \
 	 base/Camera.o \
 	 base/Color.o \
@@ -20,7 +21,7 @@ ROOTDIR = .
 LIB = -L$(ROOTDIR)/lib -lstarter -lm 
 GLLDFLAGS = -lglut -lGL -lm -lGLU -lOpenImageIO -lOpenImageIO_Util -lopenvdb -ltbb -lz
 
-CXX = g++ -g -O1 -fPIC -fopenmp -fopenmp -std=c++17
+CXX = g++ -g -fPIC -fopenmp -fopenmp -std=c++17
 
 SWIGCXX = g++ -shared -g -O2 -fPIC -fopenmp -fopenmp -std=c++14
 
