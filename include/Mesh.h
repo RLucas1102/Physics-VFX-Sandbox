@@ -7,6 +7,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "Vector.h"
+
 namespace lux
 {
 
