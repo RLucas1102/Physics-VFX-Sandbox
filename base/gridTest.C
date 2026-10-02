@@ -49,31 +49,27 @@ int main(int argc, char** argv) {
     // Define a scene
     MeshSP object = mesh();
     object->loadObj("models/bunnyFixed/bunny_fixed.obj");
-
-    // Create color
-    VSP<Color> object_color = constant(Color(1,0,0,0));
-
-    // Create a grid
     VGSP<openvdb::FloatGrid> myGrid = grid<openvdb::FloatGrid>();
-
-    // Create Level set from mesh; this stamps it
     myGrid->initLevelSet(createLevelSet(object, 0.1));
-
-    // Convert to grid field and mask with color
     VSP<float> gf = gridField<openvdb::FloatGrid, float>(myGrid);
-    object_color = object_color * mask(-gf);
     gf = -(gf * constant(10.0f));
 
-    std::cout << evaluate(gf, Vector(0,0,0)) << std::endl;
-    std::cout << evaluate(gf, Vector(0,4,0)) << std::endl;
-    
+    // Create color
+    VSP<openvdb::Vec3s> object_color = constant(openvdb::Vec3s(1,0,0));
+    VGSP<openvdb::Vec3SGrid> color_grid = grid<openvdb::Vec3SGrid>();
+    color_grid->init(myGrid->getBBox(), 0.1, openvdb::Vec3s(0,0,0));
+    object_color = object_color * mask(gf);
+    color_grid->stamp(object_color);
+    object_color = gridField<openvdb::Vec3SGrid, openvdb::Vec3s>(color_grid);
+    VSP<Color> color = toColor(object_color);
+
     for (int j = 0; j < img->GetNy(); j++)
     {
         #pragma omp parallel for
         for (int i = 0; i < img->GetNx(); i++)
         {
             Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());
-            Color output = rm->RayMarchPixel(direction, cam->eye(), gf, object_color);
+            Color output = rm->RayMarchPixel(direction, cam->eye(), gf, color);
             img->SetValue(i, j, std::vector<float>{output[0], output[1], output[2], output[3]});
         }
         
