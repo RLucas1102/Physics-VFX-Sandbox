@@ -26,6 +26,7 @@ namespace lux {
 
     // Base class
     // All field operations will derive from this abstract class 
+    // Out acts as the return type and can be changed for child classes
     template<typename T, typename Out = T>
     class UnaryFieldOperator : public Volume<Out> {
         
