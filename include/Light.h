@@ -17,7 +17,7 @@ namespace lux {
     struct DSMSettings
     {
         double ds = 0.1;
-        float kappa = 24;
+        float kappa = 4;
     };
     
     //-----------------------------------------------------------------------------
