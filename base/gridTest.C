@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
     double near = zdist - xwidth / 2.0;
     double far = near + xwidth;
     double steps = 330;
-    std::shared_ptr<Raymarcher> rm = std::make_shared<Raymarcher>();
+    RM rm = raymarcher();
     float min_ds = (far - near) / 330;
     float max_ds = min_ds * 1.5;
     rm->SetDsMin(min_ds);
@@ -53,10 +53,10 @@ int main(int argc, char** argv) {
     VGSP<openvdb::FloatGrid> myGrid = grid<openvdb::FloatGrid>();
     myGrid->initLevelSet(createLevelSet(object, 0.1));
     VSP<float> gf = gridField<openvdb::FloatGrid, float>(myGrid);
-    gf = -(gf * constant(10.0f));
+    gf = -(gf * constant(5.0f));
 
     // Create color
-    VSP<openvdb::Vec3s> object_color = constant(openvdb::Vec3s(1,0,0));
+    VSP<openvdb::Vec3s> object_color = constant(openvdb::Vec3s(1,1,1));
     VGSP<openvdb::Vec3SGrid> color_grid = grid<openvdb::Vec3SGrid>();
     color_grid->init(myGrid->getBBox(), 0.1, openvdb::Vec3s(0,0,0));
     object_color = object_color * mask(gf);
@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
     VSP<Color> color = toColor(object_color);
 
     // Create a point light
-    PLight point1 = pointLight(Vector(0, 1, 0), Color(0, 0, 1, 0));
+    PLight point1 = pointLight(Vector(0, 1, 0), Color(0.1, 0.1, 1, 0));
     point1->createDSM(gf, myGrid->getBBox(), myGrid->getXform().voxelSize().x());
 
     for (int j = 0; j < img->GetNy(); j++)
@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
         for (int i = 0; i < img->GetNx(); i++)
         {
             Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());
-            Color output = rm->RayMarchPixel(direction, cam->eye(), gf, color);
+            Color output = rm->RayMarchPixelLight(direction, cam->eye(), gf, color, point1);
             img->SetValue(i, j, std::vector<float>{output[0], output[1], output[2], output[3]});
         }
         
