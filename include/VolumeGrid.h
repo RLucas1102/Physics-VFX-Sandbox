@@ -21,6 +21,7 @@ namespace lux {
 
             using GridT = typename GridType::Ptr;
             using GridV = typename GridType::ValueType;
+            using GridA = typename GridType::Accessor;
 
             VolumeGrid() {}
             ~VolumeGrid() = default;
@@ -38,7 +39,10 @@ namespace lux {
             void initLevelSet(const GridT& grid);
 
             // Accessors
-            openvdb::CoordBBox getBBox() {return *_bbox;}
+            GridT getGridRaw() const {return _grid;}
+            openvdb::CoordBBox getBBox() const {return *_bbox;}
+            openvdb::math::Transform getXform() const {return _grid->transform(); }
+            GridA getGridAccessor() {return _grid->getAccessor();}
 
             // Perform trilinear interpolation on a given world coordinate
             // World coordinate will be converted to index coords
