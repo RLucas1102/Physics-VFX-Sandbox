@@ -20,6 +20,12 @@
 #ifndef BINARYOPERATIONS_H
 #define BINARYOPERATIONS_H
 
+#include <openvdb/openvdb.h>
+
+#include "Volume.h"
+#include "Vector.h"
+#include "Matrix.h"
+
 namespace lux {
 
     // Base class
