@@ -41,7 +41,7 @@ Color Raymarcher::RayMarchPixel(const Vector &direction, const Vector &eye,
 
 Color Raymarcher::RayMarchPixelLight(const Vector &direction, const Vector &eye, 
                                      const VSP<float> &density, const VSP<Color> &Cm,
-                                     const PLight& light)
+                                     const std::vector<PLight>& lights)
 {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -57,7 +57,13 @@ Color Raymarcher::RayMarchPixelLight(const Vector &direction, const Vector &eye,
 
         if (den > 0.0) {
             float dT = std::exp(-ds * _kappa * den);
-            L += Cm->eval(X) * light->getCol() * light->getDSM()->eval(X) * (1-dT) * T/_kappa;
+            Color CLights = Color(0,0,0,0);
+            for (size_t i = 0; i < lights.size(); i++)
+            {
+                CLights += lights[i]->getCol() * lights[i]->getDSM()->eval(X);
+            }
+            
+            L += Cm->eval(X) * CLights * (1-dT) * T/_kappa;
             T *= dT;
         }
         X += direction * ds;
