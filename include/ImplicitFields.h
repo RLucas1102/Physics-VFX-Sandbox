@@ -13,6 +13,12 @@
 #ifndef IMPLICITFIELDS_H
 #define IMPLICITFIELDS_H
 
+#include <openvdb/openvdb.h>
+
+#include "Volume.h"
+#include "Vector.h"
+#include "Matrix.h"
+
 namespace lux {
 
     // Constant Field

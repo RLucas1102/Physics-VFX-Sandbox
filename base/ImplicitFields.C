@@ -10,9 +10,6 @@
  * operations.
  ******************************************/
 
-#include "Volume.h"
-#include "Vector.h"
-#include "Matrix.h"
 #include "ImplicitFields.h"
 
 using namespace lux;
@@ -252,6 +249,7 @@ template class ConstantField<float>;
 template class ConstantField<Vector>;
 template class ConstantField<Matrix>;
 template class ConstantField<Color>;
+template class ConstantField<openvdb::Vec3s>;
 
 //-----------------------------------------------------------------------------
 
