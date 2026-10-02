@@ -7,6 +7,7 @@
 #include "StarterViewer.h"
 #include "Raymarcher.h"
 #include "Camera.h"
+#include "Light.h"
 
 using namespace lux;
 using namespace starter;
@@ -62,6 +63,10 @@ int main(int argc, char** argv) {
     color_grid->stamp(object_color);
     object_color = gridField<openvdb::Vec3SGrid, openvdb::Vec3s>(color_grid);
     VSP<Color> color = toColor(object_color);
+
+    // Create a point light
+    PLight point1 = pointLight(Vector(0, 1, 0), Color(0, 0, 1, 0));
+    point1->createDSM(gf, myGrid->getBBox(), myGrid->getXform().voxelSize().x());
 
     for (int j = 0; j < img->GetNy(); j++)
     {
