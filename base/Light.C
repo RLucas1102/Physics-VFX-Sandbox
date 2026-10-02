@@ -1,47 +1,52 @@
 #include "Light.h"
 
+using namespace lux;
+
+// -----------
 // Base Class
-// -------------------------------------------------------
-LightBase::Light(const Vector &inPos, const Color &inCol) :
+// -----------
+LightBase::LightBase(const Vector &inPos, const Color &inCol) :
     _pos(inPos),
     _col(inCol)
 {
 }
 
-// -------------------------------------------------------
+//-----------------------------------------------------------------------------
 
+// ------------
 // Point light
-// -------------------------------------------------------
+// ------------
 PointLight::PointLight(const Vector &inPos, const Color &inCol) :
-    Light(inPos,inCol)
+    LightBase(inPos,inCol)
 {
 }
 
-void PointLight::createDSM(const VSP<float> gridField)
+void PointLight::createDSM(const VSP<float>& inGridField, 
+                           const openvdb::CoordBBox& bbox,
+                           float vx_size,
+                           float dg)
 {
-    VGSP<float> grid = std::make_shared<VolumeGrid<float>>();
+    VGSP<openvdb::FloatGrid> gridTemp = grid<openvdb::FloatGrid>();
 
-    VGSP<float> inGrid = gridField->getGridRaw();
+    gridTemp->init(bbox, vx_size, dg);
 
-    grid->init(inGrid->getBBox(), inGrid->getXform().voxelSize, 0.0f);
+    typename openvdb::FloatGrid::Accessor accessor = gridTemp->getGridAccessor();
 
-    GridTypes<float>::GridAccessor accessor = grid->getGridAccessor();
-
-    for (auto iter = grid->getBBox()->beginXYZ(); iter !=  grid->getBBox()->endXYZ(); ++iter)
+    for (auto iter = gridTemp->getBBox().beginXYZ(); iter !=  gridTemp->getBBox().endXYZ(); ++iter)
     {
-        openvdb::Vec3d world = grid->indexToWorld(*iter);
+        openvdb::Vec3d world = gridTemp->getGridRaw()->indexToWorld(*iter);
         Vector p(world.x(), world.y(), world.z());
         double val = 0;
 
-        if(gridField->eval(p) > 0.0) {
+        if(inGridField->eval(p) > 0.0) {
             double smax      = (_pos - p).magnitude();
-            double direction = (_pos - p).unitvector();
+            Vector direction = (_pos - p).unitvector();
             double s = 0;
 
             while (s < smax)
             {
-                val += gridField->eval(p) * _settings.ds;
-                X += direction * _settings.ds;
+                val += inGridField->eval(p) * _settings.ds;
+                p += direction * _settings.ds;
                 s += _settings.ds;
             }
 
@@ -51,8 +56,20 @@ void PointLight::createDSM(const VSP<float> gridField)
 
     }
 
-    _DSM = exp(constant(-kappa) * grid(grid));
+    _DSM = Exp(gridField<openvdb::FloatGrid, float>(gridTemp) * constant(-_settings.kappa));
 
 }
 
-// -------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+// -----------------
+// Helper Functions
+// -----------------
+
+PLight lux::pointLight(const Vector &inPos, const Color &inCol)
+{
+    return std::make_shared<PointLight>(inPos, inCol);
+}
+
+//-----------------------------------------------------------------------------
+
