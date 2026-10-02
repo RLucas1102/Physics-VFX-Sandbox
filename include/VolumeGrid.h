@@ -31,7 +31,14 @@ namespace lux {
                       float vx_size, 
                       const GridV& dg);
 
+            void init (const openvdb::CoordBBox& bbox,
+                       float vx_size, 
+                       const GridV& dg);
+
             void initLevelSet(const GridT& grid);
+
+            // Accessors
+            openvdb::CoordBBox getBBox() {return *_bbox;}
 
             // Perform trilinear interpolation on a given world coordinate
             // World coordinate will be converted to index coords
