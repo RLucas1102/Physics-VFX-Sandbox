@@ -3,6 +3,7 @@
 #include "Color.h"
 #include "FieldInterface.h"
 #include "VolumeGrid.h"
+#include "Mesh.h"
 #include "StarterViewer.h"
 #include "Raymarcher.h"
 #include "Camera.h"
@@ -46,18 +47,22 @@ int main(int argc, char** argv) {
     img->clear(1920/4, 1080/4, 4);
 
     // Define a scene
-    VSP<float> sphereC = sphere(2);
-    VSP<Color> sphere_color = constant(Color(1,0,0,0));
-    sphere_color = sphere_color * mask(sphereC);
+    MeshSP object = mesh();
+    object->loadObj("models/bunnyFixed/bunny_fixed.obj");
+
+    // Create color
+    VSP<Color> object_color = constant(Color(1,0,0,0));
 
     // Create a grid
     VGSP<openvdb::FloatGrid> myGrid = grid<openvdb::FloatGrid>();
 
-    float val = 100;
-    myGrid->init(openvdb::Coord(-val, -val, -val), openvdb::Coord(val, val, val), 0.1, -1000);
-    myGrid->stamp(sphereC);
+    // Create Level set from mesh; this stamps it
+    myGrid->initLevelSet(createLevelSet(object, 0.1));
 
+    // Convert to grid field and mask with color
     VSP<float> gf = gridField<openvdb::FloatGrid, float>(myGrid);
+    object_color = object_color * mask(-gf);
+    gf = -(gf * constant(10.0f));
 
     std::cout << evaluate(gf, Vector(0,0,0)) << std::endl;
     std::cout << evaluate(gf, Vector(0,4,0)) << std::endl;
@@ -68,7 +73,7 @@ int main(int argc, char** argv) {
         for (int i = 0; i < img->GetNx(); i++)
         {
             Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());
-            Color output = rm->RayMarchPixel(direction, cam->eye(), gf, sphere_color);
+            Color output = rm->RayMarchPixel(direction, cam->eye(), gf, object_color);
             img->SetValue(i, j, std::vector<float>{output[0], output[1], output[2], output[3]});
         }
         
