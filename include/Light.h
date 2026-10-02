@@ -16,8 +16,8 @@ namespace lux {
     // Define the number of steps and extinction coeffcient for lights
     struct DSMSettings
     {
-        double ds = 1;
-        float kappa = 0.01;
+        double ds = 0.1;
+        float kappa = 24;
     };
     
     //-----------------------------------------------------------------------------
