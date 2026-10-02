@@ -15,17 +15,24 @@
 #ifndef UNARYOPERATORS_H
 #define UNARYOPERATORS_H
 
+#include <openvdb/openvdb.h>
+
+#include "Volume.h"
+#include "Vector.h"
+#include "Color.h"
+#include "Matrix.h"
+
 namespace lux {
 
     // Base class
     // All field operations will derive from this abstract class 
-    template<typename T>
-    class UnaryFieldOperator : public Volume<T> {
+    template<typename T, typename Out = T>
+    class UnaryFieldOperator : public Volume<Out> {
         
         public:
 
             // Need to make these public for derived classes like Volume does
-            using typename Volume<T>::volumeDataType;
+            using typename Volume<Out>::volumeDataType;
 
             UnaryFieldOperator(const VSP<T>& a);
             ~UnaryFieldOperator() = default;
@@ -227,6 +234,20 @@ namespace lux {
         private:
             float _fmin;
             float _fmax;
+    };
+
+    // ToColorField
+    // Cast any vector with 3 components to a color field
+    template<typename T>
+    class ToColorField : public UnaryFieldOperator<T, Color> {
+        
+        using typename UnaryFieldOperator<T, Color>::volumeDataType;
+
+        public:
+            ToColorField(const VSP<T>& a);
+
+            const volumeDataType eval(const Vector& P) const override;
+
     };
 }
 

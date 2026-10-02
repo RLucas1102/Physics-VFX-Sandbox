@@ -12,9 +12,6 @@
  * See FieldInterface.h for more info
  ******************************************/
 
-#include "Volume.h"
-#include "Vector.h"
-#include "Matrix.h"
 #include "UnaryOperators.h"
 
 using namespace lux;
@@ -22,8 +19,8 @@ using namespace lux;
 // -----------------------
 // Unary Field Operations
 // -----------------------
-template<typename T>
-UnaryFieldOperator<T>::UnaryFieldOperator(const VSP<T>& a) : 
+template<typename T, typename Out>
+UnaryFieldOperator<T, Out>::UnaryFieldOperator(const VSP<T>& a) : 
     _a(a)
 {   
 }
@@ -270,6 +267,27 @@ const typename Volume<T>::volumeDataType ShellField<T>::eval(const Vector& P) co
 
 //-----------------------------------------------------------------------------
 
+// ------------------
+// ToColor Operation
+// ------------------
+template<typename T>
+ToColorField<T>::ToColorField(const VSP<T>& a) : 
+    UnaryFieldOperator<T, Color>(a) 
+{    
+}
+
+template<typename T>
+const typename UnaryFieldOperator<T, Color>::volumeDataType ToColorField<T>::eval(const Vector& P) const 
+{
+    Color c = Color(0,0,0,0);
+    auto v = this->_a->eval(P);
+    
+    c = Color(v[0], v[1], v[2], 0);
+    return c;
+}
+
+//-----------------------------------------------------------------------------
+
 // Explicit instantiations
 
 // Mask Field
@@ -283,6 +301,7 @@ template class NegateField<float>;
 template class NegateField<Vector>;
 template class NegateField<Matrix>;
 template class NegateField<Color>;
+template class NegateField<openvdb::Vec3s>;
 
 // Exp Field
 template class ExpField<float>;
@@ -305,6 +324,7 @@ template class TranslateField<float>;
 // Scale Field
 template class ScaleField<float>;
 template class ScaleField<Color>;
+template class ScaleField<openvdb::Vec3s>;
 
 // Rotate Field
 template class RotateField<float>;
@@ -314,6 +334,9 @@ template class DilateField<float>;
 
 // Shell Field
 template class ShellField<float>;
+
+// ToColor Field
+template class ToColorField<openvdb::Vec3s>;
 
 //-----------------------------------------------------------------------------
 
