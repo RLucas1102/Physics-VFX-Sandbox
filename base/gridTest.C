@@ -15,12 +15,17 @@ using namespace starter;
 
 int main(int argc, char** argv) {
 
+    // Animation settings
+    int n_frames = strtol(argv[1], NULL, 10);
+    int start_frame = strtol(argv[2], NULL, 10);
+    int end_frame = strtol(argv[3], NULL, 10);
+
     // Define a camera
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
     
     float zdist = 20;
     float xwidth = 8;
-    Vector pos = Vector(0,0,zdist);
+    Vector pos = Vector(0,4,zdist);
     Vector lookAt = Vector(0,0,0);
     Vector view = lookAt - pos;
     Vector axis = Vector(0,1,0);
@@ -44,7 +49,7 @@ int main(int argc, char** argv) {
     rm->SetKappa(0.1);
 
     // Define an image
-    // float theta = 360/n_frames * M_PI / 180;
+    float theta = 360/n_frames * M_PI / 180;
     std::shared_ptr<ImgProc> img = std::make_shared<ImgProc>();
     img->clear(1920/4, 1080/4, 4);
 
@@ -81,15 +86,45 @@ int main(int argc, char** argv) {
     PLights[1] = point2;
     PLights[2] = point3;
 
-    for (int j = 0; j < img->GetNy(); j++)
+
+    Vector X = pos;
+    float Cos = std::cos(start_frame * theta);
+    float ax = axis * X;
+    Vector xa = X^axis;
+    pos = X * Cos + axis * ax * (1 - Cos) + xa * std::sin(start_frame * theta);
+
+    view = lookAt - pos;
+
+    cam->setEyeViewUp( pos, view, Vector(0,1,0) );
+
+    for (int k = start_frame; k < end_frame; k++)
     {
-        #pragma omp parallel for
-        for (int i = 0; i < img->GetNx(); i++)
+        for (int j = 0; j < img->GetNy(); j++)
         {
-            Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());
-            Color output = rm->RayMarchPixelLight(direction, cam->eye(), gf, color, PLights);
-            img->SetValue(i, j, std::vector<float>{output[0], output[1], output[2], output[3]});
+            #pragma omp parallel for
+            for (int i = 0; i < img->GetNx(); i++)
+            {
+                Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());
+                Color output = rm->RayMarchPixelLight(direction, cam->eye(), gf, color, PLights);
+                img->SetValue(i, j, std::vector<float>{output[0], output[1], output[2], output[3]});
+            }
+            
         }
+
+        std::stringstream ss;
+        ss << "images/bunny." << std::setw(4) << std::setfill('0') << k << ".exr";
+        std::string filename = ss.str();
+        img->Write(filename);
+
+        X = pos;
+        Cos = std::cos(theta);
+        ax = axis * X;
+        xa = X^axis;
+        pos = X * Cos + axis * ax * (1 - Cos) + xa * std::sin(theta);
+
+        view = lookAt - pos;
+
+        cam->setEyeViewUp( pos, view, Vector(0,1,0) );
         
     }
 
