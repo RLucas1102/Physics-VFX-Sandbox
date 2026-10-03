@@ -26,6 +26,10 @@ void PointLight::createDSM(const VSP<float>& inGridField,
                            float vx_size,
                            float dg)
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<>dis(_settings.dsMin, _settings.dsMax);
+
     VGSP<openvdb::FloatGrid> gridTemp = grid<openvdb::FloatGrid>();
 
     gridTemp->init(bbox, vx_size, dg);
@@ -45,9 +49,10 @@ void PointLight::createDSM(const VSP<float>& inGridField,
 
             while (s < smax)
             {
-                val += inGridField->eval(p) * _settings.ds;
-                p += direction * _settings.ds;
-                s += _settings.ds;
+                double ds = dis(gen);
+                val += inGridField->eval(p) * ds;
+                p += direction * ds;
+                s += ds;
             }
 
             accessor.setValue(*iter, val);
