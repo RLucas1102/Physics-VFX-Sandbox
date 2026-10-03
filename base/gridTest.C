@@ -23,8 +23,8 @@ int main(int argc, char** argv) {
     // Define a camera
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
     
-    float zdist = 20;
-    float xwidth = 8;
+    float zdist = 10;
+    float xwidth = 4;
     Vector pos = Vector(0,4,zdist);
     Vector lookAt = Vector(0,0,0);
     Vector view = lookAt - pos;
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
     double steps = 330;
     RM rm = raymarcher();
     float min_ds = (far - near) / 330;
-    float max_ds = min_ds * 1.5;
+    float max_ds = min_ds * 3.5;
     rm->SetDsMin(min_ds);
     rm->SetDsMax(max_ds);
     rm->SetT(1);
@@ -53,39 +53,57 @@ int main(int argc, char** argv) {
     std::shared_ptr<ImgProc> img = std::make_shared<ImgProc>();
     img->clear(1920/4, 1080/4, 4);
 
+    std::cout << "Creating Level Set. . ." << std::endl;
+
     // Define a scene
     MeshSP object = mesh();
     object->loadObj("models/bunnyFixed/bunny_fixed.obj");
     VGSP<openvdb::FloatGrid> myGrid = grid<openvdb::FloatGrid>();
-    myGrid->initLevelSet(createLevelSet(object, 0.1));
+    myGrid->initLevelSet(createLevelSet(object, 0.01));
     VSP<float> gf = gridField<openvdb::FloatGrid, float>(myGrid);
-    gf = mask(-gf);
+    gf = clamp(-gf * constant(10.0f), 0, 2);
 
+    std::cout << "Done!" << std::endl;
+    std::cout << "Stamping Color Grid. . ." << std::endl;
+    
     // Create color
     VSP<openvdb::Vec3s> object_color = constant(openvdb::Vec3s(1, 1, 1));
     VGSP<openvdb::Vec3SGrid> color_grid = grid<openvdb::Vec3SGrid>();
-    color_grid->init(myGrid->getBBox(), 0.1, openvdb::Vec3s(0,0,0));
+
+    float val = 30;
+    openvdb::CoordBBox cBBox = openvdb::CoordBBox(openvdb::Coord(-val, -val, -val), openvdb::Coord(val, val, val));
+    
+    color_grid->init(cBBox, 0.5, openvdb::Vec3s(0,0,0));
     object_color = object_color * mask(gf);
     color_grid->stamp(object_color);
     object_color = gridField<openvdb::Vec3SGrid, openvdb::Vec3s>(color_grid);
     VSP<Color> color = toColor(object_color);
 
+    std::cout << "Done!" << std::endl;
+
     // Create a point light
     std::vector<PLight> PLights(3);
 
-    PLight point1 = pointLight(Vector(15, 15, 15), Color(0.2, 0.1, 1.0, 0));
-    point1->createDSM(gf, myGrid->getBBox(), myGrid->getXform().voxelSize().x());
+    std::cout << "Creating Deep Shadow Map 1. . ." << std::endl;
+
+    PLight key = pointLight(Vector(3, 3, 3), Color(0.2, 0.1, 1.0, 0));
+    key->createDSM(gf, cBBox, 0.1);
+
+    std::cout << "Creating Deep Shadow Map 2. . ." << std::endl;
     
-    PLight point2 = pointLight(Vector(15, 0, -15), Color(0.1, 0.5, 0.1, 0));
-    point2->createDSM(gf, myGrid->getBBox(), myGrid->getXform().voxelSize().x());
+    PLight fill = pointLight(Vector(0, -3, 0), Color(0.1, 1.0, 0.1, 0));
+    fill->createDSM(gf, cBBox, 0.1);
 
-    PLight point3 = pointLight(Vector(-15, 0, -15), Color(0.2, 0.1, 0.5, 0));
-    point3->createDSM(gf, myGrid->getBBox(), myGrid->getXform().voxelSize().x());
+    std::cout << "Creating Deep Shadow Map 3. . ." << std::endl;
 
-    PLights[0] = point1;
-    PLights[1] = point2;
-    PLights[2] = point3;
+    PLight rim = pointLight(Vector(0, 0, -3), Color(1.0, 0.1, 0.2, 0));
+    rim->createDSM(gf, cBBox, 0.1);
 
+    PLights[0] = key;
+    PLights[1] = fill;
+    PLights[2] = rim;
+
+    std::cout << "Done!" << std::endl;    
 
     Vector X = pos;
     float Cos = std::cos(start_frame * theta);
@@ -99,22 +117,31 @@ int main(int argc, char** argv) {
 
     for (int k = start_frame; k < end_frame; k++)
     {
-        for (int j = 0; j < img->GetNy(); j++)
+
+        std::cout << "Frame: " << k << std::endl;
+        std::cout << "Starting Ray marching. . ." << std::endl;
+
+        #pragma omp parallel 
         {
-            #pragma omp parallel for
-            for (int i = 0; i < img->GetNx(); i++)
+            #pragma omp for schedule(dynamic, 4)
+            for (int j = 0; j < img->GetNy(); j++)
             {
-                Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());
-                Color output = rm->RayMarchPixelLight(direction, cam->eye(), gf, color, PLights);
-                img->SetValue(i, j, std::vector<float>{output[0], output[1], output[2], output[3]});
+                for (int i = 0; i < img->GetNx(); i++)
+                {
+                    Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());
+                    Color output = rm->RayMarchPixelLightFaster(direction, cam->eye(), gf, color, PLights, myGrid);
+                    img->SetValue(i, j, std::vector<float>{output[0], output[1], output[2], output[3]});
+                }
+                
             }
-            
         }
 
         std::stringstream ss;
         ss << "images/bunny." << std::setw(4) << std::setfill('0') << k << ".exr";
         std::string filename = ss.str();
         img->Write(filename);
+
+        std::cout << ss.str() << " complete!" << std::endl;
 
         X = pos;
         Cos = std::cos(theta);
