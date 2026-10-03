@@ -1,6 +1,7 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
+#include <random>
 #include <memory>
 
 #include <openvdb/openvdb.h>
@@ -16,8 +17,9 @@ namespace lux {
     // Define the number of steps and extinction coeffcient for lights
     struct DSMSettings
     {
-        double ds = 0.1;
-        float kappa = 4;
+        double dsMin = 0.05;
+        double dsMax = dsMin * 3;
+        float kappa = 2;
     };
     
     //-----------------------------------------------------------------------------
