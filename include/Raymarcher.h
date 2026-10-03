@@ -3,6 +3,10 @@
 
 #include <memory>
 #include <vector>
+#include <random>
+
+#include <openvdb/openvdb.h>
+#include <openvdb/tools/RayIntersector.h>
 
 #include "Color.h"
 #include "Vector.h"
@@ -31,6 +35,12 @@ namespace lux {
             Color RayMarchPixelLight(const Vector& direction, const Vector& eye,
                                      const VSP<float>& density, const VSP<Color>& Cm,
                                      const std::vector<PLight>& lights);
+
+            // Main algorithm for ray marching a pixel with a light, but faster
+            Color RayMarchPixelLightFaster(const Vector& direction, const Vector& eye,
+                                           const VSP<float>& density, const VSP<Color>& Cm,
+                                           const std::vector<PLight>& lights,
+                                           const VGSP<openvdb::FloatGrid>& levelSetPtr);
 
             // Mutators
             void SetT(double T) { _T = T; }
