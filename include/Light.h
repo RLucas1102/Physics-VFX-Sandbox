@@ -47,7 +47,7 @@ namespace lux {
             virtual void createDSM(const VSP<float>& gridField, 
                                    const openvdb::CoordBBox& bbox,
                                    float vx_size,
-                                   float dg) = 0;
+                                   float dg);
 
         protected:
             Vector      _pos;
