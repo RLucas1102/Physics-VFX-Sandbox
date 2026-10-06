@@ -29,7 +29,7 @@ PYTHONINCLUDE = -I/usr/include/python3.8
 
 SWIGEXEC = swig4.0
 
-INCLUDES = -I /opt/homebrew/include -I ./include/ $(PYTHONINCLUDE) -I /usr/local/include -I /usr/include -I ./ext/include
+INCLUDES = -I /opt/homebrew/include -I ./include/ $(PYTHONINCLUDE) -I /usr/local/include -I /usr/include 
 
 test: $(AFILES) 
 	ar rv ./lib/libstarter.a $?

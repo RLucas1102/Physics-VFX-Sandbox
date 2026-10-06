@@ -130,7 +130,7 @@ int main(int argc, char** argv) {
                 {
                     Vector direction = cam->calculateDirection(i, j, img->GetNx(), img->GetNy());
                     Color output = rm->RayMarchPixelLightFaster(direction, cam->eye(), gf, color, PLights, myGrid);
-                    img->SetValue(i, j, std::vector<float>{output[0], output[1], output[2], output[3]});
+                    img->SetValue(i, j, std::vector<float>{(float)output[0], (float)output[1], (float)output[2], (float)output[3]});
                 }
                 
             }
