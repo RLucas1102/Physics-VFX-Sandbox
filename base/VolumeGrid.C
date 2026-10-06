@@ -87,9 +87,9 @@ GridField<GridT, GridV>::GridField(const VGSP<GridT> &g) :
 }
 
 template <typename GridT, typename GridV>
-const typename Volume<GridV>::volumeDataType lux::GridField<GridT, GridV>::eval(const Vector &p) const
+const typename GridField<GridT, GridV>::volumeDataType lux::GridField<GridT, GridV>::eval(const Vector &p) const
 {
-    return _g->triLerp(p);;
+    return _g->triLerp(p);
 }
 
 //-----------------------------------------------------------------------------
@@ -114,19 +114,22 @@ VSP<GridV> lux::gridField(const VGSP<GridT>& g)
 // ------------------------
 // Explicit instantiations
 // ------------------------
+namespace lux
+{
+    // Volume Grid
+    template class VolumeGrid<openvdb::FloatGrid>;
+    template class VolumeGrid<openvdb::Vec3SGrid>;
 
-// Volume Grid
-template class VolumeGrid<openvdb::FloatGrid>;
-template class VolumeGrid<openvdb::Vec3SGrid>;
+    // Volume Grid Creation Helper
+    template VGSP<openvdb::FloatGrid> lux::grid();
+    template VGSP<openvdb::Vec3SGrid> lux::grid();
 
-// Volume Grid Creation Helper
-template VGSP<openvdb::FloatGrid> lux::grid();
-template VGSP<openvdb::Vec3SGrid> lux::grid();
+    // Grid Field
+    template class GridField<openvdb::FloatGrid, float>;
+    template class GridField<openvdb::Vec3SGrid, openvdb::Vec3s>;
 
-// Grid Field
-template class GridField<openvdb::FloatGrid, float>;
-template class GridField<openvdb::Vec3SGrid, openvdb::Vec3s>;
+    // Grid Field Creation Helper
+    template VSP<float> lux::gridField(const VGSP<openvdb::FloatGrid>& g);
+    template VSP<openvdb::Vec3s> lux::gridField(const VGSP<openvdb::Vec3SGrid>& g);
 
-// Grid Field Creation Helper
-template VSP<float> lux::gridField(const VGSP<openvdb::FloatGrid>& g);
-template VSP<openvdb::Vec3s> lux::gridField(const VGSP<openvdb::Vec3SGrid>& g);
+} // namespace lux

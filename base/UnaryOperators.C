@@ -37,7 +37,7 @@ MaskField<T>::MaskField(const VSP<T>& a) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType MaskField<T>::eval(const Vector& P) const 
+const typename MaskField<T>::volumeDataType MaskField<T>::eval(const Vector& P) const 
 {
     if (this->_a->eval(P) > 0) { return 1; }
     else { return 0; }
@@ -57,7 +57,7 @@ ClampField<T>::ClampField(const VSP<T>& a, const float fmin, const float fmax) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType ClampField<T>::eval(const Vector& P) const 
+const typename ClampField<T>::volumeDataType ClampField<T>::eval(const Vector& P) const 
 {
     float result = 0;
     if (this->_a->eval(P) <= _fmin) { result = _fmin; }
@@ -78,7 +78,7 @@ NegateField<T>::NegateField(const VSP<T>& a) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType NegateField<T>::eval(const Vector& P) const 
+const typename NegateField<T>::volumeDataType NegateField<T>::eval(const Vector& P) const 
 {
     return -this->_a->eval(P);
 } 
@@ -95,7 +95,7 @@ ExpField<T>::ExpField(const VSP<T>& a) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType ExpField<T>::eval(const Vector& P) const 
+const typename ExpField<T>::volumeDataType ExpField<T>::eval(const Vector& P) const 
 {
     return std::exp(this->_a->eval(P)); 
 }
@@ -112,7 +112,7 @@ LogField<T>::LogField(const VSP<T>& a) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType LogField<T>::eval(const Vector& P) const 
+const typename LogField<T>::volumeDataType LogField<T>::eval(const Vector& P) const 
 {
    return std::log(this->_a->eval(P));
 }
@@ -129,7 +129,7 @@ SinField<T>::SinField(const VSP<T>& a) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType SinField<T>::eval(const Vector& P) const 
+const typename SinField<T>::volumeDataType SinField<T>::eval(const Vector& P) const 
 {
    return std::sin(this->_a->eval(P));
 }
@@ -146,7 +146,7 @@ CosField<T>::CosField(const VSP<T>& a) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType CosField<T>::eval(const Vector& P) const 
+const typename CosField<T>::volumeDataType CosField<T>::eval(const Vector& P) const 
 {
    return std::cos(this->_a->eval(P));
 }
@@ -164,7 +164,7 @@ PowField<T>::PowField(const VSP<T>& a, const float val) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType PowField<T>::eval(const Vector& P) const 
+const typename PowField<T>::volumeDataType PowField<T>::eval(const Vector& P) const 
 {
     return std::pow(this->_a->eval(P), _val);
 }
@@ -182,7 +182,7 @@ TranslateField<T>::TranslateField(const VSP<T>& a, const Vector& xt) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType TranslateField<T>::eval(const Vector& P) const 
+const typename TranslateField<T>::volumeDataType TranslateField<T>::eval(const Vector& P) const 
 {
     return this->_a->eval(P - _Xt);
 }
@@ -200,7 +200,7 @@ ScaleField<T>::ScaleField(const VSP<T>& a, const float val) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType ScaleField<T>::eval(const Vector& P) const 
+const typename ScaleField<T>::volumeDataType ScaleField<T>::eval(const Vector& P) const 
 {
     return this->_a->eval(P / _val);
 }
@@ -219,7 +219,7 @@ RotateField<T>::RotateField(const VSP<T>& a, const float theta, const Vector& ax
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType RotateField<T>::eval(const Vector& P) const 
+const typename RotateField<T>::volumeDataType RotateField<T>::eval(const Vector& P) const 
 {
     Vector X = P;
     float Cos = std::cos(_theta);
@@ -242,7 +242,7 @@ DilateField<T>::DilateField(const VSP<T>& a, const float val) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType DilateField<T>::eval(const Vector& P) const 
+const typename DilateField<T>::volumeDataType DilateField<T>::eval(const Vector& P) const 
 {
     return this->_a->eval(P) + _val;
 }
@@ -260,7 +260,7 @@ ShellField<T>::ShellField(const VSP<T>& a, const float val) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType ShellField<T>::eval(const Vector& P) const 
+const typename ShellField<T>::volumeDataType ShellField<T>::eval(const Vector& P) const 
 {
     return std::min(this->_a->eval(P) + _val / 2, -(this->_a->eval(P) - _val / 2));
 }
@@ -277,7 +277,7 @@ ToColorField<T>::ToColorField(const VSP<T>& a) :
 }
 
 template<typename T>
-const typename UnaryFieldOperator<T, Color>::volumeDataType ToColorField<T>::eval(const Vector& P) const 
+const typename ToColorField<T>::volumeDataType ToColorField<T>::eval(const Vector& P) const 
 {
     Color c = Color(0,0,0,0);
     auto v = this->_a->eval(P);
@@ -288,55 +288,59 @@ const typename UnaryFieldOperator<T, Color>::volumeDataType ToColorField<T>::eva
 
 //-----------------------------------------------------------------------------
 
-// Explicit instantiations
+namespace lux
+{
+    // Explicit instantiations
 
-// Mask Field
-template class MaskField<float>;
+    // Mask Field
+    template class MaskField<float>;
 
-// Clamp Field
-template class ClampField<float>;
+    // Clamp Field
+    template class ClampField<float>;
 
-// Negate Field
-template class NegateField<float>;
-template class NegateField<Vector>;
-template class NegateField<Matrix>;
-template class NegateField<Color>;
-template class NegateField<openvdb::Vec3s>;
+    // Negate Field
+    template class NegateField<float>;
+    template class NegateField<Vector>;
+    template class NegateField<Matrix>;
+    template class NegateField<Color>;
+    template class NegateField<openvdb::Vec3s>;
 
-// Exp Field
-template class ExpField<float>;
+    // Exp Field
+    template class ExpField<float>;
 
-// Log Field
-template class LogField<float>;
+    // Log Field
+    template class LogField<float>;
 
-// Sin Field
-template class SinField<float>;
+    // Sin Field
+    template class SinField<float>;
 
-// Cos Field
-template class CosField<float>;
+    // Cos Field
+    template class CosField<float>;
 
-// Pow Field
-template class PowField<float>;
+    // Pow Field
+    template class PowField<float>;
 
-// Translate Field
-template class TranslateField<float>;
+    // Translate Field
+    template class TranslateField<float>;
 
-// Scale Field
-template class ScaleField<float>;
-template class ScaleField<Color>;
-template class ScaleField<openvdb::Vec3s>;
+    // Scale Field
+    template class ScaleField<float>;
+    template class ScaleField<Color>;
+    template class ScaleField<openvdb::Vec3s>;
 
-// Rotate Field
-template class RotateField<float>;
+    // Rotate Field
+    template class RotateField<float>;
 
-// Dilate Field
-template class DilateField<float>;
+    // Dilate Field
+    template class DilateField<float>;
 
-// Shell Field
-template class ShellField<float>;
+    // Shell Field
+    template class ShellField<float>;
 
-// ToColor Field
-template class ToColorField<openvdb::Vec3s>;
+    // ToColor Field
+    template class ToColorField<openvdb::Vec3s>;
+
+} // namespace lux
 
 //-----------------------------------------------------------------------------
 

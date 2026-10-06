@@ -43,7 +43,7 @@ AddField<T>::AddField(const VSP<T>& a, const VSP<T>& b) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType AddField<T>::eval(const Vector& P) const 
+const typename AddField<T>::volumeDataType AddField<T>::eval(const Vector& P) const 
 {
     return this->_a->eval(P) + this->_b->eval(P);
 } 
@@ -60,7 +60,7 @@ SubtractField<T>::SubtractField(const VSP<T>& a, const VSP<T>& b) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType SubtractField<T>::eval(const Vector& P) const 
+const typename SubtractField<T>::volumeDataType SubtractField<T>::eval(const Vector& P) const 
 {
     return this->_a->eval(P) - this->_b->eval(P);
 }
@@ -77,7 +77,7 @@ MultiplyField<T,U>::MultiplyField(const VSP<T>& a, const VSP<U>& b) :
 }
 
 template<typename T, typename U>
-const typename Volume<T>::volumeDataType MultiplyField<T,U>::eval(const Vector& P) const 
+const typename MultiplyField<T,U>::volumeDataType MultiplyField<T,U>::eval(const Vector& P) const 
 {
     return this->_a->eval(P) * this->_b->eval(P); 
 }
@@ -94,7 +94,7 @@ DivideField<T,U>::DivideField(const VSP<T>& a, const VSP<U>& b) :
 }
 
 template<typename T, typename U>
-const typename Volume<T>::volumeDataType DivideField<T,U>::eval(const Vector& P) const 
+const typename DivideField<T,U>::volumeDataType DivideField<T,U>::eval(const Vector& P) const 
 {
     return this->_a->eval(P) / this->_b->eval(P); 
 }
@@ -111,7 +111,7 @@ UnionField<T>::UnionField(const VSP<T>& a, const VSP<T>& b) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType UnionField<T>::eval(const Vector& P) const 
+const typename UnionField<T>::volumeDataType UnionField<T>::eval(const Vector& P) const 
 {
     return std::max(this->_a->eval(P), this->_b->eval(P)); 
 }
@@ -128,7 +128,7 @@ IntersectionField<T>::IntersectionField(const VSP<T>& a, const VSP<T>& b) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType IntersectionField<T>::eval(const Vector& P) const 
+const typename IntersectionField<T>::volumeDataType IntersectionField<T>::eval(const Vector& P) const 
 {
     return std::min(this->_a->eval(P), this->_b->eval(P)); 
 }
@@ -145,7 +145,7 @@ CutoutField<T>::CutoutField(const VSP<T>& a, const VSP<T>& b) :
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType CutoutField<T>::eval(const Vector& P) const 
+const typename CutoutField<T>::volumeDataType CutoutField<T>::eval(const Vector& P) const 
 {
     return std::min(this->_a->eval(P), -this->_b->eval(P)); 
 }
@@ -164,53 +164,56 @@ BlendField<T>::BlendField(const VSP<T>& a, const VSP<T>& b, const float alpha1, 
 }
 
 template<typename T>
-const typename Volume<T>::volumeDataType BlendField<T>::eval(const Vector& P) const 
+const typename BlendField<T>::volumeDataType BlendField<T>::eval(const Vector& P) const 
 {
     return std::exp(_alpha1 * this->_a->eval(P)) + std::exp(_alpha2 * this->_b->eval(P)) - 2; 
 }
 
 //-----------------------------------------------------------------------------
 
-// Explicit instantiations
+namespace lux
+{
+    // Explicit instantiations
 
-// Add Field
-template class AddField<float>;
-template class AddField<Vector>;
-template class AddField<Matrix>;
-template class AddField<Color>;
-template class AddField<openvdb::Vec3s>;
+    // Add Field
+    template class AddField<float>;
+    template class AddField<Vector>;
+    template class AddField<Matrix>;
+    template class AddField<Color>;
+    template class AddField<openvdb::Vec3s>;
 
-// Subtract Field
-template class SubtractField<float>;
-template class SubtractField<Vector>;
-template class SubtractField<Matrix>;
-template class SubtractField<Color>;
-template class SubtractField<openvdb::Vec3s>;
+    // Subtract Field
+    template class SubtractField<float>;
+    template class SubtractField<Vector>;
+    template class SubtractField<Matrix>;
+    template class SubtractField<Color>;
+    template class SubtractField<openvdb::Vec3s>;
 
-// Multiply Field
-template class MultiplyField<float, float>;
-template class MultiplyField<Vector, float>;
-template class MultiplyField<Matrix, float>;
-template class MultiplyField<Color, float>;
-template class MultiplyField<openvdb::Vec3s, float>;
+    // Multiply Field
+    template class MultiplyField<float, float>;
+    template class MultiplyField<Vector, float>;
+    template class MultiplyField<Matrix, float>;
+    template class MultiplyField<Color, float>;
+    template class MultiplyField<openvdb::Vec3s, float>;
 
-// Divide Field
-template class DivideField<float, float>;
-template class DivideField<Vector, float>;
-template class DivideField<Matrix, float>;
-template class DivideField<Color, float>;
-template class DivideField<openvdb::Vec3s, float>;
+    // Divide Field
+    template class DivideField<float, float>;
+    template class DivideField<Vector, float>;
+    template class DivideField<Matrix, float>;
+    template class DivideField<Color, float>;
+    template class DivideField<openvdb::Vec3s, float>;
 
-// Union Field
-template class UnionField<float>;
+    // Union Field
+    template class UnionField<float>;
 
-// Intersection Field
-template class IntersectionField<float>;
+    // Intersection Field
+    template class IntersectionField<float>;
 
-// Cutout Field
-template class CutoutField<float>;
+    // Cutout Field
+    template class CutoutField<float>;
 
-// Blend Field
-template class BlendField<float>;
+    // Blend Field
+    template class BlendField<float>;
 
+} // namespace lux
 //-----------------------------------------------------------------------------

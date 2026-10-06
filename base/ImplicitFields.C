@@ -24,13 +24,13 @@ ConstantField<T>::ConstantField(const T &v) :
 }
 
 template <typename T>
-const typename Volume<T>::volumeDataType ConstantField<T>::eval(const Vector &P) const
+const typename ConstantField<T>::volumeDataType ConstantField<T>::eval(const Vector &P) const
 {
     return _value;
 }
 
 template <typename T>
-const typename Volume<T>::volumeGradType ConstantField<T>::grad(const Vector &P) const
+const typename ConstantField<T>::volumeGradType ConstantField<T>::grad(const Vector &P) const
 {
     return {};
 }
@@ -242,14 +242,18 @@ const float SteinerField::eval(const Vector &p) const
 
 //-----------------------------------------------------------------------------
 
-// Explicit instantiations
+namespace lux
+{
+    // Explicit instantiations
 
-// Constant Field
-template class ConstantField<float>;
-template class ConstantField<Vector>;
-template class ConstantField<Matrix>;
-template class ConstantField<Color>;
-template class ConstantField<openvdb::Vec3s>;
+    // Constant Field
+    template class ConstantField<float>;
+    template class ConstantField<Vector>;
+    template class ConstantField<Matrix>;
+    template class ConstantField<Color>;
+    template class ConstantField<openvdb::Vec3s>;
+
+} // namespace lux
 
 //-----------------------------------------------------------------------------
 
