@@ -2,18 +2,45 @@
 
 using namespace lux;
 
-std::shared_ptr<Scene> Scene::Instance()
+// ------
+// Scene
+// ------
+
+Scene::Scene()
+    : initialized(false), frame(0)
 {
-    if(pScene==nullptr)
-    {
-        pScene = std::make_shared<Scene>();
-    }
-    return pScene;
 }
+
+std::shared_ptr<Scene> Scene::pScene = nullptr;
 
 void Scene::init()
 {
     // Put all objects/volumes/lights/colors in here
+    
+    // Define volumes in scene
+    VSP<float> red_sphere = sphere(1.0f);
+    VSP<Color> material = constant(Color(1.0f, 0.0f, 0.0f, 0.0f));
+    
+    VSP<Color> output = material * red_sphere;
+
+    // Set member variables
+    _volumes.push_back(red_sphere);
+    _materials.push_back(output);
+
+}
+
+void Scene::setupCamera(float zdist, float xwidth)
+{
+    std::shared_ptr<Camera> cam = std::make_shared<Camera>();
+    
+    Vector pos = Vector(0,4,zdist);
+    Vector lookAt = Vector(0,0,0);
+    Vector view = lookAt - pos;
+    Vector axis = Vector(0,1,0);
+
+    cam->setFov(60);
+    cam->setEyeViewUp( pos, view, Vector(0,1,0) );
+    _cam = cam;
 }
 
 void Scene::update()
@@ -21,10 +48,15 @@ void Scene::update()
     // Move camera in here for turntable
 }
 
-// -------------------------------------------------
-// End Scene
+//-----------------------------------------------------------------------------
 
-std::shared_ptr<Scene> lux::CreateScene()
+// -----------------
+// Helper Functions
+// -----------------
+
+SC lux::CreateScene()
 {
-    return std::shared_ptr<Scene>();
+    return lux::Scene::Instance();
 }
+
+//-----------------------------------------------------------------------------
