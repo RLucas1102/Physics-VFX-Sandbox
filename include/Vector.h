@@ -144,7 +144,7 @@ class Vector
 
    char *__str__() const {
        static char tmp[1024];
-       std::sprintf(tmp,"Vector(%g,%g,%g)", xyz[0],xyz[1],xyz[2]);
+       std::snprintf(tmp, sizeof(tmp), "Vector(%g,%g,%g)", xyz[0],xyz[1],xyz[2]);
        return tmp;
    }
 
