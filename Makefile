@@ -43,7 +43,7 @@ base: $(AFILES)
 	$(CXX) -c $(INCLUDES) $< -o $@
 
 clean:
-	rm -rf *.o bin/viewer bin/gridTest base/*.o core ./lib/libstarter.a  *~ swig/*~ swig/*.so swig/*.o swig/*.cxx swig/*.pyc swig/bishop.py* doc/html doc/latex python/*.pyc 
+	rm -rf *.o bin/viewer bin/gridTest bin/*.dSYM base/*.o core ./lib/libstarter.a  *~ swig/*~ swig/*.so swig/*.o swig/*.cxx swig/*.pyc swig/bishop.py* doc/html doc/latex python/*.pyc 
 
 genswig:	swig/bishop.i	$(OFILES)
 	$(SWIGEXEC) -c++ -python -shadow -I./include/ swig/bishop.i
