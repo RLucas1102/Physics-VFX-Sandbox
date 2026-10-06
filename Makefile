@@ -13,7 +13,8 @@ OFILES = base/Matrix.o \
 	 base/Color.o \
 	 base/ImgProc.o \
 	 base/Raymarcher.o \
-	 base/StarterViewer.o
+	 base/StarterViewer.o \
+	 base/Scene.o
 	 
 AFILES = $(OFILES)
 
@@ -33,7 +34,7 @@ INCLUDES = -I /opt/homebrew/include -I ./include/ $(PYTHONINCLUDE) -I /usr/local
 
 test: $(AFILES) 
 	ar rv ./lib/libstarter.a $?
-	$(CXX) base/gridTest.C $(INCLUDES) $(LIB) $(GLLDFLAGS) -o bin/gridTest
+	$(CXX) test/sceneTest.C $(INCLUDES) $(LIB) $(GLLDFLAGS) -o bin/sceneTest
 
 base: $(AFILES) 
 	ar rv ./lib/libstarter.a $?
@@ -43,7 +44,7 @@ base: $(AFILES)
 	$(CXX) -c $(INCLUDES) $< -o $@
 
 clean:
-	rm -rf *.o bin/viewer bin/gridTest bin/*.dSYM base/*.o core ./lib/libstarter.a  *~ swig/*~ swig/*.so swig/*.o swig/*.cxx swig/*.pyc swig/bishop.py* doc/html doc/latex python/*.pyc 
+	rm -rf *.o bin/viewer bin/gridTest bin/sceneTest bin/*.dSYM base/*.o core ./lib/libstarter.a  *~ swig/*~ swig/*.so swig/*.o swig/*.cxx swig/*.pyc swig/bishop.py* doc/html doc/latex python/*.pyc 
 
 genswig:	swig/bishop.i	$(OFILES)
 	$(SWIGEXEC) -c++ -python -shadow -I./include/ swig/bishop.i
