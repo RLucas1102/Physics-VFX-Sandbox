@@ -23,7 +23,7 @@ int main(int argc, char** argv)
     double near = 0;
     double far = 20;
     double steps = 1000;
-    RM rm = raymarcher();
+    RM rm = raymarcherFixed();
     float min_ds = (far - near) / steps;
     rm->SetDs(min_ds);
     rm->SetT(1);

@@ -3,15 +3,24 @@
 
 using namespace lux;
 
-// -----------
-// Raymarcher
-// -----------
+// ---------------
+// RaymarcherBase
+// ---------------
 
-Raymarcher::Raymarcher() : _T(0), _Tmin(0), _sNear(0), _sFar(0), _ds(0), _kappa(0)
+RaymarcherBase::RaymarcherBase() : _T(0), _Tmin(0), _sNear(0), _sFar(0), _ds(0), _kappa(0)
 {
 }
 
-Color Raymarcher::RayMarchPixel(const Vector &direction, const Vector &eye, 
+//-----------------------------------------------------------------------------
+
+// ----------------
+// RaymarcherFixed
+// ----------------
+RaymarcherFixed::RaymarcherFixed() : RaymarcherBase()
+{
+}
+
+Color RaymarcherFixed::RayMarchPixel(const Vector &direction, const Vector &eye, 
                                 const VSP<float> &density, const VSP<Color> &Cm)
 {
     double T = _T;
@@ -34,15 +43,16 @@ Color Raymarcher::RayMarchPixel(const Vector &direction, const Vector &eye,
     L[3] = 1 - T;
     return L;
 }
+
 //-----------------------------------------------------------------------------
 
 // -----------------
 // Helper Functions
 // -----------------
 
-RM lux::raymarcher()
+RM lux::raymarcherFixed()
 {
-    return std::make_shared<Raymarcher>();
+    return std::make_shared<RaymarcherFixed>();
 }
 
 //-----------------------------------------------------------------------------
