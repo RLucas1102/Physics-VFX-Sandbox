@@ -14,7 +14,8 @@ OFILES = base/Matrix.o \
 	 base/ImgProc.o \
 	 base/Raymarcher.o \
 	 base/StarterViewer.o \
-	 base/Scene.o
+	 base/Scene.o \
+	 base/Renderer.o 
 	 
 AFILES = $(OFILES)
 
