@@ -21,8 +21,12 @@ namespace lux {
     // and march into the scene based on a step size.
     // At each step in the scene, density is evaluate
     // to accumulate a color with a certain transmissivity
+
     class Raymarcher
     {
+        private:
+            double _T, _Tmin, _sNear, _sFar, _ds, _kappa;
+
         public:
             Raymarcher();
             ~Raymarcher() = default;
@@ -30,30 +34,14 @@ namespace lux {
             // Main algorithm for ray marching a pixel
             Color RayMarchPixel(const Vector& direction, const Vector& eye,
                                 const VSP<float>& density, const VSP<Color>& Cm);
-            
-            // Main algorithm for ray marching a pixel with a light
-            Color RayMarchPixelLight(const Vector& direction, const Vector& eye,
-                                     const VSP<float>& density, const VSP<Color>& Cm,
-                                     const std::vector<PLight>& lights);
-
-            // Main algorithm for ray marching a pixel with a light, but faster
-            Color RayMarchPixelLightFaster(const Vector& direction, const Vector& eye,
-                                           const VSP<float>& density, const VSP<Color>& Cm,
-                                           const std::vector<PLight>& lights,
-                                           const VGSP<openvdb::FloatGrid>& levelSetPtr);
 
             // Mutators
             void SetT(double T) { _T = T; }
             void SetTmin(double Tmin) { _Tmin = Tmin; }
             void SetSnear(double sNear) { _sNear = sNear; }
             void SetSfar(double sFar) { _sFar = sFar; }
-            void SetDsMax(double ds) { _dsMax = ds; }
-            void SetDsMin(double ds) {_dsMin = ds; }
+            void SetDs(double ds) { _ds = ds; }
             void SetKappa(double kappa) { _kappa = kappa; }
-
-        private:
-            double _T, _Tmin, _sNear, _sFar, _dsMax, _dsMin, _kappa;
-
 
     };
 
