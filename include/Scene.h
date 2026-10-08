@@ -35,7 +35,7 @@ namespace lux
             // Initialize the scene with objects, light, etc.
             void init();
 
-            void setupCamera(float zdist, float xwidth);
+            void setupCamera(float zdist);
             
             // Accessors
             std::vector<Mesh>           getObjects()    { return _objects; };

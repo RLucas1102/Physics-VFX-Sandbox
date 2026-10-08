@@ -18,22 +18,22 @@ void Scene::init()
     // Put all objects/volumes/lights/colors in here
     
     // Define volumes in scene
-    VSP<float> red_sphere = sphere(1.0f);
-    VSP<Color> material = constant(Color(1.0f, 0.0f, 0.0f, 0.0f));
+    VSP<float> Sphere = sphere(1.0f);
+    VSP<Color> material = constant(Color(1.0f, 0.0f, 1.0f, 0.0f));
     
-    VSP<Color> output = material * red_sphere;
+    VSP<Color> output = material * mask(Sphere);
 
     // Set member variables
-    _volumes.push_back(red_sphere);
+    _volumes.push_back(clamp(Sphere * constant(10.0f), 0.0f, 1.0f));
     _materials.push_back(output);
 
 }
 
-void Scene::setupCamera(float zdist, float xwidth)
+void Scene::setupCamera(float zdist)
 {
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
     
-    Vector pos = Vector(0,4,zdist);
+    Vector pos = Vector(0,0,zdist);
     Vector lookAt = Vector(0,0,0);
     Vector view = lookAt - pos;
     Vector axis = Vector(0,1,0);
