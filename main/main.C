@@ -11,16 +11,6 @@ using namespace starter;
 int main(int argc, char** argv)
 {
 
-    // Create Scene
-    SC scene = CreateScene();
-    scene->init();
-    
-    RE renderer = CreateRenderer();
-    renderer->init();
-    ImgProc img = renderer->render(scene);
-
-    StarterViewer* viewer = CreateViewer();
-
     std::vector<std::string> args;
 
     for(int i=0;i<argc;i++)
@@ -28,11 +18,20 @@ int main(int argc, char** argv)
         std::string s(argv[i]);
         args.push_back(s);
     }
+    
+    // Create Scene
+    SC scene = CreateScene();
+    scene->init();
+    
+    // Create Renderer
+    RE tesselator = CreateRenderer();
+    tesselator->init();
+    ImgProc img = tesselator->render(scene);
 
+    // Create Viewer
+    StarterViewer* viewer = CreateViewer();
     viewer->Init(args);
-
     viewer->SetDisplayImage(img);
-
     viewer->MainLoop();
     
     return 0;
