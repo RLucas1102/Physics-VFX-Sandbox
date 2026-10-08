@@ -15,24 +15,22 @@ int main(int argc, char** argv)
     scene->init();
     
     // Setup camera
-    float zdist = 10;
-    float xwidth = 4;
-    scene->setupCamera(zdist, xwidth);
+    float zdist = 5;
+    scene->setupCamera(zdist);
     
     // Define a raymarcher
-    double near = zdist - xwidth / 2.0;
-    double far = near + xwidth;
-    double steps = 330;
+    float xwidth = 5;
+    double near = 0;
+    double far = 20;
+    double steps = 1000;
     RM rm = raymarcher();
-    float min_ds = (far - near) / 330;
-    float max_ds = min_ds * 3.5;
-    rm->SetDsMin(min_ds);
-    rm->SetDsMax(max_ds);
+    float min_ds = (far - near) / steps;
+    rm->SetDs(min_ds);
     rm->SetT(1);
-    rm->SetTmin(0.001);
+    rm->SetTmin(0);
     rm->SetSnear(near);
     rm->SetSfar(far);
-    rm->SetKappa(0.1);
+    rm->SetKappa(1);
 
     // Define an image
     std::shared_ptr<ImgProc> img = std::make_shared<ImgProc>();
