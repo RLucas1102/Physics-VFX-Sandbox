@@ -2,6 +2,7 @@
 #include "Raymarcher.h"
 #include "ImgProc.h"
 #include "StarterViewer.h"
+#include "Renderer.h"
 
 using namespace lux;
 using namespace image;
@@ -14,60 +15,25 @@ int main(int argc, char** argv)
     SC scene = CreateScene();
     scene->init();
     
-    // Setup camera
-    float zdist = 5;
-    scene->setupCamera(zdist);
-    
-    // Define a raymarcher
-    float xwidth = 5;
-    double near = 0;
-    double far = 20;
-    double steps = 1000;
-    RM rm = raymarcherFixed();
-    float min_ds = (far - near) / steps;
-    rm->SetDs(min_ds);
-    rm->SetT(1);
-    rm->SetTmin(0);
-    rm->SetSnear(near);
-    rm->SetSfar(far);
-    rm->SetKappa(1);
+    RE renderer = CreateRenderer();
+    renderer->init();
+    ImgProc img = renderer->render(scene);
 
-    // Define an image
-    std::shared_ptr<ImgProc> img = std::make_shared<ImgProc>();
-    img->clear(1920/4, 1080/4, 4);
+    StarterViewer* viewer = CreateViewer();
 
-    std::cout << "Starting Ray marching. . ." << std::endl;
+    std::vector<std::string> args;
 
-    #pragma omp parallel 
+    for(int i=0;i<argc;i++)
     {
-        #pragma omp for schedule(dynamic, 4)
-        for (int j = 0; j < img->GetNy(); j++)
-        {
-            for (int i = 0; i < img->GetNx(); i++)
-            {
-                Vector direction = scene->getCamera()->calculateDirection(i, j, img->GetNx(), img->GetNy());
-                Color output = rm->RayMarchPixel(direction, scene->getCamera()->eye(), scene->getVolumes()[0], scene->getMaterials()[0]);
-                img->SetValue(i, j, std::vector<float>{(float)output[0], (float)output[1], (float)output[2], (float)output[3]});
-            }
-            
-        }
+        std::string s(argv[i]);
+        args.push_back(s);
     }
 
-   StarterViewer* viewer = CreateViewer();
+    viewer->Init(args);
 
-   std::vector<std::string> args;
+    viewer->SetDisplayImage(img);
 
-   for(int i=0;i<argc;i++)
-   {
-      std::string s(argv[i]);
-      args.push_back(s);
-   }
-
-   viewer->Init(args);
-
-   viewer->SetDisplayImage(*img);
-
-   viewer->MainLoop();
+    viewer->MainLoop();
     
     return 0;
 }
