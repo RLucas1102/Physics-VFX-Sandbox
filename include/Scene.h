@@ -49,9 +49,9 @@ namespace lux
 
         private:
 
-            bool initialized;
+            bool _initialized;
 
-            int frame;
+            int _frame;
 
             // Data containers for scene's contents
             std::vector<Mesh>       _objects;

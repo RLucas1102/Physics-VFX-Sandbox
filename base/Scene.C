@@ -7,7 +7,7 @@ using namespace lux;
 // ------
 
 Scene::Scene()
-    : initialized(false), frame(0)
+    : _initialized(false), _frame(0)
 {
 }
 
@@ -16,6 +16,10 @@ std::shared_ptr<Scene> Scene::pScene = nullptr;
 void Scene::init()
 {
     // Put all objects/volumes/lights/colors in here
+    
+    // Setup camera
+    float zdist = 5;
+    this->setupCamera(zdist);
     
     // Define volumes in scene
     VSP<float> Sphere = sphere(1.0f);
@@ -26,6 +30,9 @@ void Scene::init()
     // Set member variables
     _volumes.push_back(clamp(Sphere * constant(10.0f), 0.0f, 1.0f));
     _materials.push_back(output);
+
+    // Scene initialized
+    _initialized = true;
 
 }
 
