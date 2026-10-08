@@ -1,6 +1,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include <openvdb/openvdb.h>
+
 #include <vector>
 
 #include "Color.h"
