@@ -33,19 +33,19 @@ SWIGEXEC = swig4.0
 
 INCLUDES = -I /opt/homebrew/include -I ./include/ $(PYTHONINCLUDE) -I /usr/local/include -I /usr/include 
 
+main: $(AFILES) 
+	ar rv ./lib/libstarter.a $?
+	$(CXX) main/main.C $(INCLUDES) $(LIB) $(GLLDFLAGS) -o bin/main
+
 test: $(AFILES) 
 	ar rv ./lib/libstarter.a $?
 	$(CXX) test/sceneTest.C $(INCLUDES) $(LIB) $(GLLDFLAGS) -o bin/sceneTest
-
-base: $(AFILES) 
-	ar rv ./lib/libstarter.a $?
-	$(CXX) base/viewer.C $(INCLUDES) $(LIB) $(GLLDFLAGS) -o bin/viewer
 
 .C.o: $<
 	$(CXX) -c $(INCLUDES) $< -o $@
 
 clean:
-	rm -rf *.o bin/viewer bin/gridTest bin/sceneTest bin/*.dSYM base/*.o core ./lib/libstarter.a  *~ swig/*~ swig/*.so swig/*.o swig/*.cxx swig/*.pyc swig/bishop.py* doc/html doc/latex python/*.pyc 
+	rm -rf *.o bin/main bin/gridTest bin/sceneTest bin/*.dSYM base/*.o core ./lib/libstarter.a  *~ swig/*~ swig/*.so swig/*.o swig/*.cxx swig/*.pyc swig/bishop.py* doc/html doc/latex python/*.pyc 
 
 genswig:	swig/bishop.i	$(OFILES)
 	$(SWIGEXEC) -c++ -python -shadow -I./include/ swig/bishop.i
