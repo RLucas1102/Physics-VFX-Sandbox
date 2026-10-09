@@ -17,9 +17,8 @@ namespace lux {
     // Define the number of steps and extinction coeffcient for lights
     struct DSMSettings
     {
-        double dsMin = 0.05;
-        double dsMax = dsMin * 3;
-        float kappa = 2;
+        float ds;
+        float kappa;
     };
     
     //-----------------------------------------------------------------------------
@@ -30,9 +29,9 @@ namespace lux {
 
         public:
 
-            LightBase() {};
+            LightBase();
             LightBase(const Vector& inPos, const Color& inCol);
-            virtual ~LightBase() = default;
+            ~LightBase() = default;
 
             // Accessors
             Vector     getPos() const {return _pos;}
@@ -40,14 +39,17 @@ namespace lux {
             VSP<float> getDSM() const {return _DSM;}
 
             // Mutators
-            void setPos(const Vector& inPos) {_pos = inPos;}
-            void setCol(const Color& inCol)  {_col = inCol;}
+            void setPos(const Vector& inPos) {_pos            = inPos;}
+            void setCol(const Color& inCol)  {_col            = inCol;}
+            void setKappa(float kappa)       {_settings.kappa = kappa;}
+            void setDs(float ds)             {_settings.ds    = ds;}
+
 
             // Create a deep shadow map of a given volume from the calling light source
             virtual void createDSM(const VSP<float>& gridField, 
                                    const openvdb::CoordBBox& bbox,
                                    float vx_size,
-                                   float dg);
+                                   float dg) {}
 
         protected:
             Vector      _pos;
@@ -61,40 +63,32 @@ namespace lux {
 
     // Point Light
     // An omni directional light source
-    class PointLight : LightBase {
+    class PointLight : public LightBase {
 
         public:
 
-            PointLight() {}
+            PointLight();
             PointLight(const Vector& inPos, const Color& inCol);
-
-            // Accessors
-            Vector     getPos() const {return _pos;}
-            Color      getCol() const {return _col;}
-            VSP<float> getDSM() const {return _DSM;}
-
-            // Mutators
-            void setPos(const Vector& inPos) {_pos = inPos;}
-            void setCol(const Color& inCol)  {_col = inCol;}
+            ~PointLight() = default;
 
             void createDSM(const VSP<float>& gridField, 
                            const openvdb::CoordBBox& bbox,
                            float vx_size,
-                           float dg = 0.0f);
+                           float dg = 0.0f) override;
         
     };
 
     //-----------------------------------------------------------------------------
 
     // Defining PLight as a shared pointer of a point light
-    using PLight = std::shared_ptr<PointLight>;
+    using Light = std::shared_ptr<LightBase>;
 
     //-----------------------------------------------------------------------------
 
     // Helper Functions
     // Useful functions for other files to create lights with
 
-    PLight pointLight(const Vector& inPos, const Color& inCol);
+    Light pointLight(const Vector& inPos, const Color& inCol);
 
     //-----------------------------------------------------------------------------
 
