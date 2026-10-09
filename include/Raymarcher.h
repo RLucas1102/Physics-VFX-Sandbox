@@ -57,7 +57,24 @@ namespace lux {
 
             // Raymarch with a fixed step size
             Color RayMarchPixel(const Vector& direction, const Vector& eye,
-                                const VSP<float>& density, const VSP<Color>& Cm) override;
+                                const VSP<float>& density, const VSP<Color>& Cm);
+    };
+    
+    // RaymarcherLightsFixed
+    // Rays are shot from each pixel of the image plane
+    // and march into the scene based on a fixed step size.
+    // At each step in the scene, density is evaluate
+    // to accumulate a color with a certain transmissivity
+    class RaymarcherLightsFixed : public RaymarcherBase
+    {
+        public:
+            RaymarcherLightsFixed();
+            ~RaymarcherLightsFixed() = default;
+
+            // Raymarch with a fixed step size and lights
+            Color RayMarchPixel(const Vector& direction, const Vector& eye,
+                                const VSP<float>& density, const VSP<Color>& Cm,
+                                const std::vector<Light>& lights);
     };
 
     //-----------------------------------------------------------------------------
@@ -70,6 +87,7 @@ namespace lux {
     // Helper functions
     // Useful functions to create raymarchers
     RM raymarcherFixed();
+    RM raymarcherLightsFixed();
 
     //-----------------------------------------------------------------------------
 

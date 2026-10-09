@@ -46,6 +46,50 @@ Color RaymarcherFixed::RayMarchPixel(const Vector &direction, const Vector &eye,
 
 //-----------------------------------------------------------------------------
 
+// ----------------------
+// RaymarcherLightsFixed
+// ----------------------
+RaymarcherLightsFixed::RaymarcherLightsFixed() : RaymarcherBase()
+{
+}
+
+Color RaymarcherLightsFixed::RayMarchPixel(const Vector &direction, const Vector &eye, 
+                                           const VSP<float> &density, const VSP<Color> &Cm,
+                                           const std::vector<Light>& lights)
+{
+
+    double T = _T;
+    Color L(0,0,0,0);
+    double s = _sNear;
+    Vector X = eye + direction * s;
+    
+    while (s < _sFar && T > _Tmin) {
+        float den = density->eval(X);
+
+        double ds = _ds;
+
+        if (den > 0.0) {
+            float dT = std::exp(-ds * _kappa * den);
+            Color CLights = Color(0,0,0,0);
+            for (size_t i = 0; i < lights.size(); i++)
+            {
+                CLights += lights[i]->getCol() * lights[i]->getDSM()->eval(X);
+            }
+            
+            L += Cm->eval(X) * CLights * (1-dT) * T/_kappa;
+            T *= dT;
+        }
+        X += direction * ds;
+        s += ds;
+        
+    }
+
+    L[3] = 1 - T;
+    return L;
+}
+
+//-----------------------------------------------------------------------------
+
 // -----------------
 // Helper Functions
 // -----------------
@@ -53,6 +97,11 @@ Color RaymarcherFixed::RayMarchPixel(const Vector &direction, const Vector &eye,
 RM lux::raymarcherFixed()
 {
     return std::make_shared<RaymarcherFixed>();
+}
+
+RM lux::raymarcherLightsFixed()
+{
+    return std::make_shared<RaymarcherLightsFixed>();
 }
 
 //-----------------------------------------------------------------------------
