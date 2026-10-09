@@ -20,25 +20,25 @@ void Scene::init()
     // Setup camera
     std::cout << "Setting up camera. . ." << std::endl;
     
-    float zdist = 5;
+    float zdist = 10;
     this->setupCamera(zdist);
     
     std::cout << "Done!" << std::endl;
 
+    // Define mesh objects
+    MeshSP objMesh = mesh();
+    objMesh->loadObj("models/bunnyFixed/bunny_fixed.obj");
+
     // Define grids to store volumes and colors
     std::cout << "Creating Grids. . ." << std::endl;
-    
-    float sphereGridDim = 10;
-    float sphereVxSize  = 0.1;
-    float sphereDg      = -1000;
-    openvdb::CoordBBox sphereBBox = openvdb::CoordBBox(openvdb::Coord(-sphereGridDim, -sphereGridDim, -sphereGridDim), 
-                                                       openvdb::Coord( sphereGridDim,  sphereGridDim,  sphereGridDim));
-    VGSP<openvdb::FloatGrid> sphereGrid = grid<openvdb::FloatGrid>();
-    sphereGrid->init(sphereBBox, 
-                     sphereVxSize, 
-                     sphereDg);
-    
-    float colorGridDim     = 10;
+
+    float objVxSize = 0.1;
+    VGSP<openvdb::FloatGrid> objGrid = grid<openvdb::FloatGrid>();
+    objGrid->initLevelSet(createLevelSet(objMesh, objVxSize));
+
+    std::cout << objGrid->getBBox() << std::endl;
+
+    float colorGridDim     = 30;
     float colorVxSize      = 0.1;
     openvdb::Vec3s colorDg = openvdb::Vec3s(0,0,0);
     openvdb::CoordBBox colorBBox = openvdb::CoordBBox(openvdb::Coord(-colorGridDim, -colorGridDim, -colorGridDim),
@@ -53,7 +53,6 @@ void Scene::init()
     // Define volumes in scene
     std::cout << "Creating volumes . . ." << std::endl;
     
-    VSP<float> Sphere = sphere(1.0f);
     VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 0.0f, 1.0f));
 
     std::cout << "Done!" << std::endl;
@@ -61,7 +60,6 @@ void Scene::init()
     // Stamp volumes into grids
     std::cout << "Stamping . . ." << std::endl;
 
-    sphereGrid->stamp(Sphere);
     colorGrid->stamp(material);
 
     std::cout << "Done!" << std::endl;
@@ -69,14 +67,15 @@ void Scene::init()
     std::cout << "Finalizing scene. . ." << std::endl;
 
     // Create gridded fields
-    VSP<float> griddedSphere         = gridField<openvdb::FloatGrid, float>(sphereGrid);
+    VSP<float> griddedObj = gridField<openvdb::FloatGrid, float>(objGrid);
+    griddedObj = -griddedObj;
     VSP<openvdb::Vec3s> griddedColor = gridField<openvdb::Vec3SGrid, openvdb::Vec3s>(colorGrid);
 
     // Define where color is and is not
-    VSP<Color> output = toColor(griddedColor) * mask(griddedSphere);
+    VSP<Color> output = toColor(griddedColor) * mask(griddedObj);
 
     // Set member variables
-    _volumes.push_back(clamp(griddedSphere * constant(10.0f), 0.0f, 1.0f));
+    _volumes.push_back(clamp(griddedObj * constant(100.0f), 0.0f, 1.0f));
     _materials.push_back(output);
 
     std::cout << "Done!" << std::endl;
