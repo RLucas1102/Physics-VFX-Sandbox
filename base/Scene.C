@@ -72,11 +72,21 @@ void Scene::init()
     VSP<openvdb::Vec3s> griddedColor = gridField<openvdb::Vec3SGrid, openvdb::Vec3s>(colorGrid);
 
     // Create Deep Shadow Maps
-    Light key = pointLight(Vector(0,3,0), Color(1,0.1,0.1,1));
+    Light key = pointLight(Vector(2,2,2), Color(1.0,0.1,0.1,1));
     key->setKappa(1);
     key->setDs(0.01);
-    key->createDSM(griddedObj, colorBBox, colorVxSize, 0);
+    key->createDSM(mask(griddedObj), colorBBox, colorVxSize, 0);
+    
+    Light fill = pointLight(Vector(-2,-2,2), Color(0.1,0.1,1.0,1));
+    fill->setKappa(2);
+    fill->setDs(0.01);
+    fill->createDSM(mask(griddedObj), colorBBox, colorVxSize, 0);
 
+    Light rim = pointLight(Vector(2,0,-2), Color(0.1,1.0,0.1,1));
+    rim->setKappa(4);
+    rim->setDs(0.01);
+    rim->createDSM(mask(griddedObj), colorBBox, colorVxSize, 0);
+    
     // Define where color is and is not
     VSP<Color> output = toColor(griddedColor) * mask(griddedObj);
 
@@ -84,6 +94,8 @@ void Scene::init()
     _volumes.push_back(clamp(griddedObj * constant(100.0f), 0.0f, 1.0f));
     _materials.push_back(output);
     _lights.push_back(key);
+    _lights.push_back(fill);
+    _lights.push_back(rim);
 
     std::cout << "Done!" << std::endl;
 
