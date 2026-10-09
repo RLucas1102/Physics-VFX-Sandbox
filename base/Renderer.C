@@ -21,7 +21,7 @@ void Renderer::init()
     double steps = 1000;
     float min_ds = (far - near) / steps;
     
-    _raymarcher = raymarcherFixed();
+    _raymarcher = raymarcherLightsFixed();
     _raymarcher->SetDs(min_ds);
     _raymarcher->SetT(1);
     _raymarcher->SetTmin(0);
@@ -41,6 +41,8 @@ image::ImgProc Renderer::render(const SC& scene)
 
     std::cout << "Starting Ray marching. . ." << std::endl;
 
+    std::shared_ptr<RaymarcherLightsFixed> rm = std::dynamic_pointer_cast<RaymarcherLightsFixed>(_raymarcher);
+
     #pragma omp parallel 
     {
         #pragma omp for schedule(dynamic, 4)
@@ -49,7 +51,11 @@ image::ImgProc Renderer::render(const SC& scene)
             for (int i = 0; i < img->GetNx(); i++)
             {
                 Vector direction = scene->getCamera()->calculateDirection(i, j, img->GetNx(), img->GetNy());
-                Color output = _raymarcher->RayMarchPixel(direction, scene->getCamera()->eye(), scene->getVolumes()[0], scene->getMaterials()[0]);
+                Color output = rm->RayMarchPixel(direction, 
+                                                          scene->getCamera()->eye(), 
+                                                          scene->getVolumes()[0], 
+                                                          scene->getMaterials()[0],
+                                                          scene->getLights());
                 img->SetValue(i, j, std::vector<float>{(float)output[0], (float)output[1], (float)output[2], (float)output[3]});
             }
             
