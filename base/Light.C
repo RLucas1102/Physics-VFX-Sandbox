@@ -5,9 +5,14 @@ using namespace lux;
 // -----------
 // Base Class
 // -----------
+LightBase::LightBase() : _pos(), _col(), _DSM()
+{
+}
+
 LightBase::LightBase(const Vector &inPos, const Color &inCol) :
     _pos(inPos),
-    _col(inCol)
+    _col(inCol),
+    _DSM()
 {
 }
 
@@ -16,6 +21,10 @@ LightBase::LightBase(const Vector &inPos, const Color &inCol) :
 // ------------
 // Point light
 // ------------
+PointLight::PointLight() : LightBase()
+{
+}
+
 PointLight::PointLight(const Vector &inPos, const Color &inCol) :
     LightBase(inPos,inCol)
 {
@@ -26,9 +35,6 @@ void PointLight::createDSM(const VSP<float>& inGridField,
                            float vx_size,
                            float dg)
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<>dis(_settings.dsMin, _settings.dsMax);
 
     VGSP<openvdb::FloatGrid> gridTemp = grid<openvdb::FloatGrid>();
 
@@ -46,10 +52,10 @@ void PointLight::createDSM(const VSP<float>& inGridField,
             double smax      = (_pos - p).magnitude();
             Vector direction = (_pos - p).unitvector();
             double s = 0;
+            double ds = _settings.ds;
 
             while (s < smax)
             {
-                double ds = dis(gen);
                 val += inGridField->eval(p) * ds;
                 p += direction * ds;
                 s += ds;
@@ -71,7 +77,7 @@ void PointLight::createDSM(const VSP<float>& inGridField,
 // Helper Functions
 // -----------------
 
-PLight lux::pointLight(const Vector &inPos, const Color &inCol)
+Light lux::pointLight(const Vector &inPos, const Color &inCol)
 {
     return std::make_shared<PointLight>(inPos, inCol);
 }
