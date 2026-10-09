@@ -53,7 +53,7 @@ void Scene::init()
     // Define volumes in scene
     std::cout << "Creating volumes . . ." << std::endl;
     
-    VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 0.0f, 1.0f));
+    VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 1.0f, 1.0f));
 
     std::cout << "Done!" << std::endl;
 
@@ -71,12 +71,19 @@ void Scene::init()
     griddedObj = -griddedObj;
     VSP<openvdb::Vec3s> griddedColor = gridField<openvdb::Vec3SGrid, openvdb::Vec3s>(colorGrid);
 
+    // Create Deep Shadow Maps
+    Light key = pointLight(Vector(0,3,0), Color(1,0.1,0.1,1));
+    key->setKappa(1);
+    key->setDs(0.01);
+    key->createDSM(griddedObj, colorBBox, colorVxSize, 0);
+
     // Define where color is and is not
     VSP<Color> output = toColor(griddedColor) * mask(griddedObj);
 
     // Set member variables
     _volumes.push_back(clamp(griddedObj * constant(100.0f), 0.0f, 1.0f));
     _materials.push_back(output);
+    _lights.push_back(key);
 
     std::cout << "Done!" << std::endl;
 
