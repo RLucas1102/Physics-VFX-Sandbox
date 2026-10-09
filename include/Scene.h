@@ -41,7 +41,7 @@ namespace lux
             
             // Accessors
             std::vector<Mesh>           getObjects()    { return _objects; };
-            std::vector<LightBase>      getLights()     { return _lights; };
+            std::vector<Light>          getLights()     { return _lights; };
             std::shared_ptr<Camera>     getCamera()     { return _cam; };
             std::vector<VSP<Color>>     getMaterials()  { return _materials; };
             std::vector<VSP<float>>     getVolumes()    { return _volumes; };
@@ -57,7 +57,7 @@ namespace lux
 
             // Data containers for scene's contents
             std::vector<Mesh>       _objects;
-            std::vector<LightBase>  _lights;
+            std::vector<Light>      _lights;
             std::shared_ptr<Camera> _cam;
             std::vector<VSP<Color>> _materials;
             std::vector<VSP<float>> _volumes;
