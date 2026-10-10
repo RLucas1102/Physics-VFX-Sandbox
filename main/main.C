@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     
     // Create Renderer
     RE tesselator = CreateRenderer();
-    tesselator->init();
+    tesselator->init(args);
     ImgProc img = tesselator->render(scene);
 
     // Create Viewer

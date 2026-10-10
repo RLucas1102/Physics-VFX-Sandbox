@@ -31,7 +31,7 @@ namespace lux
             ~Renderer() = default;
 
             // Initialize the renderer 
-            void init();
+            void init(const std::vector<std::string>& args);
 
             // Render the scene
             image::ImgProc render(const SC& scene);
@@ -41,6 +41,10 @@ namespace lux
             bool _initialized;
 
             RM _raymarcher;
+            
+            int _n_frames = 1;
+            int _start = 0;
+            int _end = 1;
 
             // Static renderer exists in class as a whole
             static std::shared_ptr<Renderer> pRenderer;
