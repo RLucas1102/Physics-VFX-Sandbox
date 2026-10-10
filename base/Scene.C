@@ -32,7 +32,7 @@ void Scene::init()
     // Define grids to store volumes and colors
     std::cout << "Creating Grids. . ." << std::endl;
 
-    float objVxSize = 0.1;
+    float objVxSize = 0.01;
     VGSP<openvdb::FloatGrid> objGrid = grid<openvdb::FloatGrid>();
     objGrid->initLevelSet(createLevelSet(objMesh, objVxSize));
 
