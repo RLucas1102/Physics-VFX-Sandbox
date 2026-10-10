@@ -29,10 +29,10 @@ int main(int argc, char** argv)
     ImgProc img = tesselator->render(scene);
 
     // Create Viewer
-    StarterViewer* viewer = CreateViewer();
-    viewer->Init(args);
-    viewer->SetDisplayImage(img);
-    viewer->MainLoop();
+    // StarterViewer* viewer = CreateViewer();
+    // viewer->Init(args);
+    // viewer->SetDisplayImage(img);
+    // viewer->MainLoop();
     
     return 0;
 }
