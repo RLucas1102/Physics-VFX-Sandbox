@@ -88,7 +88,7 @@ for img in sys.argv[1:]:
         padframe = "0" + padframe
     outimage = "conversion." + padframe + ".jpg"
     #cmd = "convert " + img + " " + outimage
-    cmd = "convert " + img + label_font
+    cmd = "magick " + img + label_font
     cmd = cmd + " -gravity southwest -fill " + fontcolor + " -pointsize " + str(fontsize) + " -weight 100 -annotate +15+0 '" + user + "' -gravity south -annotate 0 '" + img + "    " + padframe + "' -gravity southeast -annotate +15+0 '" + now + "' -gravity northwest -annotate +15+0 '" + course + "' "
     cmd = cmd + outimage
     os.system(cmd)
