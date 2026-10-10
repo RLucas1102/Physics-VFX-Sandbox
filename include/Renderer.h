@@ -2,6 +2,7 @@
 #define RENDERER_H
 
 #include <vector>
+#include <sstream>
 
 #include "Color.h"
 #include "Vector.h"

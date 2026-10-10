@@ -52,6 +52,7 @@ image::ImgProc Renderer::render(const SC& scene)
        
     for (int k = _start; k < _end; k++) {
 
+        std::cout << "Frame: " << k << std::endl;
         scene->update(_n_frames, k, _start);
         
         #pragma omp parallel 
@@ -72,6 +73,14 @@ image::ImgProc Renderer::render(const SC& scene)
                 
             }
         }
+
+        std::stringstream ss;
+        ss << "images/bunny." << std::setw(4) << std::setfill('0') << k << ".exr";
+        std::string filename = ss.str();
+        img->Write(filename);
+
+        std::cout << ss.str() << " complete!" << std::endl;
+
     }
     return *img;
 
