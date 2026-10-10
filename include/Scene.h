@@ -47,7 +47,9 @@ namespace lux
             std::vector<VSP<float>>     getVolumes()    { return _volumes; };
 
             // Update objects the scene in some way per frame
-            void update();
+            void update(int n_frames = 1,
+                        int current  = 0,
+                        int start = 0);
 
         private:
 

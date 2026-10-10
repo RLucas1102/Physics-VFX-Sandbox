@@ -114,13 +114,36 @@ void Scene::setupCamera(float zdist)
     Vector axis = Vector(0,1,0);
 
     cam->setFov(60);
+    cam->setLookAt(lookAt);
+    cam->setRotAxis(axis);
     cam->setEyeViewUp( pos, view, Vector(0,1,0) );
     _cam = cam;
 }
 
-void Scene::update()
+void Scene::update(int n_frames,
+                   int current,
+                   int start)
 {
+    float theta = 360/n_frames * M_PI / 180;
+    if (current == start) {
+        theta *= start;
+    } 
+
     // Move camera in here for turntable
+    Vector pos = _cam->eye();
+    Vector axis = _cam->rotAxis();
+    Vector lookAt = _cam->lookAt();
+
+    Vector X = pos;
+    float Cos = std::cos(theta);
+    float ax = axis * X;
+    Vector xa = X^axis;
+    pos = X * Cos + axis * ax * (1 - Cos) + xa * std::sin(theta);
+
+    Vector view = lookAt - pos;
+
+    _cam->setEyeViewUp( pos, view, Vector(0,1,0) );
+
 }
 
 //-----------------------------------------------------------------------------
