@@ -39,6 +39,12 @@ class Camera
     void setFarPlane( const double n ){ far = n; }
     const double& farPlane() const { return far; }
 
+    void setRotAxis(const lux::Vector& axis) {_rotAxis = axis;}
+    const lux::Vector& rotAxis() const {return _rotAxis;}
+
+    void setLookAt(const lux::Vector& pos) {_lookAt = pos;}
+    const lux::Vector& lookAt() const {return _lookAt; }
+
     bool isVisible( const lux::Vector& P ) const;
 
     // For a given pixel, calculate its direction vector it will shoot out into world
@@ -56,6 +62,8 @@ class Camera
 
     lux::Vector position;
     lux::Vector axis_right, axis_up, axis_view;
+    lux::Vector _lookAt;
+    lux::Vector _rotAxis;
 
 
 
