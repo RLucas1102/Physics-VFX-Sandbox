@@ -44,7 +44,7 @@ image::ImgProc Renderer::render(const SC& scene)
 {
     // Define an image
     std::shared_ptr<image::ImgProc> img = std::make_shared<image::ImgProc>();
-    img->clear(1920/4, 1080/4, 4);
+    img->clear(1920, 1080, 4);
 
     std::cout << "Starting Ray marching. . ." << std::endl;
 

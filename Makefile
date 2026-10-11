@@ -21,9 +21,9 @@ AFILES = $(OFILES)
 
 ROOTDIR = .
 LIB = -L$(ROOTDIR)/lib -lstarter -lm
-GLLDFLAGS = -L /opt/homebrew/lib -lglut -lGL -lm -lGLU -lopenvdb -lOpenImageIO -lOpenImageIO_Util -ltbb -lz
+GLLDFLAGS = -L /opt/openvdb-13.1.0/lib -lglut -lGL -lm -lGLU -lopenvdb -lOpenImageIO -lOpenImageIO_Util -ltbb -lz
 
-CXX = clang++ -g -fPIC -fopenmp -fopenmp -std=c++17
+CXX = g++ -g -fPIC -fopenmp -fopenmp -std=c++17
 
 SWIGCXX = g++ -shared -g -O2 -fPIC -fopenmp -fopenmp -std=c++14
 
@@ -31,7 +31,7 @@ PYTHONINCLUDE = -I/usr/include/python3.8
 
 SWIGEXEC = swig4.0
 
-INCLUDES = -I /opt/homebrew/include -I ./include/ $(PYTHONINCLUDE) -I /usr/local/include -I /usr/include 
+INCLUDES = -I /opt/openvdb-13.1.0/include -I ./include/ $(PYTHONINCLUDE) -I /usr/local/include -I /usr/include 
 
 main: $(AFILES) 
 	ar rv ./lib/libstarter.a $?
