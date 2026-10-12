@@ -29,6 +29,9 @@ namespace lux
             openvdb::FloatGrid::Ptr createLevelSet(float vx_size, 
                                                    float halfwidth = float(openvdb::LEVEL_SET_HALF_WIDTH)) const;
 
+            // Affine transformations
+            void scaleMesh(float scalar);
+
         private:
             std::vector<openvdb::Vec3s> _vertices;
             std::vector<openvdb::Vec3I> _faces;
@@ -51,7 +54,10 @@ namespace lux
     // Create a level set from a given mesh
     openvdb::FloatGrid::Ptr createLevelSet(const std::shared_ptr<Mesh>& mesh, 
                                            float vx_size, 
-                                           float halfwidth = float(openvdb::LEVEL_SET_HALF_WIDTH));    
+                                           float halfwidth = float(openvdb::LEVEL_SET_HALF_WIDTH));   
+                                           
+    // Scale mesh
+    void scaleMesh(MeshSP& inMesh, float scalar);
     
     //-----------------------------------------------------------------------------
 

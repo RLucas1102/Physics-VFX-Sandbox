@@ -65,6 +65,13 @@ openvdb::FloatGrid::Ptr Mesh::createLevelSet(float vx_size, float halfwidth) con
     return openvdb::tools::meshToLevelSet<openvdb::FloatGrid>(*transform, _vertices, _faces, halfwidth);
 }
 
+void Mesh::scaleMesh(float scalar) {
+    #pragma omp parallel for
+    for (long i = 0; i < _vertices.size(); i++) {
+        _vertices[i] *= scalar;
+    } 
+}
+
 //-----------------------------------------------------------------------------
 
 // -----------------
@@ -79,6 +86,10 @@ MeshSP lux::mesh()
 openvdb::FloatGrid::Ptr lux::createLevelSet(const std::shared_ptr<Mesh> &mesh, float vx_size, float halfwidth)
 {
     return mesh->createLevelSet(vx_size, halfwidth);
+}
+
+void lux::scaleMesh(MeshSP& inMesh, float scalar) {
+    inMesh->scaleMesh(scalar);
 }
 
 //-----------------------------------------------------------------------------
