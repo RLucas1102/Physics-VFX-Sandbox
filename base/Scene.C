@@ -27,7 +27,8 @@ void Scene::init()
 
     // Define mesh objects
     MeshSP objMesh = mesh();
-    objMesh->loadObj("models/bunnyFixed/bunny_fixed.obj");
+    objMesh->loadObj("models/ajax/smallajax.obj");
+    scaleMesh(objMesh, .125);
 
     // Define grids to store volumes and colors
     std::cout << "Creating Grids. . ." << std::endl;
@@ -91,7 +92,7 @@ void Scene::init()
     VSP<Color> output = toColor(griddedColor) * mask(griddedObj);
 
     // Set member variables
-    _volumes.push_back(clamp(griddedObj * constant(100.0f), 0.0f, 1.0f));
+    _volumes.push_back(clamp(griddedObj * constant(100.0f), 0.0f, 2.0f));
     _materials.push_back(output);
     _lights.push_back(key);
     _lights.push_back(fill);
