@@ -27,7 +27,7 @@ void Scene::init()
 
     // Define grids to store volumes and colors
     VGSP<openvdb::FloatGrid> objGrid;
-    bunny(objGrid, 0.01);
+    ajax(objGrid, 0.01);
 
     std::cout << objGrid->getBBox() << std::endl;
 
