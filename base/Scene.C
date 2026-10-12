@@ -25,17 +25,9 @@ void Scene::init()
     
     std::cout << "Done!" << std::endl;
 
-    // Define mesh objects
-    MeshSP objMesh = mesh();
-    objMesh->loadObj("models/ajax/smallajax.obj");
-    scaleMesh(objMesh, .125);
-
     // Define grids to store volumes and colors
-    std::cout << "Creating Grids. . ." << std::endl;
-
-    float objVxSize = 0.01;
-    VGSP<openvdb::FloatGrid> objGrid = grid<openvdb::FloatGrid>();
-    objGrid->initLevelSet(createLevelSet(objMesh, objVxSize));
+    VGSP<openvdb::FloatGrid> objGrid;
+    bunny(objGrid, 0.01);
 
     std::cout << objGrid->getBBox() << std::endl;
 

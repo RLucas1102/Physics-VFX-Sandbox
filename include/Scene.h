@@ -12,6 +12,7 @@
 #include "Light.h"
 #include "Camera.h"
 #include "VolumeGrid.h"
+#include "LevelSets.h"
 
 namespace lux
 {
