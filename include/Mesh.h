@@ -31,6 +31,7 @@ namespace lux
 
             // Affine transformations
             void scaleMesh(float scalar);
+            void centerMesh();
 
         private:
             std::vector<openvdb::Vec3s> _vertices;
@@ -58,6 +59,9 @@ namespace lux
                                            
     // Scale mesh
     void scaleMesh(MeshSP& inMesh, float scalar);
+
+    // Center mesh
+    void centerMesh(MeshSP& inMesh);
     
     //-----------------------------------------------------------------------------
 

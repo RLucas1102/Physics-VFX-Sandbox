@@ -14,7 +14,6 @@ void Mesh::loadObj(const char *filename)
         std::cout << "Could not open file" << std::endl;
     }
 
-    openvdb::Vec3s center = openvdb::Vec3s(0,0,0);
     while (std::getline(file, line)) {
 
         std::stringstream ss(line);
@@ -30,8 +29,6 @@ void Mesh::loadObj(const char *filename)
 
             _vertices.push_back(inPos);
 
-            center += inPos;
-            
         }
         else if(type.compare("f") == 0) {
 
@@ -47,13 +44,6 @@ void Mesh::loadObj(const char *filename)
 
     }
 
-    center = center / _vertices.size();
-
-    #pragma omp parallel for
-    for (long i = 0; i < _vertices.size(); i++)
-    {
-        _vertices[i] -= center;
-    }
     
 
 }
@@ -70,6 +60,22 @@ void Mesh::scaleMesh(float scalar) {
     for (long i = 0; i < _vertices.size(); i++) {
         _vertices[i] *= scalar;
     } 
+}
+
+void Mesh::centerMesh() {
+
+    openvdb::Vec3s center = openvdb::Vec3s(0,0,0);
+    for (long i = 0; i < _vertices.size(); i++) {
+        center += _vertices[i];
+    }
+
+    center = center / _vertices.size();
+
+    #pragma omp parallel for
+    for (long i = 0; i < _vertices.size(); i++)
+    {
+        _vertices[i] -= center;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -90,6 +96,10 @@ openvdb::FloatGrid::Ptr lux::createLevelSet(const std::shared_ptr<Mesh> &mesh, f
 
 void lux::scaleMesh(MeshSP& inMesh, float scalar) {
     inMesh->scaleMesh(scalar);
+}
+
+void lux::centerMesh(MeshSP& inMesh) {
+    inMesh->centerMesh();
 }
 
 //-----------------------------------------------------------------------------
