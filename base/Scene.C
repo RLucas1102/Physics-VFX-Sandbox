@@ -26,10 +26,13 @@ void Scene::init()
     std::cout << "Done!" << std::endl;
 
     // Define grids to store volumes and colors
-    VGSP<openvdb::FloatGrid> objGrid;
-    ajax(objGrid, 0.01);
+    VGSP<openvdb::FloatGrid> ajaxGrid;
+    ajax(ajaxGrid, 0.01);
 
-    std::cout << objGrid->getBBox() << std::endl;
+    VGSP<openvdb::FloatGrid> bunnyGrid;
+    bunny(bunnyGrid, 0.01);
+
+    std::cout << ajaxGrid->getBBox() << std::endl;
 
     float colorGridDim     = 30;
     float colorVxSize      = 0.1;
@@ -60,31 +63,40 @@ void Scene::init()
     std::cout << "Finalizing scene. . ." << std::endl;
 
     // Create gridded fields
-    VSP<float> griddedObj = gridField<openvdb::FloatGrid, float>(objGrid);
-    griddedObj = -griddedObj;
+    VSP<float> griddedAjax = gridField<openvdb::FloatGrid, float>(ajaxGrid);
+    griddedAjax = -griddedAjax;
     VSP<openvdb::Vec3s> griddedColor = gridField<openvdb::Vec3SGrid, openvdb::Vec3s>(colorGrid);
+
+    VSP<float> planeA = plane(Vector(0,1,0), Vector(0,0,0));
+    planeA = rotate(planeA, -27.436 * M_PI / 180, Vector(1,0,0));
+    planeA = rotate(planeA, -27.713 * M_PI / 180, Vector(0,1,0));
+    planeA = rotate(planeA, -2.736  * M_PI / 180,  Vector(0,0,1));
+
+    planeA = translate(planeA, Vector(0, 0.407, 0));
+
+    VSP<float> combined = Intersection(griddedAjax, planeA);
 
     // Create Deep Shadow Maps
     Light key = pointLight(Vector(2,2,2), Color(1.0,0.1,0.1,1));
     key->setKappa(1);
     key->setDs(0.01);
-    key->createDSM(mask(griddedObj), colorBBox, colorVxSize, 0);
+    key->createDSM(mask(combined), colorBBox, colorVxSize, 0);
     
     Light fill = pointLight(Vector(-2,-2,2), Color(0.1,0.1,1.0,1));
     fill->setKappa(2);
     fill->setDs(0.01);
-    fill->createDSM(mask(griddedObj), colorBBox, colorVxSize, 0);
+    fill->createDSM(mask(combined), colorBBox, colorVxSize, 0);
 
     Light rim = pointLight(Vector(2,0,-2), Color(0.1,1.0,0.1,1));
     rim->setKappa(4);
     rim->setDs(0.01);
-    rim->createDSM(mask(griddedObj), colorBBox, colorVxSize, 0);
+    rim->createDSM(mask(combined), colorBBox, colorVxSize, 0);
     
     // Define where color is and is not
-    VSP<Color> output = toColor(griddedColor) * mask(griddedObj);
+    VSP<Color> output = toColor(griddedColor) * mask(combined);
 
     // Set member variables
-    _volumes.push_back(clamp(griddedObj * constant(100.0f), 0.0f, 2.0f));
+    _volumes.push_back(clamp(combined * constant(100.0f), 0.0f, 2.0f));
     _materials.push_back(output);
     _lights.push_back(key);
     _lights.push_back(fill);
