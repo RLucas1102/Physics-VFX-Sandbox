@@ -213,7 +213,7 @@ const typename ScaleField<T>::volumeDataType ScaleField<T>::eval(const Vector& P
 template<typename T>
 RotateField<T>::RotateField(const VSP<T>& a, const float theta, const Vector& axis) : 
     UnaryFieldOperator<T>(a), 
-    _theta(-theta), 
+    _theta(theta), 
     _axis(axis.unitvector())
 {    
 }
@@ -222,11 +222,13 @@ template<typename T>
 const typename RotateField<T>::volumeDataType RotateField<T>::eval(const Vector& P) const 
 {
     Vector X = P;
-    float Cos = std::cos(_theta);
-    float ax = _axis * X;
-    Vector xa = X^_axis;
-    Vector result = X * Cos + _axis * ax * (1 - Cos) + xa * std::sin(_theta);
+    float cosA = std::cos(_theta);
+    float sinA = std::sin(_theta);
+    Vector aax = _axis * (_axis * X);
+    Vector xa  = X ^ _axis;
+    Vector result = X * cosA + aax * (1 - cosA) + xa * sinA;
     return this->_a->eval(result);
+
 }
 
 //-----------------------------------------------------------------------------
