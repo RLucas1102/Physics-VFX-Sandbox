@@ -60,6 +60,13 @@ void Scene::init()
     readGrid(humanoidGrid,    "Humanoid",    "VDBgrids/humanoidGrid.vdb");
     readGrid(humanoidColGrid, "HumanoidCol", "VDBgrids/humanoidGrid.vdb");
 
+    openvdb::CoordBBox region(
+        openvdb::Coord(100, 155, -100),  // minimum voxel index
+        openvdb::Coord(400, 400, 400)   // maximum voxel index, inclusive
+    );
+
+    humanoidGrid->getGridRaw()->fill(region, 0.0f, false);
+
     std::cout << "Done!" << std::endl;
 
     // Define volumes in scene
