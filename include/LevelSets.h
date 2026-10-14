@@ -13,6 +13,8 @@ namespace lux {
 
     void ajax(VGSP<openvdb::FloatGrid>& objGrid, float vx_size);
 
+    void humanoid(VGSP<openvdb::FloatGrid>& objGrid, VGSP<openvdb::Vec3SGrid>& colorGrid);
+
 }
 
 
