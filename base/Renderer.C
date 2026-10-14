@@ -44,7 +44,9 @@ image::ImgProc Renderer::render(const SC& scene)
 {
     // Define an image
     std::shared_ptr<image::ImgProc> img = std::make_shared<image::ImgProc>();
-    img->clear(1920, 1080, 4);
+    int width  = 1920;
+    int height = 1080;
+    img->clear(width, height, 4);
 
     std::cout << "Starting Ray marching. . ." << std::endl;
 
@@ -70,16 +72,19 @@ image::ImgProc Renderer::render(const SC& scene)
                                                             scene->getLights());
                     img->SetValue(i, j, std::vector<float>{(float)output[0], (float)output[1], (float)output[2], (float)output[3]});
                 }
+
+                height -= 1;
+                std::clog << "\rScanlines remaining: " << (height) << ' ' << std::flush;
                 
             }
         }
 
         std::stringstream ss;
-        ss << "images/bunny." << std::setw(4) << std::setfill('0') << k << ".exr";
+        ss << "images/ajaxBunny." << std::setw(4) << std::setfill('0') << k << ".exr";
         std::string filename = ss.str();
         img->Write(filename);
 
-        std::cout << ss.str() << " complete!" << std::endl;
+        std::cout << "\n" << ss.str() << " complete!" << std::endl;
 
     }
     return *img;
