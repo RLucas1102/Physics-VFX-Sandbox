@@ -109,6 +109,45 @@ VSP<GridV> lux::gridField(const VGSP<GridT>& g)
     return std::make_shared<GridField<GridT, GridV>>(g);
 }
 
+template <typename GridT>
+void lux::writeGrid(const VGSP<GridT>& g, const char* gridName, const char* filename)
+{
+    // Name the grid
+    g->getGridRaw()->setName(gridName);
+ 
+    // Create a VDB file object.
+    openvdb::io::File file(filename);
+ 
+    // Add the grid pointer to a container.
+    openvdb::GridPtrVec grids;
+    grids.push_back(g->getGridRaw());
+ 
+    // Write out the contents of the container.
+    file.write(grids);
+    file.close();
+}
+
+template <typename GridT>    
+void lux::readGrid(VGSP<GridT>& g, const char* gridName, const char* filename)
+{
+    
+    // Create a VDB file object.
+    openvdb::io::File file(filename);
+    
+    // Open the file.  This reads the file header, but not any grids.
+    file.open();
+    
+    // Retrieve a shared pointer to the grid named gridName
+    openvdb::GridBase::Ptr BaseGridRaw = file.readGrid(gridName);
+    
+    file.close();
+    
+    // Cast the generic grid pointer to a FloatGrid pointer.
+    typename GridT::Ptr BaseGrid = openvdb::gridPtrCast<GridT>(BaseGridRaw);
+
+    // Initialize grid with loaded data
+    g->initLevelSet(BaseGrid);
+}
 //-----------------------------------------------------------------------------
 
 // ------------------------
@@ -131,5 +170,9 @@ namespace lux
     // Grid Field Creation Helper
     template VSP<float> lux::gridField(const VGSP<openvdb::FloatGrid>& g);
     template VSP<openvdb::Vec3s> lux::gridField(const VGSP<openvdb::Vec3SGrid>& g);
+
+    // Read grid helper
+    template void lux::readGrid(VGSP<openvdb::FloatGrid>& g, const char* gridName, const char* filename);
+    template void lux::readGrid(VGSP<openvdb::Vec3SGrid>& g, const char* gridName, const char* filename);
 
 } // namespace lux

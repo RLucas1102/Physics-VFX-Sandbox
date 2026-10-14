@@ -96,6 +96,14 @@ namespace lux {
     template<typename GridT, typename GridV>
     VSP<GridV> gridField(const VGSP<GridT>& g);
 
+    // Write out grid to file
+    template<typename GridT>
+    void writeGrid(const VGSP<GridT>& g, const char* gridName, const char* filename);
+
+    // Read grid from file
+    template<typename GridT>
+    void readGrid(VGSP<GridT>& g, const char* gridName, const char* filename);
+
     //-----------------------------------------------------------------------------
 
 } // namespace lux
