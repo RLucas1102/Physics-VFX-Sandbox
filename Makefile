@@ -14,6 +14,7 @@ OFILES = base/Matrix.o \
 	 base/ImgProc.o \
 	 base/Raymarcher.o \
 	 base/StarterViewer.o \
+	 base/LevelSets.o \
 	 base/Scene.o \
 	 base/Renderer.o 
 	 
