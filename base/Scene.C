@@ -51,21 +51,29 @@ void Scene::init()
                     colorVxSize,
                     colorDg);
 
-    // Dim: 400, VxSize: 0.01, Dg: -1000
+    float humanoidGridDim = 400;
+    float humanoidVxSize  = 0.01;
+    float humanoidDg      = -1000;
+    openvdb::CoordBBox humanoidBBox = openvdb::CoordBBox(openvdb::Coord(-humanoidGridDim, -humanoidGridDim, -humanoidGridDim),
+                                                         openvdb::Coord( humanoidGridDim,  humanoidGridDim,  humanoidGridDim));
+
     VGSP<openvdb::FloatGrid> humanoidGrid = grid<openvdb::FloatGrid>();
+    humanoidGrid->init(humanoidBBox,
+                       humanoidVxSize,
+                       humanoidDg);
 
-    // Dim: 400, VxSize: 0.01, Dg: Vec3s(0,0,0)
+    float humanoidColGridDim          = 400;
+    float humanoidColVxSize           = 0.01;
+    openvdb::Vec3s humanoidColDg      = openvdb::Vec3s(0,0,0);
+    openvdb::CoordBBox humanoidColBBox = openvdb::CoordBBox(openvdb::Coord(-humanoidColGridDim, -humanoidColGridDim, -humanoidColGridDim),
+                                                            openvdb::Coord( humanoidColGridDim,  humanoidColGridDim,  humanoidColGridDim));
+
     VGSP<openvdb::Vec3SGrid> humanoidColGrid = grid<openvdb::Vec3SGrid>();
+    humanoidColGrid->init(humanoidColBBox,
+                          humanoidColVxSize,
+                          humanoidColDg);
 
-    readGrid(humanoidGrid,    "Humanoid",    "VDBgrids/humanoidGrid.vdb");
-    readGrid(humanoidColGrid, "HumanoidCol", "VDBgrids/humanoidGrid.vdb");
-
-    openvdb::CoordBBox region(
-        openvdb::Coord(100, 155, -100),  // minimum voxel index
-        openvdb::Coord(400, 400, 400)   // maximum voxel index, inclusive
-    );
-
-    humanoidGrid->getGridRaw()->fill(region, 0.0f, false);
+    humanoid(humanoidGrid, humanoidColGrid);
 
     std::cout << "Done!" << std::endl;
 
