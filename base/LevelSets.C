@@ -164,13 +164,13 @@ void lux::humanoid(VGSP<openvdb::FloatGrid>& objGrid, VGSP<openvdb::Vec3SGrid>& 
     objects  = Union(objects, hand_right);
     objects_color = objects_color*mask(-hand_right) + ORANGE*mask(hand_right);
 
-    VSP<float> powerball_1 = icosahedron();
-    powerball_1 = shell(powerball_1, 1);
-    powerball_1 = Blend(powerball_1, powerball_1, 2.0, 2.0);
-    powerball_1 = scale(powerball_1, 0.05);
-    powerball_1 = translate(powerball_1, Vector(1.1, 2.3, 0));
-    objects = Union(objects, powerball_1);
-    objects_color = objects_color*mask(-powerball_1) + PURPLE*mask(powerball_1);
+    // VSP<float> powerball_1 = icosahedron();
+    // powerball_1 = shell(powerball_1, 1);
+    // powerball_1 = Blend(powerball_1, powerball_1, 2.0, 2.0);
+    // powerball_1 = scale(powerball_1, 0.05);
+    // powerball_1 = translate(powerball_1, Vector(1.1, 2.3, 0));
+    // objects = Union(objects, powerball_1);
+    // objects_color = objects_color*mask(-powerball_1) + PURPLE*mask(powerball_1);
 
     VSP<float> powerball_2 = steiner();
     powerball_2 = dilate(powerball_2, 1);
