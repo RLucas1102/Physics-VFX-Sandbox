@@ -54,14 +54,14 @@ void Scene::init()
     // Define volumes in scene
     std::cout << "Creating volumes . . ." << std::endl;
     
-    VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 1.0f, 1.0f));
+    VSP<Color> material = constant(Color(1.0f, 1.0f, 1.0f, 0.0f));
 
     std::cout << "Done!" << std::endl;
 
     // Stamp volumes into grids
     std::cout << "Stamping . . ." << std::endl;
 
-    colorGrid->stamp(material);
+    colorGrid->stamp(toVec3s(material));
 
     std::cout << "Done!" << std::endl;
 
