@@ -56,10 +56,13 @@ image::ImgProc Renderer::render(const SC& scene)
 
         std::cout << "Frame: " << k << std::endl;
         scene->update(_n_frames, k, _start);
+
+        // Keep count of scanlines; reset every frame
+        height = 1080;
         
         #pragma omp parallel 
         {
-            #pragma omp for schedule(dynamic, 4)
+            #pragma omp for schedule(dynamic, 5)
             for (int j = 0; j < img->GetNy(); j++)
             {
                 for (int i = 0; i < img->GetNx(); i++)
