@@ -17,6 +17,8 @@ void Scene::init()
 {
     // Put all objects/volumes/lights/colors in here
     
+    openvdb::initialize();
+    
     // Setup camera
     std::cout << "Setting up camera. . ." << std::endl;
     
@@ -49,29 +51,49 @@ void Scene::init()
     //                 colorVxSize,
     //                 colorDg);
 
-    float humanoidGridDim = 40;
-    float humanoidVxSize  = 0.1;
-    float humanoidDg      = -1000;
-    openvdb::CoordBBox humanoidBBox = openvdb::CoordBBox(openvdb::Coord(-humanoidGridDim, -humanoidGridDim, -humanoidGridDim),
-                                                         openvdb::Coord( humanoidGridDim,  humanoidGridDim,  humanoidGridDim));
-
+    // Dim: 400, VxSize: 0.01, Dg: -1000
     VGSP<openvdb::FloatGrid> humanoidGrid = grid<openvdb::FloatGrid>();
-    humanoidGrid->init(humanoidBBox,
-                       humanoidVxSize,
-                       humanoidDg);
 
-    float humanoidColGridDim          = 40;
-    float humanoidColVxSize           = 0.1;
-    openvdb::Vec3s humanoidColDg      = openvdb::Vec3s(0,0,0);
-    openvdb::CoordBBox humanoidColBBox = openvdb::CoordBBox(openvdb::Coord(-humanoidColGridDim, -humanoidColGridDim, -humanoidColGridDim),
-                                                            openvdb::Coord( humanoidColGridDim,  humanoidColGridDim,  humanoidColGridDim));
-
+    // Dim: 400, VxSize: 0.01, Dg: Vec3s(0,0,0)
     VGSP<openvdb::Vec3SGrid> humanoidColGrid = grid<openvdb::Vec3SGrid>();
-    humanoidColGrid->init(humanoidColBBox,
-                          humanoidColVxSize,
-                          humanoidColDg);
 
-    humanoid(humanoidGrid, humanoidColGrid);
+    // Name the grid "LevelSetSphere".
+    // humanoidGrid->getGridRaw()->setName("Humanoid");
+    // humanoidColGrid->getGridRaw()->setName("HumanoidCol");
+ 
+    // Create a VDB file object.
+    // openvdb::io::File file("VDBgrids/mygrids.vdb");
+ 
+    // Add the grid pointer to a container.
+    // openvdb::GridPtrVec grids;
+    // grids.push_back(humanoidGrid->getGridRaw());
+    // grids.push_back(humanoidColGrid->getGridRaw());
+ 
+    // Write out the contents of the container.
+    // file.write(grids);
+    // file.close();
+
+    // Create a VDB file object.
+    openvdb::io::File file("VDBgrids/humanoidGrid.vdb");
+    
+    // Open the file.  This reads the file header, but not any grids.
+    file.open();
+    
+    // Loop over all grids in the file and retrieve a shared pointer
+    // to the one named "LevelSetSphere".  (This can also be done
+    // more simply by calling file.readGrid("LevelSetSphere").)
+    openvdb::GridBase::Ptr humanoidBaseGridRaw = file.readGrid("Humanoid");
+    openvdb::GridBase::Ptr humanoidBaseColGridRaw = file.readGrid("HumanoidCol");
+    
+    file.close();
+    
+    // From the example above, "LevelSetSphere" is known to be a FloatGrid,
+    // so cast the generic grid pointer to a FloatGrid pointer.
+    openvdb::FloatGrid::Ptr humanoidGridRaw = openvdb::gridPtrCast<openvdb::FloatGrid>(humanoidBaseGridRaw);
+    openvdb::Vec3SGrid::Ptr humanoidColGridRaw = openvdb::gridPtrCast<openvdb::Vec3SGrid>(humanoidBaseColGridRaw);
+
+    humanoidGrid->initLevelSet(humanoidGridRaw);
+    humanoidColGrid->initLevelSet(humanoidColGridRaw);
 
     std::cout << "Done!" << std::endl;
 
