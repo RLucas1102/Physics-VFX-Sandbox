@@ -290,6 +290,27 @@ const typename ToColorField<T>::volumeDataType ToColorField<T>::eval(const Vecto
 
 //-----------------------------------------------------------------------------
 
+// ------------------
+// ToVec3s Operation
+// ------------------
+template<typename T>
+ToVec3SField<T>::ToVec3SField(const VSP<T>& a) : 
+    UnaryFieldOperator<T, openvdb::Vec3s>(a) 
+{    
+}
+
+template<typename T>
+const typename ToVec3SField<T>::volumeDataType ToVec3SField<T>::eval(const Vector& P) const 
+{
+    openvdb::Vec3s v = openvdb::Vec3s(0,0,0);
+    auto c = this->_a->eval(P);
+    
+    v = openvdb::Vec3s(c[0], c[1], c[2]);
+    return v;
+}
+
+//-----------------------------------------------------------------------------
+
 namespace lux
 {
     // Explicit instantiations
@@ -341,6 +362,9 @@ namespace lux
 
     // ToColor Field
     template class ToColorField<openvdb::Vec3s>;
+
+    // ToVec3s Field
+    template class ToVec3SField<Color>;
 
 } // namespace lux
 

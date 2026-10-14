@@ -116,6 +116,9 @@ namespace lux {
 
     template <typename U>
     VSP<Color> toColor(const VSP<U>& a);
+    
+    template <typename U>
+    VSP<openvdb::Vec3s> toVec3s(const VSP<U>& a);
 
     // ----------------------------------------------------------------------------
 

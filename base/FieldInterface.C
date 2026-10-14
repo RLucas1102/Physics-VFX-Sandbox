@@ -158,6 +158,12 @@ VSP<Color> toColor(const VSP<U>& a)
     return std::make_shared<ToColorField<U>>(a);
 }
 
+template <typename U>
+VSP<openvdb::Vec3s> toVec3s(const VSP<U>& a)
+{
+    return std::make_shared<ToVec3SField<U>>(a);
+}
+
 // ----------------------------------------------------------------------------
 
 // Binary Field Operator Helper Functions
@@ -327,6 +333,9 @@ template VSP<float> clamp(const VSP<float>& a, const float fmin, const float fma
 
 // toColor
 template VSP<Color> toColor(const VSP<openvdb::Vec3s>& a);
+
+// toVec3s
+template VSP<openvdb::Vec3s> toVec3s(const VSP<Color>& a);
 
 // Add
 template VSP<float> add(const VSP<float>& a, const VSP<float>& b);

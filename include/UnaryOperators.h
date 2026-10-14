@@ -250,6 +250,21 @@ namespace lux {
             const volumeDataType eval(const Vector& P) const override;
 
     };
+
+    // ToVec3SField
+    // Cast a Color with 4 components to a Vec3s field
+    template<typename T>
+    class ToVec3SField : public UnaryFieldOperator<T, openvdb::Vec3s> {
+        
+        using typename UnaryFieldOperator<T, openvdb::Vec3s>::volumeDataType;
+
+        public:
+            ToVec3SField(const VSP<T>& a);
+
+            const volumeDataType eval(const Vector& P) const override;
+
+    };
+
 }
 
 #endif
