@@ -20,7 +20,7 @@ void Scene::init()
     // Setup camera
     std::cout << "Setting up camera. . ." << std::endl;
     
-    float zdist = 10;
+    float zdist = 15;
     this->setupCamera(zdist);
     
     std::cout << "Done!" << std::endl;
@@ -49,7 +49,7 @@ void Scene::init()
     //                 colorVxSize,
     //                 colorDg);
 
-    float humanoidGridDim = 30;
+    float humanoidGridDim = 40;
     float humanoidVxSize  = 0.1;
     float humanoidDg      = -1000;
     openvdb::CoordBBox humanoidBBox = openvdb::CoordBBox(openvdb::Coord(-humanoidGridDim, -humanoidGridDim, -humanoidGridDim),
@@ -60,7 +60,7 @@ void Scene::init()
                        humanoidVxSize,
                        humanoidDg);
 
-    float humanoidColGridDim          = 30;
+    float humanoidColGridDim          = 40;
     float humanoidColVxSize           = 0.1;
     openvdb::Vec3s humanoidColDg      = openvdb::Vec3s(0,0,0);
     openvdb::CoordBBox humanoidColBBox = openvdb::CoordBBox(openvdb::Coord(-humanoidColGridDim, -humanoidColGridDim, -humanoidColGridDim),

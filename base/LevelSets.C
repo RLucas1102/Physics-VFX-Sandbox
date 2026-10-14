@@ -76,7 +76,8 @@ void lux::humanoid(VGSP<openvdb::FloatGrid>& objGrid, VGSP<openvdb::Vec3SGrid>& 
     objects  = Union(objects, hat_stem);
     objects_color = objects_color*mask(-hat_stem) + YELLOW*mask(hat_stem);
 
-    VSP<float> hat_top = torus(0.075, 0.030, Vector(0,0,-1));
+    VSP<float> hat_top = torus(1, 0.5, Vector(0,0,-1));
+    hat_top = scale(hat_top, 0.075);
     hat_top = translate(hat_top, Vector(0,2.805,0));
     objects = Union(objects, hat_top);
     objects_color = objects_color*mask(-hat_top) + YELLOW*mask(hat_top);
@@ -95,49 +96,49 @@ void lux::humanoid(VGSP<openvdb::FloatGrid>& objGrid, VGSP<openvdb::Vec3SGrid>& 
 
     VSP<float> leg_left_1 = cylinder(0.04, Vector(0,1,0));
     leg_left_1 = Intersection(leg_left_1, plane(Vector(0, 1, 0), Vector(0,1,0)));
-    leg_left_1 = rotate(leg_left_1, -61.947, Vector(0,0,1));
+    leg_left_1 = rotate(leg_left_1, -61.947 * M_PI / 180.0, Vector(0,0,1));
     leg_left_1 = translate(leg_left_1, Vector(0,0.728,0));
     leg_left_1 = Intersection(leg_left_1, plane(Vector(-1, 0, 0), Vector(0,0,0)));
     objects  = Union(objects, leg_left_1);
     objects_color = objects_color*mask(-leg_left_1) + ORANGE*mask(leg_left_1);
 
     VSP<float> leg_left_2 = cylinder(0.04, Vector(0,1,0));
-    leg_left_2 = Intersection(leg_left_2, plane(Vector(0, 1, 0), Vector(0,0.45,0)));
+    leg_left_2 = Intersection(leg_left_2, plane(Vector(0, 1, 0), Vector(0,0.25,0)));
     leg_left_2 = Intersection(leg_left_2, plane(Vector(0, -1, 0), Vector(0,-1.2,0)));
-    leg_left_2 = rotate(leg_left_2, 24.568, Vector(0,0,1));
+    leg_left_2 = rotate(leg_left_2, 24.568 * M_PI / 180.0, Vector(0,0,1));
     leg_left_2 = translate(leg_left_2, Vector(0.98,1,0));
     objects  = Union(objects, leg_left_2);
     objects_color = objects_color*mask(-leg_left_2) + ORANGE*mask(leg_left_2);
 
     VSP<float> foot_left = cone(0.3, 0.4, Vector(0,-1,0));
-    foot_left = translate(foot_left, Vector(1.635, 0.106, 0));
+    foot_left = translate(foot_left, Vector(1.435, 0.106, 0));
     objects  = Union(objects, foot_left);
     objects_color = objects_color*mask(-foot_left) + ORANGE*mask(foot_left);
 
     VSP<float> leg_right_1 = cylinder(0.04, Vector(0,1,0));
     leg_right_1 = Intersection(leg_right_1, plane(Vector(0, 1, 0), Vector(0,1,0)));
-    leg_right_1 = rotate(leg_right_1, 61.947, Vector(0,0,1));
+    leg_right_1 = rotate(leg_right_1, 61.947 * M_PI / 180.0, Vector(0,0,1));
     leg_right_1 = translate(leg_right_1, Vector(0,0.728,0));
     leg_right_1 = Intersection(leg_right_1, plane(Vector(1, 0, 0), Vector(0,0,0)));
     objects  = Union(objects, leg_right_1);
     objects_color = objects_color*mask(-leg_right_1) + ORANGE*mask(leg_right_1);
 
     VSP<float> leg_right_2 = cylinder(0.04, Vector(0,1,0));
-    leg_right_2 = Intersection(leg_right_2, plane(Vector(0, 1, 0), Vector(0,0.45,0)));
+    leg_right_2 = Intersection(leg_right_2, plane(Vector(0, 1, 0), Vector(0,0.25,0)));
     leg_right_2 = Intersection(leg_right_2, plane(Vector(0, -1, 0), Vector(0,-1.2,0)));
-    leg_right_2 = rotate(leg_right_2, -24.568, Vector(0,0,1));
+    leg_right_2 = rotate(leg_right_2, -24.568 * M_PI / 180.0, Vector(0,0,1));
     leg_right_2 = translate(leg_right_2, Vector(-0.98,1,0));
     objects  = Union(objects, leg_right_2);
     objects_color = objects_color*mask(-leg_right_2) + ORANGE*mask(leg_right_2);
 
     VSP<float> foot_right = cone(0.3, 0.4, Vector(0,-1,0));
-    foot_right = translate(foot_right, Vector(-1.635, 0.106, 0));
+    foot_right = translate(foot_right, Vector(-1.435, 0.106, 0));
     objects  = Union(objects, foot_right);
     objects_color = objects_color*mask(-foot_right) + ORANGE*mask(foot_right);
 
     VSP<float> arm_left_1 = cylinder(0.04, Vector(0,1,0));
     arm_left_1 = Intersection(arm_left_1, plane(Vector(0, 1, 0), Vector(0,1,0)));
-    arm_left_1 = rotate(arm_left_1, -61.947, Vector(0,0,1));
+    arm_left_1 = rotate(arm_left_1, -61.947 * M_PI / 180.0, Vector(0,0,1));
     arm_left_1 = translate(arm_left_1, Vector(0,1.337,0));
     arm_left_1 = Intersection(arm_left_1, plane(Vector(-1, 0, 0), Vector(0,0,0)));
     objects  = Union(objects, arm_left_1);
@@ -145,19 +146,21 @@ void lux::humanoid(VGSP<openvdb::FloatGrid>& objGrid, VGSP<openvdb::Vec3SGrid>& 
 
     VSP<float> arm_right_1 = cylinder(0.04, Vector(0,1,0));
     arm_right_1 = Intersection(arm_right_1, plane(Vector(0, 1, 0), Vector(0,1,0)));
-    arm_right_1 = rotate(arm_right_1, 61.947, Vector(0,0,1));
+    arm_right_1 = rotate(arm_right_1, 61.947 * M_PI / 180.0, Vector(0,0,1));
     arm_right_1 = translate(arm_right_1, Vector(0,1.337,0));
     arm_right_1 = Intersection(arm_right_1, plane(Vector(1, 0, 0), Vector(0,0,0)));
     objects  = Union(objects, arm_right_1);
     objects_color = objects_color*mask(-arm_right_1) + ORANGE*mask(arm_right_1);
 
-    VSP<float> hand_left = box(0.1, 4);
-    hand_left = translate(hand_left, Vector(0.85, 2.007, 0));
+    VSP<float> hand_left = box(1, 4);
+    hand_left = scale(hand_left, 0.1);
+    hand_left = translate(hand_left, Vector(0.90, 1.85, 0));
     objects  = Union(objects, hand_left);
     objects_color = objects_color*mask(-hand_left) + ORANGE*mask(hand_left);
 
-    VSP<float> hand_right = box(0.1, 4);
-    hand_right = translate(hand_right, Vector(-0.85, 2.007, 0));
+    VSP<float> hand_right = box(1, 4);
+    hand_right = scale(hand_right, 0.1);
+    hand_right = translate(hand_right, Vector(-0.90, 1.85, 0));
     objects  = Union(objects, hand_right);
     objects_color = objects_color*mask(-hand_right) + ORANGE*mask(hand_right);
 
@@ -175,6 +178,12 @@ void lux::humanoid(VGSP<openvdb::FloatGrid>& objGrid, VGSP<openvdb::Vec3SGrid>& 
     powerball_2 = translate(powerball_2, Vector(-1.1, 2.3, 0));
     objects = Union(objects, powerball_2);
     objects_color = objects_color*mask(-powerball_2) + GREEN*mask(powerball_2);
+
+    objects = scale(objects, 2);
+    objects = translate(objects, Vector(0,-2.5,0));
+
+    objects_color = scale(objects_color, 2);
+    objects_color = translate(objects_color, Vector(0,-2.5,0));
 
     std::cout << "Stamping humanoid. . ." << std::endl;
 

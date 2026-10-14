@@ -16,8 +16,8 @@ std::shared_ptr<Renderer> Renderer::pRenderer = nullptr;
 void Renderer::init(const std::vector<std::string>& args)
 {
     // Define a raymarcher
-    double near = 5;
-    double far = 15;
+    double near = 10;
+    double far = 20;
     double steps = 1000;
     float min_ds = (far - near) / steps;
     
