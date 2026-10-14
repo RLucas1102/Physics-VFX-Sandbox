@@ -132,7 +132,7 @@ void Scene::init()
     VSP<Color> output = toColor(griddedColor) * mask(combined);
 
     // Set member variables
-    _volumes.push_back(clamp(combined * constant(100.0f), 0.0f, 2.0f));
+    _volumes.push_back(clamp(combined * constant(300.0f), 0.0f, 5.0f));
     _materials.push_back(output);
     _lights.push_back(key);
     _lights.push_back(fill);
