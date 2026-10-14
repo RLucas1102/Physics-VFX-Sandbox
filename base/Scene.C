@@ -30,26 +30,26 @@ void Scene::init()
     // Define grids to store volumes and colors
     std::cout << "Setting up grids. . ." << std::endl;
     
-    // VGSP<openvdb::FloatGrid> ajaxGrid;
-    // ajax(ajaxGrid, 0.01);
+    VGSP<openvdb::FloatGrid> ajaxGrid;
+    ajax(ajaxGrid, 0.01);
 
-    // VGSP<openvdb::FloatGrid> bunny1Grid;
-    // bunny(bunny1Grid, 0.01);
+    VGSP<openvdb::FloatGrid> bunny1Grid;
+    bunny(bunny1Grid, 0.01);
 
-    // VGSP<openvdb::FloatGrid> bunny2Grid;
-    // bunny(bunny2Grid, 0.01);
+    VGSP<openvdb::FloatGrid> bunny2Grid;
+    bunny(bunny2Grid, 0.01);
 
-    // std::cout << ajaxGrid->getBBox() << std::endl;
+    std::cout << ajaxGrid->getBBox() << std::endl;
 
-    // float colorGridDim     = 30;
-    // float colorVxSize      = 0.1;
-    // openvdb::Vec3s colorDg = openvdb::Vec3s(0,0,0);
-    // openvdb::CoordBBox colorBBox = openvdb::CoordBBox(openvdb::Coord(-colorGridDim, -colorGridDim, -colorGridDim),
-    //                                                   openvdb::Coord( colorGridDim,  colorGridDim,  colorGridDim));
-    // VGSP<openvdb::Vec3SGrid> colorGrid = grid<openvdb::Vec3SGrid>();
-    // colorGrid->init(colorBBox,
-    //                 colorVxSize,
-    //                 colorDg);
+    float colorGridDim     = 30;
+    float colorVxSize      = 0.1;
+    openvdb::Vec3s colorDg = openvdb::Vec3s(0,0,0);
+    openvdb::CoordBBox colorBBox = openvdb::CoordBBox(openvdb::Coord(-colorGridDim, -colorGridDim, -colorGridDim),
+                                                      openvdb::Coord( colorGridDim,  colorGridDim,  colorGridDim));
+    VGSP<openvdb::Vec3SGrid> colorGrid = grid<openvdb::Vec3SGrid>();
+    colorGrid->init(colorBBox,
+                    colorVxSize,
+                    colorDg);
 
     // Dim: 400, VxSize: 0.01, Dg: -1000
     VGSP<openvdb::FloatGrid> humanoidGrid = grid<openvdb::FloatGrid>();
@@ -72,94 +72,97 @@ void Scene::init()
     // Define volumes in scene
     std::cout << "Creating volumes . . ." << std::endl;
     
-    // VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 1.0f, 1.0f));
+    VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 1.0f, 1.0f));
 
     std::cout << "Done!" << std::endl;
 
     // Stamp volumes into grids
     std::cout << "Stamping . . ." << std::endl;
 
-    // colorGrid->stamp(material);
+    colorGrid->stamp(material);
 
     std::cout << "Done!" << std::endl;
 
     // Create gridded fields
     std::cout << "Gridding and manipulating fields. . ." << std::endl;
     
-    // VSP<float> griddedAjax = gridField<openvdb::FloatGrid, float>(ajaxGrid);
-    // griddedAjax = -griddedAjax;
+    VSP<float> griddedAjax = gridField<openvdb::FloatGrid, float>(ajaxGrid);
+    griddedAjax = -griddedAjax;
 
-    // VSP<float> griddedBunny1 = gridField<openvdb::FloatGrid, float>(bunny1Grid);
-    // griddedBunny1 = -griddedBunny1;
-    // griddedBunny1 = scale(griddedBunny1, 0.38);
-    // griddedBunny1 = rotate(griddedBunny1, -37.778 * M_PI / 180, Vector(1,0,0));
-    // griddedBunny1 = rotate(griddedBunny1,  46.937 * M_PI / 180, Vector(0,1,0));
-    // griddedBunny1 = rotate(griddedBunny1, -46.691 * M_PI / 180, Vector(0,0,1));
-    // griddedBunny1 = translate(griddedBunny1, Vector(-0.073, 0.689, -0.231));
+    VSP<float> griddedBunny1 = gridField<openvdb::FloatGrid, float>(bunny1Grid);
+    griddedBunny1 = -griddedBunny1;
+    griddedBunny1 = scale(griddedBunny1, 0.38);
+    griddedBunny1 = rotate(griddedBunny1, -37.778 * M_PI / 180, Vector(1,0,0));
+    griddedBunny1 = rotate(griddedBunny1,  46.937 * M_PI / 180, Vector(0,1,0));
+    griddedBunny1 = rotate(griddedBunny1, -46.691 * M_PI / 180, Vector(0,0,1));
+    griddedBunny1 = translate(griddedBunny1, Vector(-0.073, 0.689, -0.231));
     
-    // VSP<float> griddedBunny2 = gridField<openvdb::FloatGrid, float>(bunny2Grid);
-    // griddedBunny2 = -griddedBunny2;
-    // griddedBunny2 = scale(griddedBunny2, 0.293);
-    // griddedBunny2 = rotate(griddedBunny2, -37.778 * M_PI / 180, Vector(1,0,0));
-    // griddedBunny2 = rotate(griddedBunny2,  46.937 * M_PI / 180, Vector(0,1,0));
-    // griddedBunny2 = rotate(griddedBunny2, -46.691 * M_PI / 180, Vector(0,0,1));
-    // griddedBunny2 = translate(griddedBunny2, Vector(-0.068, 0.626, -0.238));
+    VSP<float> griddedBunny2 = gridField<openvdb::FloatGrid, float>(bunny2Grid);
+    griddedBunny2 = -griddedBunny2;
+    griddedBunny2 = scale(griddedBunny2, 0.293);
+    griddedBunny2 = rotate(griddedBunny2, -37.778 * M_PI / 180, Vector(1,0,0));
+    griddedBunny2 = rotate(griddedBunny2,  46.937 * M_PI / 180, Vector(0,1,0));
+    griddedBunny2 = rotate(griddedBunny2, -46.691 * M_PI / 180, Vector(0,0,1));
+    griddedBunny2 = translate(griddedBunny2, Vector(-0.068, 0.626, -0.238));
 
-    // VSP<openvdb::Vec3s> griddedColor = gridField<openvdb::Vec3SGrid, openvdb::Vec3s>(colorGrid);
+    VSP<openvdb::Vec3s> griddedColor = gridField<openvdb::Vec3SGrid, openvdb::Vec3s>(colorGrid);
 
-    // VSP<float> planeA = plane(Vector(0,1,0), Vector(0,0,0));
-    // planeA = rotate(planeA, -27.436 * M_PI / 180, Vector(1,0,0));
-    // planeA = rotate(planeA, -27.713 * M_PI / 180, Vector(0,1,0));
-    // planeA = rotate(planeA, -2.736  * M_PI / 180,  Vector(0,0,1));
-    // planeA = translate(planeA, Vector(0, 0.407, 0));
-
-    // VSP<float> combined = Intersection(griddedAjax, planeA);
-    // combined = Cutout(combined, griddedBunny1);
-    // combined = Union(combined, griddedBunny2);
-    // combined = translate(combined, Vector(0, 1.0, 0));
-
+    VSP<float> planeA = plane(Vector(0,1,0), Vector(0,0,0));
+    planeA = rotate(planeA, -27.436 * M_PI / 180, Vector(1,0,0));
+    planeA = rotate(planeA, -27.713 * M_PI / 180, Vector(0,1,0));
+    planeA = rotate(planeA, -2.736  * M_PI / 180,  Vector(0,0,1));
+    planeA = translate(planeA, Vector(0, 0.407, 0));
+    
     VSP<float> griddedHumanoid = gridField<openvdb::FloatGrid, float>(humanoidGrid);
     VSP<openvdb::Vec3s> griddedHumanoidCol = gridField<openvdb::Vec3SGrid, openvdb::Vec3s>(humanoidColGrid);
+
+    VSP<float> ajaxBunny = Intersection(griddedAjax, planeA);
+    ajaxBunny = Cutout(ajaxBunny, griddedBunny1);
+    ajaxBunny = Union(ajaxBunny, griddedBunny2);
+    ajaxBunny = scale(ajaxBunny, 0.30);
+    ajaxBunny = translate(ajaxBunny, Vector(2.0, 2.5, 0));
+
+    VSP<float> combined = Union(ajaxBunny, griddedHumanoid);
 
     std::cout << "Done!" << std::endl;
 
     // Create Deep Shadow Maps
     std::cout << "Creating Deep Shadow Maps. . ." << std::endl;
 
-    // Light key = pointLight(Vector(2,2,2), Color(1.0, 0.5, 0.1, 1.0));
-    // key->setKappa(1);
-    // key->setDs(0.01);
-    // key->createDSM(mask(combined), colorBBox, colorVxSize, 0);
+    Light key = pointLight(Vector(4,4,4), Color(1.0, 0.1, 0.1, 0.0));
+    key->setKappa(2);
+    key->setDs(0.01);
+    key->createDSM(mask(combined), colorBBox, colorVxSize, 0);
 
     std::cout << "Key light done!" << std::endl;
 
-    // Light fill = pointLight(Vector(-2,-2,2), Color(0.5, 0.1, 1.0, 1.0));
-    // fill->setKappa(2);
-    // fill->setDs(0.01);
-    // fill->createDSM(mask(combined), colorBBox, colorVxSize, 0);
+    Light fill = pointLight(Vector(-4,-4,4), Color(0.1, 0.1, 1.0, 0.0));
+    fill->setKappa(4);
+    fill->setDs(0.01);
+    fill->createDSM(mask(combined), colorBBox, colorVxSize, 0);
 
     std::cout << "Fill light done!" << std::endl;
 
-    // Light rim = pointLight(Vector(2,0,-2), Color(0.1, 1.0, 1.0, 1.0));
-    // rim->setKappa(4);
-    // rim->setDs(0.01);
-    // rim->createDSM(mask(combined), colorBBox, colorVxSize, 0);
+    Light rim = pointLight(Vector(4,0,-4), Color(0.1, 1.0, 0.1, 0.0));
+    rim->setKappa(8);
+    rim->setDs(0.01);
+    rim->createDSM(mask(combined), colorBBox, colorVxSize, 0);
 
     std::cout << "Rim light done!" << std::endl;
 
     // Define where color is and is not
     std::cout << "Finalizing scene. . ." << std::endl;
     
-    // VSP<Color> output = toColor(griddedColor) * mask(combined);
-    VSP<Color> output = toColor(griddedHumanoidCol) * mask(griddedHumanoid);
+    VSP<Color> output = constant(Color(0,0,0,0));
+    output = output * mask(-griddedHumanoid) + toColor(griddedHumanoidCol) * mask(griddedHumanoid);
+    output = output * mask(-ajaxBunny) + toColor(material) * mask(ajaxBunny);
 
     // Set member variables
-    // _volumes.push_back(clamp(combined * constant(300.0f), 0.0f, 5.0f));
-    _volumes.push_back(clamp(griddedHumanoid * constant(300.0f), 0.0f, 5.0f));
+    _volumes.push_back(clamp(combined * constant(300.0f), 0.0f, 5.0f));
     _materials.push_back(output);
-    // _lights.push_back(key);
-    // _lights.push_back(fill);
-    // _lights.push_back(rim);
+    _lights.push_back(key);
+    _lights.push_back(fill);
+    _lights.push_back(rim);
 
     std::cout << "Done!" << std::endl;
 
