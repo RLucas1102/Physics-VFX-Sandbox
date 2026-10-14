@@ -37,6 +37,8 @@ namespace lux {
                        const GridV& dg);
 
             void initLevelSet(const GridT& grid);
+            
+            void initFogVolume(const GridT& grid);
 
             // Accessors
             GridT getGridRaw() const {return _grid;}

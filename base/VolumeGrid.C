@@ -45,6 +45,16 @@ void VolumeGrid<GridT>::initLevelSet(const GridT &grid)
     _bbox = std::make_shared<openvdb::CoordBBox>(grid->evalActiveVoxelBoundingBox());
 }
 
+template <typename GridT>
+void VolumeGrid<GridT>::initFogVolume(const GridT& grid)
+{
+    _grid = grid->deepCopy();
+
+    _grid->setGridClass(openvdb::GRID_FOG_VOLUME);
+
+    _bbox = std::make_shared<openvdb::CoordBBox>(grid->evalActiveVoxelBoundingBox());
+}
+
 template<typename GridType>
 typename VolumeGrid<GridType>::GridV VolumeGrid<GridType>::triLerp(const Vector &P)
 {
@@ -146,7 +156,7 @@ void lux::readGrid(VGSP<GridT>& g, const char* gridName, const char* filename)
     typename GridT::Ptr BaseGrid = openvdb::gridPtrCast<GridT>(BaseGridRaw);
 
     // Initialize grid with loaded data
-    g->initLevelSet(BaseGrid);
+    g->initFogVolume(BaseGrid);
 }
 //-----------------------------------------------------------------------------
 
