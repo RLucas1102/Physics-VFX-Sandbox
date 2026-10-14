@@ -313,6 +313,7 @@ template VSP<float> Pow(const VSP<float>& a, const float val);
 
 // Translate
 template VSP<float> translate(const VSP<float>& a, const Vector& xt);
+template VSP<Color> translate(const VSP<Color>& a, const Vector& xt);
 
 // Scale
 template VSP<float> scale(const VSP<float>& a, const float val);

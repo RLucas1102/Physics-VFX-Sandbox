@@ -345,6 +345,7 @@ namespace lux
 
     // Translate Field
     template class TranslateField<float>;
+    template class TranslateField<Color>;
 
     // Scale Field
     template class ScaleField<float>;
