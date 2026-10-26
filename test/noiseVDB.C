@@ -1,51 +1,54 @@
 #include <openvdb/openvdb.h>
 #include <openvdb/tools/Interpolation.h>
+
 #include <iostream>
+#include <vector>
 
 #include "Noise.h"
+#include "ImgProc.h"
 
 using namespace lux;
+using namespace image;
 
 using c = openvdb::Coord;
 
 int main()
 {
+
     openvdb::initialize();
     
-    auto bbox = openvdb::CoordBBox(c(-10.0f, -10.0f, 0.0f),
-                                   c( 10.0f,  10.0f, 0.0f));        
+    ImgProc img;
+    int width  = 512;
+    int height = 512;
+    img.clear(width, height, 3);
+    
+    auto bbox = openvdb::CoordBBox(c(-width, -height, 0.0f),
+                                   c( width,  height, 0.0f));        
 
     auto grid = valueNoise(2016, bbox);
     auto accessor = grid->getAccessor();
 
-
-    // Print rows of stored samples.
-    for (int y = bbox.getStart().y(); y < bbox.getEnd().y(); ++y) {
-        for (int x = bbox.getStart().x(); x < bbox.getEnd().x(); ++x) {
-            std::cout
-                << accessor.getValue(openvdb::Coord(x, y, 0))
-                << '\t';
-        }
-        std::cout << '\n';
-    }
-
     // At z = 0, trilinear interpolation reduces to bilinear
     // interpolation between four neighboring XY samples.
-    // openvdb::tools::GridSampler<
-    //     openvdb::FloatGrid,
-    //     openvdb::tools::BoxSampler
-    // > sampler(*grid);
+    openvdb::tools::GridSampler<
+        openvdb::FloatGrid,
+        openvdb::tools::BoxSampler
+    > sampler(*grid);
 
-    // float value =
-    //     sampler.isSample(openvdb::Vec3R(1.5, 2.5, 0.0));
+    unsigned bitMask = width - 1;
 
-    // std::cout << "Interpolated at (1.5, 2.5): "
-    //           << value << '\n';
+    for (int j = 0; j < height; j++) {
+        for (int i = 0; i < width; i++) {
+            int ii = i & bitMask;
+            int jj = j & bitMask;
+            
+            float value = sampler.isSample(openvdb::Vec3R(ii, jj, 0.0));
+            std::vector<float> color(img.GetNc(), value);
 
+            img.SetValue(i, j, color);
+        }
+    }
 
-    // value =
-    //     sampler.isSample(openvdb::Vec3R(1, 2, 0.0));
+    img.Write("images/noise.png");
 
-    // std::cout << "Interpolated at (1, 2): "
-    //           << value << '\n';
 }
