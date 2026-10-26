@@ -15,7 +15,7 @@ namespace lux {
     // These functions create openvdb grids of different
     // types of noise that will be stored in VolumeGrids
 
-    openvdb::FloatGrid::Ptr valueNoise(unsigned int seed);
+    openvdb::FloatGrid::Ptr valueNoise(unsigned int seed, openvdb::CoordBBox bbox);
 
     //-----------------------------------------------------------------------------
 

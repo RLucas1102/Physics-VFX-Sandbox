@@ -6,16 +6,22 @@
 
 using namespace lux;
 
+using c = openvdb::Coord;
+
 int main()
 {
     openvdb::initialize();
+    
+    auto bbox = openvdb::CoordBBox(c(-10.0f, -10.0f, 0.0f),
+                                   c( 10.0f,  10.0f, 0.0f));        
 
-    auto grid = valueNoise(2016);
+    auto grid = valueNoise(2016, bbox);
     auto accessor = grid->getAccessor();
 
+
     // Print rows of stored samples.
-    for (int y = -10; y < 10; ++y) {
-        for (int x = -10; x < 10; ++x) {
+    for (int y = bbox.getStart().y(); y < bbox.getEnd().y(); ++y) {
+        for (int x = bbox.getStart().x(); x < bbox.getEnd().x(); ++x) {
             std::cout
                 << accessor.getValue(openvdb::Coord(x, y, 0))
                 << '\t';
