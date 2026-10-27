@@ -26,13 +26,20 @@ int main()
     CBBox bbox = openvdb::CoordBBox(c( 0,       0,        0.0f),
                                     c( width/2, height/2, 0.0f));        
 
-    ValueNoise2D noise(2016, bbox);
+    unsigned int seed = 2016;
+    ValueNoise2D noise(seed, bbox);
 
-    float frequency = 0.05;
+    float roughness = 0.9;
+    float gain = 0.5;
+    float frequency = 0.01;
+    float lacunarity = 2;
+    openvdb::Vec2s xt(0,0);
+    int layers = 5;
+
     for(int j = 0; j < height; j++) {
         for(int i = 0; i < width; i++) {
             openvdb::Vec2s pos(i,j);
-            float value = noise.eval(pos * frequency);
+            float value = fsn(noise, roughness, gain, frequency, lacunarity, pos, xt, layers);
             std::vector<float> color(img.GetNc(), value);
             img.SetValue(i, j, color);
         }

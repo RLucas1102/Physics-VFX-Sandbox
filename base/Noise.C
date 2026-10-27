@@ -122,6 +122,39 @@ float ValueNoise2D::eval(const openvdb::Vec2s& pos) const
 
 //-----------------------------------------------------------------------------
 
+// -------------
+// Fractal Sums
+// -------------
+float lux::fsn(const ValueNoise2D& noise, 
+               float roughness, 
+               float gain, 
+               float frequency, 
+               float lacunarity, 
+               const openvdb::Vec2s& pos,
+               const openvdb::Vec2s& translation,
+               int layers)
+{
+    double r1 = 1.0f - roughness;
+    double r2 = 1.0f - std::pow(roughness, layers);
+    double r3 = r1/r2;
+    float r = roughness;
+    float f = frequency;
+    openvdb::Vec2s x = pos;
+    
+    double sum = 0;
+    for(int n = 0; n < layers; n++) {
+        sum += r * noise.eval(x * f);
+        r = gain * r;
+        f = lacunarity * f;
+        x = x - translation;
+    }
+
+    sum = r3 * sum;
+    return sum;
+}
+
+//-----------------------------------------------------------------------------
+
 // -----------------
 // Helper functions
 // -----------------

@@ -59,6 +59,20 @@ namespace lux {
 
     //-----------------------------------------------------------------------------
 
+    // -------------
+    // Fractal Sums
+    // -------------
+    float fsn(const ValueNoise2D& noise, 
+              float roughness, 
+              float gain, 
+              float frequency, 
+              float lacunarity,
+              const openvdb::Vec2s& pos, 
+              const openvdb::Vec2s& translation,
+              int layers);
+
+    //-----------------------------------------------------------------------------
+    
     // ------------------
     // Utility functions
     // ------------------
