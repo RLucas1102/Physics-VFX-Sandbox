@@ -48,7 +48,7 @@ namespace lux {
             ValueNoise2D(unsigned int seed, openvdb::CoordBBox bbox);
             ~ValueNoise2D() = default;
 
-            float eval(float x, float y);
+            float eval(const openvdb::Vec2s& pos) const;
 
         private:
             GridType::Ptr _grid;

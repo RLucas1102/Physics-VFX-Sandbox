@@ -31,7 +31,8 @@ int main()
     float frequency = 0.05;
     for(int j = 0; j < height; j++) {
         for(int i = 0; i < width; i++) {
-            float value = noise.eval(i * frequency, j * frequency);
+            openvdb::Vec2s pos(i,j);
+            float value = noise.eval(pos * frequency);
             std::vector<float> color(img.GetNc(), value);
             img.SetValue(i, j, color);
         }

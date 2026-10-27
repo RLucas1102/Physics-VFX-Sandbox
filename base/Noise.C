@@ -89,8 +89,10 @@ ValueNoise2D::ValueNoise2D(unsigned int seed, openvdb::CoordBBox bbox) :
 
 }
 
-float ValueNoise2D::eval(float x, float y)
+float ValueNoise2D::eval(const openvdb::Vec2s& pos) const
 {
+    float x = pos.x();
+    float y = pos.y();
     float tx = x - (float)std::floor(x);
     float ty = y - (float)std::floor(y);
     tx = tx * tx * (3 - 2 * tx); // Smoothstep
