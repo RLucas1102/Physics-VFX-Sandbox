@@ -25,8 +25,13 @@ ValueNoise1D::ValueNoise1D(unsigned int seed, openvdb::CoordBBox bbox) :
         iter.setValue(drand48());
     }
 
+    // Make sure that the input max is a power of 2
+    // The bitwise & operator will not work properly
+    // later otherwise
     _bitMask = bbox.max().x() - 1; 
 
+    // We initialize the sampler up top, but that is to make the compiler happy
+    // No default constructor for the GridSampler
     _sampler = openvdb::tools::GridSampler<GridType, openvdb::tools::BoxSampler>(*_grid);
 
 }
