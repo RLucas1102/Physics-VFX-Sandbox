@@ -18,15 +18,25 @@ int main()
 
     openvdb::initialize();
     
-    CBBox bbox = openvdb::CoordBBox(c( 0,  0, 0.0f),
-                                    c( 10, 0, 0.0f));        
+    ImgProc img;
+    int width = 512;
+    int height = 512;
+    img.clear(width, height, 3);
 
-    ValueNoise1D noise(2011, bbox);
+    CBBox bbox = openvdb::CoordBBox(c( 0,       0,        0.0f),
+                                    c( width/2, height/2, 0.0f));        
 
-    for(int i = 0; i < 200; i++) {
-        float x = (float)i / (float)(200 - 1) * 10;
-        float y = noise.eval(x);
-        std::cout << "(" << x << "," << y << ")" << std::endl;
+    ValueNoise2D noise(2016, bbox);
+
+    float frequency = 0.05;
+    for(int j = 0; j < height; j++) {
+        for(int i = 0; i < width; i++) {
+            float value = noise.eval(i * frequency, j * frequency);
+            std::vector<float> color(img.GetNc(), value);
+            img.SetValue(i, j, color);
+        }
     }
+
+    img.Write("images/noise.png");
 
 }

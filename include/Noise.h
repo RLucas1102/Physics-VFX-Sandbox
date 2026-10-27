@@ -35,12 +35,36 @@ namespace lux {
 
     //-----------------------------------------------------------------------------
 
+    // -------------
+    // ValueNoise2D
+    // -------------
+    // Generate a 2D grid that holds noise values
+    // Can be evaluated to return a noise value with a given 2D vector
+    class ValueNoise2D {
+        public:
+
+            using GridType = openvdb::FloatGrid;
+        
+            ValueNoise2D(unsigned int seed, openvdb::CoordBBox bbox);
+            ~ValueNoise2D() = default;
+
+            float eval(float x, float y);
+
+        private:
+            GridType::Ptr _grid;
+            unsigned int _bitMask;
+            openvdb::tools::GridSampler<GridType, openvdb::tools::BoxSampler> _sampler;
+
+    };
+
+    //-----------------------------------------------------------------------------
+
     // ------------------
     // Utility functions
     // ------------------
     // Functions to small general math tasks
-    float lerp1D(float lo, float hi, float t);
-
+    float lerp(float lo, float hi, float t);
+    
     //-----------------------------------------------------------------------------
 
 } // namespace lux
