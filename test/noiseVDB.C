@@ -1,8 +1,8 @@
 #include <openvdb/openvdb.h>
-#include <openvdb/tools/Interpolation.h>
 
 #include <iostream>
 #include <vector>
+#include <memory>
 
 #include "Noise.h"
 #include "ImgProc.h"
@@ -10,6 +10,7 @@
 using namespace lux;
 using namespace image;
 
+using CBBox = openvdb::CoordBBox;
 using c = openvdb::Coord;
 
 int main()
@@ -17,38 +18,15 @@ int main()
 
     openvdb::initialize();
     
-    ImgProc img;
-    int width  = 512;
-    int height = 512;
-    img.clear(width, height, 3);
-    
-    auto bbox = openvdb::CoordBBox(c(-width, -height, 0.0f),
-                                   c( width,  height, 0.0f));        
+    CBBox bbox = openvdb::CoordBBox(c( 0,  0, 0.0f),
+                                    c( 10, 0, 0.0f));        
 
-    auto grid = valueNoise(2016, bbox);
-    auto accessor = grid->getAccessor();
+    ValueNoise1D noise(2011, bbox);
 
-    // At z = 0, trilinear interpolation reduces to bilinear
-    // interpolation between four neighboring XY samples.
-    openvdb::tools::GridSampler<
-        openvdb::FloatGrid,
-        openvdb::tools::BoxSampler
-    > sampler(*grid);
-
-    unsigned bitMask = width - 1;
-
-    for (int j = 0; j < height; j++) {
-        for (int i = 0; i < width; i++) {
-            int ii = i & bitMask;
-            int jj = j & bitMask;
-            
-            float value = sampler.isSample(openvdb::Vec3R(ii, jj, 0.0));
-            std::vector<float> color(img.GetNc(), value);
-
-            img.SetValue(i, j, color);
-        }
+    for(int i = 0; i < 200; i++) {
+        float x = (float)i / (float)(200 - 1) * 10;
+        float y = noise.eval(x);
+        std::cout << "(" << x << "," << y << ")" << std::endl;
     }
-
-    img.Write("images/noise.png");
 
 }
