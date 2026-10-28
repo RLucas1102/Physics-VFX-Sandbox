@@ -29,22 +29,22 @@ int main()
     unsigned int seed = 2016;
     ValueNoise2D noise(seed, bbox);
 
-    float roughness = 0.9;
-    float gain = 0.5;
-    float frequency = 0.01;
-    float lacunarity = 2;
+    float roughness = 0.25;
+    float gain = 0.25;
+    float frequency = 5;
+    float lacunarity = 2.14159265;
     openvdb::Vec2s xt(0,0);
-    int layers = 5;
+    int layers = 4;
 
     for(int j = 0; j < height; j++) {
         for(int i = 0; i < width; i++) {
-            openvdb::Vec2s pos(i,j);
+            openvdb::Vec2s pos((float)i/(float)width,(float)j/(float)height);
             float value = fsn(noise, roughness, gain, frequency, lacunarity, pos, xt, layers);
             std::vector<float> color(img.GetNc(), value);
             img.SetValue(i, j, color);
         }
     }
 
-    img.Write("images/noise.png");
+    img.Write("images/noiseWood.png");
 
 }
