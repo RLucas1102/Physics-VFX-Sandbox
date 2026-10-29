@@ -153,6 +153,36 @@ float lux::fsn(const ValueNoise2D& noise,
     return sum;
 }
 
+float lux::fsn(const ValueNoise2D& noise, 
+               float roughness, 
+               float gain, 
+               float frequency, 
+               float lacunarity, 
+               const openvdb::Vec2s& pos,
+               const openvdb::Vec2s& translation,
+               float layers)
+{
+    double r1 = 1.0f - roughness;
+    double r2 = 1.0f - std::pow(roughness, layers);
+    double r3 = r1/r2;
+    float r = roughness;
+    float f = frequency;
+    openvdb::Vec2s x = pos;
+    
+    double sum = 0;
+    for(int n = 0; n < (int)std::floor(layers); n++) {
+        sum += r * noise.eval(x * f);
+        r = gain * r;
+        f = lacunarity * f;
+        x = x - translation;
+    }
+
+    float alpha = layers - std::floor(layers);
+    sum += alpha * r * noise.eval(x * f);
+    sum = r3 * sum;
+    return sum;
+}
+
 //-----------------------------------------------------------------------------
 
 // -----------------

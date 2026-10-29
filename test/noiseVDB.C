@@ -17,7 +17,9 @@ int main()
 {
 
     openvdb::initialize();
-    
+
+    int nFrames = 360;
+
     ImgProc img;
     int width = 512;
     int height = 512;
@@ -29,22 +31,35 @@ int main()
     unsigned int seed = 2016;
     ValueNoise2D noise(seed, bbox);
 
-    float roughness = 0.25;
-    float gain = 0.25;
-    float frequency = 5;
+    float roughness = 0.75;
+    float gain = 0.75;
+    float frequency = 3;
     float lacunarity = 2.14159265;
     openvdb::Vec2s xt(0,0);
-    int layers = 4;
+    float layers = 1;
 
-    for(int j = 0; j < height; j++) {
-        for(int i = 0; i < width; i++) {
-            openvdb::Vec2s pos((float)i/(float)width,(float)j/(float)height);
-            float value = fsn(noise, roughness, gain, frequency, lacunarity, pos, xt, layers);
-            std::vector<float> color(img.GetNc(), value);
-            img.SetValue(i, j, color);
+    for(int k = 0; k <= nFrames; k++) {
+
+        for(int j = 0; j < height; j++) {
+            #pragma omp parallel for
+            for(int i = 0; i < width; i++) {
+                openvdb::Vec2s pos((float)i/(float)width,(float)j/(float)height);
+                float value = fsn(noise, roughness, gain, frequency, lacunarity, pos, xt, layers) * 10;
+                value = value - (int)value;
+                std::vector<float> color(img.GetNc(), value);
+                img.SetValue(i, j, color);
+            }
         }
-    }
 
-    img.Write("images/noiseWood.png");
+        std::stringstream ss;
+        ss << "images/noise." << std::setw(4) << std::setfill('0') << k << ".exr";
+        std::string filename = ss.str();
+        img.Write(filename);
+
+        std::cout << "\n" << ss.str() << " complete!" << std::endl; 
+
+        layers += (10.0f - 1.0f) / (float)nFrames;
+
+    }
 
 }
