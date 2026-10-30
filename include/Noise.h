@@ -60,6 +60,30 @@ namespace lux {
     //-----------------------------------------------------------------------------
 
     // -------------
+    // ValueNoise3D
+    // -------------
+    // Generate a 3D grid that holds noise values
+    // Can be evaluated to return a noise value with a given 3D vector
+    class ValueNoise3D {
+        public:
+
+            using GridType = openvdb::FloatGrid;
+        
+            ValueNoise3D(unsigned int seed, openvdb::CoordBBox bbox);
+            ~ValueNoise3D() = default;
+
+            float eval(const openvdb::Vec3s& pos) const;
+
+        private:
+            GridType::Ptr _grid;
+            unsigned int _bitMask;
+            openvdb::tools::GridSampler<GridType, openvdb::tools::BoxSampler> _sampler;
+
+    };
+
+    //-----------------------------------------------------------------------------
+    
+    // -------------
     // Fractal Sums
     // -------------
     // Discrete Fractal sum with integer layers
