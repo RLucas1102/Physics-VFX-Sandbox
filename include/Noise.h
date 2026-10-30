@@ -87,23 +87,23 @@ namespace lux {
     // Fractal Sums
     // -------------
     // Discrete Fractal sum with integer layers
-    float fsn(const ValueNoise2D& noise, 
+    float fsn(const ValueNoise3D& noise, 
               float roughness, 
               float gain, 
               float frequency, 
               float lacunarity,
-              const openvdb::Vec2s& pos, 
-              const openvdb::Vec2s& translation,
+              const openvdb::Vec3s& pos, 
+              const openvdb::Vec3s& translation,
               int layers);
     
     // Continuous Fractal sum with an added fractional portion
-    float fsn(const ValueNoise2D& noise, 
+    float fsn(const ValueNoise3D& noise, 
               float roughness, 
               float gain, 
               float frequency, 
               float lacunarity,
-              const openvdb::Vec2s& pos, 
-              const openvdb::Vec2s& translation,
+              const openvdb::Vec3s& pos, 
+              const openvdb::Vec3s& translation,
               float layers);
 
     //-----------------------------------------------------------------------------

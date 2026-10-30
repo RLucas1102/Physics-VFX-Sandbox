@@ -206,13 +206,13 @@ float ValueNoise3D::eval(const openvdb::Vec3s& pos) const
 // -------------
 // Fractal Sums
 // -------------
-float lux::fsn(const ValueNoise2D& noise, 
+float lux::fsn(const ValueNoise3D& noise, 
                float roughness, 
                float gain, 
                float frequency, 
                float lacunarity, 
-               const openvdb::Vec2s& pos,
-               const openvdb::Vec2s& translation,
+               const openvdb::Vec3s& pos,
+               const openvdb::Vec3s& translation,
                int layers)
 {
     double r1 = 1.0f - roughness;
@@ -220,7 +220,7 @@ float lux::fsn(const ValueNoise2D& noise,
     double r3 = r1/r2;
     float r = roughness;
     float f = frequency;
-    openvdb::Vec2s x = pos;
+    openvdb::Vec3s x = pos;
     
     double sum = 0;
     for(int n = 0; n < layers; n++) {
@@ -234,13 +234,13 @@ float lux::fsn(const ValueNoise2D& noise,
     return sum;
 }
 
-float lux::fsn(const ValueNoise2D& noise, 
+float lux::fsn(const ValueNoise3D& noise, 
                float roughness, 
                float gain, 
                float frequency, 
                float lacunarity, 
-               const openvdb::Vec2s& pos,
-               const openvdb::Vec2s& translation,
+               const openvdb::Vec3s& pos,
+               const openvdb::Vec3s& translation,
                float layers)
 {
     double r1 = 1.0f - roughness;
@@ -248,7 +248,7 @@ float lux::fsn(const ValueNoise2D& noise,
     double r3 = r1/r2;
     float r = roughness;
     float f = frequency;
-    openvdb::Vec2s x = pos;
+    openvdb::Vec3s x = pos;
     
     double sum = 0;
     for(int n = 0; n < (int)std::floor(layers); n++) {
