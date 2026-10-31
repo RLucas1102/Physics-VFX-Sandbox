@@ -8,6 +8,9 @@
 #include <openvdb/openvdb.h>
 #include <openvdb/tools/Interpolation.h>
 
+// User
+#include "Volume.h"
+
 namespace lux {
 
 
@@ -81,6 +84,25 @@ namespace lux {
 
     };
 
+    //-----------------------------------------------------------------------------
+    
+    // Noise Field
+    // Convert noise grid into a NoiseField to work with other fields
+    class NoiseField : public Volume<float> {
+
+        public:
+
+            using typename Volume<float>::volumeDataType;
+
+            NoiseField(const ValueNoise3D& N);
+            ~NoiseField() = default;
+
+            const volumeDataType eval(const Vector& p) const override;
+
+        private:
+            ValueNoise3D _noise;
+    };
+    
     //-----------------------------------------------------------------------------
     
     // -------------

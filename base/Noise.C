@@ -266,6 +266,31 @@ float lux::fsn(const ValueNoise3D& noise,
 
 //-----------------------------------------------------------------------------
 
+// -----------
+// Noise Field
+// -----------
+NoiseField::NoiseField(const ValueNoise3D& N) :
+    _noise(N)
+{
+}
+
+const NoiseField::volumeDataType NoiseField::eval(const Vector &p) const
+{ 
+    float roughness = 0.75;
+    float gain = 0.75;
+    float frequency = 3;
+    float lacunarity = 2.14159265;
+    openvdb::Vec3s pos(p[0], p[1], p[2]);
+    openvdb::Vec3s xt(0,0,0);
+    float layers = 1;
+
+    float value = fsn(_noise, roughness, gain, frequency, lacunarity, pos, xt, layers);
+
+    return value;
+}
+
+//-----------------------------------------------------------------------------
+
 // -----------------
 // Helper functions
 // -----------------
