@@ -30,17 +30,6 @@ void Scene::init()
     // Define grids to store volumes and colors
     std::cout << "Setting up grids. . ." << std::endl;
     
-    VGSP<openvdb::FloatGrid> ajaxGrid;
-    ajax(ajaxGrid, 0.01);
-
-    VGSP<openvdb::FloatGrid> bunny1Grid;
-    bunny(bunny1Grid, 0.01);
-
-    VGSP<openvdb::FloatGrid> bunny2Grid;
-    bunny(bunny2Grid, 0.01);
-
-    std::cout << ajaxGrid->getBBox() << std::endl;
-
     float colorGridDim     = 30;
     float colorVxSize      = 0.1;
     openvdb::Vec3s colorDg = openvdb::Vec3s(0,0,0);
@@ -51,34 +40,17 @@ void Scene::init()
                     colorVxSize,
                     colorDg);
 
-    float humanoidGridDim = 400;
-    float humanoidVxSize  = 0.01;
-    float humanoidDg      = -1000;
-    openvdb::CoordBBox humanoidBBox = openvdb::CoordBBox(openvdb::Coord(-humanoidGridDim, -humanoidGridDim, -humanoidGridDim),
-                                                         openvdb::Coord( humanoidGridDim,  humanoidGridDim,  humanoidGridDim));
-
-    VGSP<openvdb::FloatGrid> humanoidGrid = grid<openvdb::FloatGrid>();
-    humanoidGrid->init(humanoidBBox,
-                       humanoidVxSize,
-                       humanoidDg);
-
-    float humanoidColGridDim          = 400;
-    float humanoidColVxSize           = 0.01;
-    openvdb::Vec3s humanoidColDg      = openvdb::Vec3s(0,0,0);
-    openvdb::CoordBBox humanoidColBBox = openvdb::CoordBBox(openvdb::Coord(-humanoidColGridDim, -humanoidColGridDim, -humanoidColGridDim),
-                                                            openvdb::Coord( humanoidColGridDim,  humanoidColGridDim,  humanoidColGridDim));
-
-    VGSP<openvdb::Vec3SGrid> humanoidColGrid = grid<openvdb::Vec3SGrid>();
-    humanoidColGrid->init(humanoidColBBox,
-                          humanoidColVxSize,
-                          humanoidColDg);
-
-    humanoid(humanoidGrid, humanoidColGrid);
-
+    openvdb::CoordBBox bbox = openvdb::CoordBBox(openvdb::Coord(-256, -256, -256),
+                                                 openvdb::Coord( 256,  256,  256));
+    unsigned int seed = 2016;
+    ValueNoise3D noise(seed, bbox);
+    
     std::cout << "Done!" << std::endl;
 
     // Define volumes in scene
     std::cout << "Creating volumes . . ." << std::endl;
+
+    VSP<float> sphere1 = sphere(1.0f);
     
     VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 1.0f, 1.0f));
 
@@ -94,43 +66,7 @@ void Scene::init()
     // Create gridded fields
     std::cout << "Gridding and manipulating fields. . ." << std::endl;
     
-    VSP<float> griddedAjax = gridField<openvdb::FloatGrid, float>(ajaxGrid);
-    griddedAjax = -griddedAjax;
-
-    VSP<float> griddedBunny1 = gridField<openvdb::FloatGrid, float>(bunny1Grid);
-    griddedBunny1 = -griddedBunny1;
-    griddedBunny1 = scale(griddedBunny1, 0.38);
-    griddedBunny1 = rotate(griddedBunny1, -37.778 * M_PI / 180, Vector(1,0,0));
-    griddedBunny1 = rotate(griddedBunny1,  46.937 * M_PI / 180, Vector(0,1,0));
-    griddedBunny1 = rotate(griddedBunny1, -46.691 * M_PI / 180, Vector(0,0,1));
-    griddedBunny1 = translate(griddedBunny1, Vector(-0.073, 0.689, -0.231));
-    
-    VSP<float> griddedBunny2 = gridField<openvdb::FloatGrid, float>(bunny2Grid);
-    griddedBunny2 = -griddedBunny2;
-    griddedBunny2 = scale(griddedBunny2, 0.293);
-    griddedBunny2 = rotate(griddedBunny2, -37.778 * M_PI / 180, Vector(1,0,0));
-    griddedBunny2 = rotate(griddedBunny2,  46.937 * M_PI / 180, Vector(0,1,0));
-    griddedBunny2 = rotate(griddedBunny2, -46.691 * M_PI / 180, Vector(0,0,1));
-    griddedBunny2 = translate(griddedBunny2, Vector(-0.068, 0.626, -0.238));
-
-    VSP<openvdb::Vec3s> griddedColor = gridField<openvdb::Vec3SGrid, openvdb::Vec3s>(colorGrid);
-
-    VSP<float> planeA = plane(Vector(0,1,0), Vector(0,0,0));
-    planeA = rotate(planeA, -27.436 * M_PI / 180, Vector(1,0,0));
-    planeA = rotate(planeA, -27.713 * M_PI / 180, Vector(0,1,0));
-    planeA = rotate(planeA, -2.736  * M_PI / 180,  Vector(0,0,1));
-    planeA = translate(planeA, Vector(0, 0.407, 0));
-    
-    VSP<float> griddedHumanoid = gridField<openvdb::FloatGrid, float>(humanoidGrid);
-    VSP<openvdb::Vec3s> griddedHumanoidCol = gridField<openvdb::Vec3SGrid, openvdb::Vec3s>(humanoidColGrid);
-
-    VSP<float> ajaxBunny = Intersection(griddedAjax, planeA);
-    ajaxBunny = Cutout(ajaxBunny, griddedBunny1);
-    ajaxBunny = Union(ajaxBunny, griddedBunny2);
-    ajaxBunny = scale(ajaxBunny, 0.30);
-    ajaxBunny = translate(ajaxBunny, Vector(2.0, 2.5, 0));
-
-    VSP<float> combined = Union(ajaxBunny, griddedHumanoid);
+    VSP<float> combined = sphere1;
 
     std::cout << "Done!" << std::endl;
 
@@ -162,8 +98,7 @@ void Scene::init()
     std::cout << "Finalizing scene. . ." << std::endl;
     
     VSP<Color> output = constant(Color(0,0,0,0));
-    output = output * mask(-griddedHumanoid) + toColor(griddedHumanoidCol) * mask(griddedHumanoid);
-    output = output * mask(-ajaxBunny) + toColor(material) * mask(ajaxBunny);
+    output = output * mask(-sphere1) + toColor(material) * mask(sphere1);
 
     // Set member variables
     _volumes.push_back(clamp(combined * constant(300.0f), 0.0f, 5.0f));
