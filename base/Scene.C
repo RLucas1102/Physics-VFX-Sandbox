@@ -43,7 +43,7 @@ void Scene::init()
     openvdb::CoordBBox bbox = openvdb::CoordBBox(openvdb::Coord(-256, -256, -256),
                                                  openvdb::Coord( 256,  256,  256));
     unsigned int seed = 2016;
-    ValueNoise3D noise(seed, bbox);
+    ValueNoise3D noiseGrid(seed, bbox);
     
     std::cout << "Done!" << std::endl;
 
@@ -51,6 +51,8 @@ void Scene::init()
     std::cout << "Creating volumes . . ." << std::endl;
 
     VSP<float> sphere1 = sphere(1.0f);
+
+    VSP<float> noise1 = noise(noiseGrid);
     
     VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 1.0f, 1.0f));
 
@@ -66,7 +68,7 @@ void Scene::init()
     // Create gridded fields
     std::cout << "Gridding and manipulating fields. . ." << std::endl;
     
-    VSP<float> combined = sphere1;
+    VSP<float> combined = sphere1 + noise1;
 
     std::cout << "Done!" << std::endl;
 
@@ -98,7 +100,7 @@ void Scene::init()
     std::cout << "Finalizing scene. . ." << std::endl;
     
     VSP<Color> output = constant(Color(0,0,0,0));
-    output = output * mask(-sphere1) + toColor(material) * mask(sphere1);
+    output = output * mask(-combined) + toColor(material) * mask(combined);
 
     // Set member variables
     _volumes.push_back(clamp(combined * constant(300.0f), 0.0f, 5.0f));

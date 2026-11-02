@@ -3,6 +3,7 @@
 
 // STD Library
 #include <random>
+#include <memory>
 
 // Openvdb
 #include <openvdb/openvdb.h>
@@ -130,6 +131,13 @@ namespace lux {
 
     //-----------------------------------------------------------------------------
     
+    // -----------------
+    // Helper functions
+    // -----------------
+    VSP<float> noise(const ValueNoise3D& N);
+    
+    //-----------------------------------------------------------------------------
+
     // ------------------
     // Utility functions
     // ------------------
