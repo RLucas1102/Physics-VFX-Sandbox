@@ -81,7 +81,7 @@ namespace lux {
         private:
             GridType::Ptr _grid;
             unsigned int _bitMask;
-            openvdb::tools::GridSampler<GridType, openvdb::tools::BoxSampler> _sampler;
+            openvdb::tools::GridSampler<GridType, openvdb::tools::PointSampler> _sampler;
 
     };
 

@@ -132,7 +132,9 @@ ValueNoise3D::ValueNoise3D(unsigned int seed, openvdb::CoordBBox bbox) :
     
     _grid = GridType::create(0.0f);
 
-    _grid->fill(bbox, 1.0f, true);    
+    _grid->fill(bbox, 1.0f, true);
+    
+    _grid->pruneGrid();
 
     std::mt19937 gen(seed); 
     std::uniform_real_distribution<float> distrFloat; 
@@ -150,7 +152,7 @@ ValueNoise3D::ValueNoise3D(unsigned int seed, openvdb::CoordBBox bbox) :
 
     // We initialize the sampler up top, but that is to make the compiler happy
     // No default constructor for the GridSampler
-    _sampler = openvdb::tools::GridSampler<GridType, openvdb::tools::BoxSampler>(*_grid);
+    _sampler = openvdb::tools::GridSampler<GridType, openvdb::tools::PointSampler>(*_grid);
 
 }
 
