@@ -28,8 +28,8 @@ int main()
     CBBox bbox = openvdb::CoordBBox(c( 0,       0,        0.0f),
                                     c( width/2, height/2, 0.0f));        
 
-    unsigned int seed = 2016;
-    ValueNoise2D noise(seed, bbox);
+    unsigned int seed = 2020;
+    Noise<openvdb::Vec2s> myNoise = std::make_shared<ValueNoise<openvdb::Vec2s>>(seed, bbox);
 
     float roughness = 0.75;
     float gain = 0.75;
@@ -44,7 +44,7 @@ int main()
             #pragma omp parallel for
             for(int i = 0; i < width; i++) {
                 openvdb::Vec2s pos((float)i/(float)width,(float)j/(float)height);
-                float value = fsn(noise, roughness, gain, frequency, lacunarity, pos, xt, layers) * 10;
+                float value = fsn(myNoise, roughness, gain, frequency, lacunarity, pos, xt, layers) * 10;
                 value = value - (int)value;
                 std::vector<float> color(img.GetNc(), value);
                 img.SetValue(i, j, color);
