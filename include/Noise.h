@@ -32,6 +32,8 @@ namespace lux {
     float Value3D(const openvdb::Vec3s& P,
                   unsigned int bitMask, 
                   PointSampler sampler);
+    float Value3D(const openvdb::Vec3s& P,
+                  const openvdb::FloatGrid::Ptr& grid);
 
     //-----------------------------------------------------------------------------
     
@@ -76,7 +78,7 @@ namespace lux {
             {
                 if constexpr     (std::is_same_v<noiseDataType, float>)          { return Value1D(P, _bitMask, _sampler); }
                 else if constexpr(std::is_same_v<noiseDataType, openvdb::Vec2s>) { return Value2D(P, _bitMask, _sampler); }
-                else if constexpr(std::is_same_v<noiseDataType, openvdb::Vec3s>) { return Value3D(P, _bitMask, _sampler); }
+                else if constexpr(std::is_same_v<noiseDataType, openvdb::Vec3s>) { return Value3D(P, _grid); }
                 else 
                 { 
                     static_assert

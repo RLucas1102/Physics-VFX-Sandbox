@@ -113,38 +113,48 @@ float lux::Value3D(const openvdb::Vec3s& P,
 
 }
 
+
+float lux::Value3D(const openvdb::Vec3s& P,
+              const openvdb::FloatGrid::Ptr& grid)
+{
+    
+    openvdb::Vec3d index = grid->worldToIndex(P);
+    
+    float v = openvdb::tools::BoxSampler::sample(grid->tree(), index);
+
+    return v;
+}
+
+
 //-----------------------------------------------------------------------------
 
 // -----------
 // ValueNoise 
 // -----------
 template <typename T>
-ValueNoise<T>::ValueNoise(unsigned int seed, openvdb::CoordBBox bbox) :
-    _grid(openvdb::FloatGrid::create())
+ValueNoise<T>::ValueNoise(unsigned int seed, openvdb::CoordBBox bbox)
 {
     
     _grid = openvdb::FloatGrid::create(0.0f);
-
-    _grid->fill(bbox, 1.0f, true);    
-    
-    _grid->pruneGrid();
 
     std::mt19937 gen(seed); 
     std::uniform_real_distribution<float> distrFloat; 
     auto randFloat = std::bind(distrFloat, gen); 
 
-    for(auto iter = _grid->beginValueOn(); iter; ++iter)
+    typename openvdb::FloatGrid::Accessor accessor = _grid->getAccessor();
+
+    for ( auto iter = bbox.beginXYZ(); iter != bbox.endXYZ(); ++iter)
     {
-        iter.setValue(drand48());
+        accessor.setValue(*iter, randFloat());
     }
+
+    _grid->setTransform(openvdb::math::Transform::createLinearTransform(0.1));
 
     // Make sure that the input max is a power of 2
     // The bitwise & operator will not work properly
     // later otherwise
     _bitMask = bbox.max().x() - 1; 
 
-    // We initialize the sampler up top, but that is to make the compiler happy
-    // No default constructor for the GridSampler
     _sampler = std::make_shared<openvdb::tools::GridSampler<openvdb::FloatGrid, openvdb::tools::PointSampler>>(*_grid);
 
 }
@@ -163,11 +173,11 @@ const NoiseField::volumeDataType NoiseField::eval(const Vector &p) const
 { 
     float roughness = 0.75;
     float gain = 0.75;
-    float frequency = 3;
+    float frequency = 10;
     float lacunarity = 2.14159265;
     openvdb::Vec3s pos(p[0], p[1], p[2]);
     openvdb::Vec3s xt(0,0,0);
-    int layers = 4;
+    int layers = 1;
 
     return fsn(_noise, roughness, gain, frequency, lacunarity, pos, xt, layers);
 
