@@ -202,17 +202,20 @@ const PyroSphereField::volumeDataType PyroSphereField::eval(const Vector &p) con
 { 
     float roughness = 0.75;
     float gain = 0.75;
-    float frequency = 0.01;
+    float frequency = 0.1;
     float lacunarity = 1;
     openvdb::Vec3s pos(p[0], p[1], p[2]);
     openvdb::Vec3s xt(0,0,0);
     int layers = 7;
 
+    float sphereVal = _radius - p.magnitude();
+
     openvdb::Vec3s posClose = _radius * (pos / p.magnitude());
 
-    float value = std::pow(std::fabs(fsn(_noise, roughness, gain, frequency, lacunarity, posClose, xt, layers)), _gamma);
+    float value = std::pow(std::fabs(fsn(_noise, roughness, gain, frequency, lacunarity, posClose, xt, layers)), _gamma) * 10;
+    value = value - int(value);
 
-    return value;
+    return sphereVal + value;
 
 }
 

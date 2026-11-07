@@ -30,7 +30,7 @@ void Scene::init()
     // Define grids to store volumes and colors
     std::cout << "Setting up grids. . ." << std::endl;
     
-    float colorGridDim     = 100;
+    float colorGridDim     = 30;
     float colorVxSize      = 0.1;
     openvdb::Vec3s colorDg = openvdb::Vec3s(0,0,0);
     openvdb::CoordBBox colorBBox = openvdb::CoordBBox(openvdb::Coord(-colorGridDim, -colorGridDim, -colorGridDim),
@@ -57,9 +57,7 @@ void Scene::init()
     // Define volumes in scene
     std::cout << "Creating volumes . . ." << std::endl;
 
-    VSP<float> constant1 = constant(1.0f);
-
-    VSP<float> sphere1 = sphere(1.0f);
+    VSP<float> pyroSphere1 = pyroSphere(noiseGrid, 1.0f, 4.0f);
     
     VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 1.0f, 1.0f));
 
@@ -68,18 +66,12 @@ void Scene::init()
     // Stamp volumes into grids
     std::cout << "Stamping . . ." << std::endl;
 
-    constantGrid->stamp(constant1);
-
     std::cout << "Done!" << std::endl;
 
     // Create gridded fields
     std::cout << "Gridding and manipulating fields. . ." << std::endl;
 
-    VSP<float> griddedConstant = gridField<openvdb::FloatGrid, float>(constantGrid);
-
-    VSP<float> griddedNoise = noise(noiseGrid);
-
-    VSP<float> combined = sphere1 + griddedNoise;
+    VSP<float> combined = pyroSphere1;
 
     std::cout << "Done!" << std::endl;
 
