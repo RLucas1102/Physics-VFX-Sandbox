@@ -173,13 +173,16 @@ const NoiseField::volumeDataType NoiseField::eval(const Vector &p) const
 { 
     float roughness = 0.75;
     float gain = 0.75;
-    float frequency = 10;
-    float lacunarity = 2.14159265;
+    float frequency = 0.01;
+    float lacunarity = 1;
     openvdb::Vec3s pos(p[0], p[1], p[2]);
     openvdb::Vec3s xt(0,0,0);
-    int layers = 1;
+    int layers = 7;
 
-    return fsn(_noise, roughness, gain, frequency, lacunarity, pos, xt, layers);
+    float value = fsn(_noise, roughness, gain, frequency, lacunarity, pos, xt, layers) * 10;
+    value = value - int(value);
+
+    return value;
 
 }
 
