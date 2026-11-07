@@ -122,9 +122,9 @@ namespace lux {
     
     //-----------------------------------------------------------------------------
     
-    // ----------------
-    // PyroSphereField
-    // ----------------
+    // -----------------
+    // PyroSphere Field
+    // -----------------
     // Create pyroclastic sphere with a given noise pattern, radius,
     // and gamma value
     class PyroSphereField : public Volume<float> {
@@ -142,6 +142,31 @@ namespace lux {
             Noise<openvdb::Vec3s> _noise;
             float _radius;
             float _gamma;
+    };
+    
+    //-----------------------------------------------------------------------------
+    
+    // -------------------
+    // Noise Region Field
+    // -------------------
+    // This creates a region of visible noise that can visualized as
+    // a volume with its own density
+    class NoiseRegion : public Volume<float> {
+
+        public:
+
+            using typename Volume<float>::volumeDataType;
+
+            NoiseRegion(const Noise<openvdb::Vec3s>& N, const Vector& cen, float radius, float fade);
+            ~NoiseRegion() = default;
+
+            const volumeDataType eval(const Vector& p) const override;
+
+        private:
+            Noise<openvdb::Vec3s> _noise;
+            Vector _center;
+            float _radius;
+            float _fade;
     };
     
     //-----------------------------------------------------------------------------
@@ -178,6 +203,7 @@ namespace lux {
     // -----------------
     VSP<float> noise(const Noise<openvdb::Vec3s>& N);
     VSP<float> pyroSphere(const Noise<openvdb::Vec3s>& N, float radius, float gamma);
+    VSP<float> noiseRegion(const Noise<openvdb::Vec3s>& N, Vector cen, float radius, float fade);
     
     //-----------------------------------------------------------------------------
 

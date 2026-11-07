@@ -188,9 +188,9 @@ const NoiseField::volumeDataType NoiseField::eval(const Vector &p) const
 
 //-----------------------------------------------------------------------------
 
-// ----------------
-// PyroSphereField
-// ----------------
+// -----------------
+// PyroSphere Field
+// -----------------
 PyroSphereField::PyroSphereField(const Noise<openvdb::Vec3s>& N, float radius, float gamma) :
     _noise(N),
     _radius(radius),
@@ -216,6 +216,50 @@ const PyroSphereField::volumeDataType PyroSphereField::eval(const Vector &p) con
     value = value - int(value);
 
     return sphereVal + value;
+
+}
+
+//-----------------------------------------------------------------------------
+
+// -------------------
+// Noise Region Field
+// -------------------
+NoiseRegion::NoiseRegion(const Noise<openvdb::Vec3s>& N, const Vector& cen, float radius, float fade) :
+    _noise(N),
+    _center(cen),
+    _radius(radius),
+    _fade(fade)
+{
+}
+
+const NoiseRegion::volumeDataType NoiseRegion::eval(const Vector &p) const
+{ 
+    float roughness = 0.75;
+    float gain = 0.75;
+    float frequency = 0.1;
+    float lacunarity = 1;
+    openvdb::Vec3s pos(p[0], p[1], p[2]);
+    openvdb::Vec3s xt(0,0,0);
+    int layers = 7;
+
+    float q;
+    if (_fade < 0) {
+        q = 1;
+    }
+    else {
+        float term1 = (p - _center).magnitude();
+        float term2 = term1 / _radius;
+        float term3 = 1 - term2;
+        float q = term3 / _fade;
+
+        if (q > 1) { q = 1; }
+        if (q < 0) { q = 0; }
+
+    }
+
+    float value = fsn(_noise, roughness, gain, frequency, lacunarity, pos, xt, layers);
+
+    return q * value;
 
 }
 
@@ -297,6 +341,11 @@ VSP<float> lux::noise(const Noise<openvdb::Vec3s>& N)
 VSP<float> lux::pyroSphere(const Noise<openvdb::Vec3s>& N, float radius, float gamma)
 {
     return std::make_shared<PyroSphereField>(N, radius, gamma);
+}
+    
+VSP<float> noiseRegion(const Noise<openvdb::Vec3s>& N, Vector cen, float radius, float fade)
+{
+    return std::make_shared<NoiseRegion>(N, cen, radius, fade);
 }
 
 
