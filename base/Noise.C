@@ -132,7 +132,7 @@ float lux::Value3D(const openvdb::Vec3s& P,
 // ValueNoise 
 // -----------
 template <typename T>
-ValueNoise<T>::ValueNoise(unsigned int seed, openvdb::CoordBBox bbox)
+ValueNoise<T>::ValueNoise(unsigned int seed, openvdb::CoordBBox bbox, float vxSize)
 {
     
     _grid = openvdb::FloatGrid::create(0.0f);
@@ -148,7 +148,7 @@ ValueNoise<T>::ValueNoise(unsigned int seed, openvdb::CoordBBox bbox)
         accessor.setValue(*iter, randFloat());
     }
 
-    _grid->setTransform(openvdb::math::Transform::createLinearTransform(0.1));
+    _grid->setTransform(openvdb::math::Transform::createLinearTransform(vxSize));
 
     // Make sure that the input max is a power of 2
     // The bitwise & operator will not work properly

@@ -71,7 +71,7 @@ namespace lux {
         public:
             using typename NoiseBase<T>::noiseDataType;
 
-            ValueNoise(unsigned int seed, openvdb::CoordBBox bbox);
+            ValueNoise(unsigned int seed, openvdb::CoordBBox bbox, float vxSize);
             ~ValueNoise() = default;
 
             float eval(const noiseDataType& P) const override
