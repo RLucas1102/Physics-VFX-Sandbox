@@ -29,7 +29,7 @@ int main()
                                     c( width/2, height/2, 0.0f));        
 
     unsigned int seed = 2020;
-    Noise<openvdb::Vec2s> myNoise = std::make_shared<ValueNoise<openvdb::Vec2s>>(seed, bbox);
+    Noise<openvdb::Vec2s> myNoise = std::make_shared<ValueNoise<openvdb::Vec2s>>(seed, bbox, 1);
 
     float roughness = 0.75;
     float gain = 0.75;
