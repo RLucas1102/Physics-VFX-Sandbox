@@ -58,13 +58,13 @@ image::ImgProc Renderer::render(const SC& scene)
         scene->update(_n_frames, k, _start);
 
         // Keep count of scanlines; reset every frame
-        height = 1080;
-        
-        #pragma omp parallel 
+        int heightCnt = height;
+
+        for (int j = 0; j < img->GetNy(); j++)
         {
-            #pragma omp for schedule(dynamic, 5)
-            for (int j = 0; j < img->GetNy(); j++)
+            #pragma omp parallel
             {
+                #pragma omp for schedule(dynamic, 5)
                 for (int i = 0; i < img->GetNx(); i++)
                 {
                     Vector direction = scene->getCamera()->calculateDirection(i, j, img->GetNx(), img->GetNy());
@@ -76,10 +76,11 @@ image::ImgProc Renderer::render(const SC& scene)
                     img->SetValue(i, j, std::vector<float>{(float)output[0], (float)output[1], (float)output[2], (float)output[3]});
                 }
 
-                height -= 1;
-                std::clog << "\rScanlines remaining: " << (height) << ' ' << std::flush;
-                
             }
+            
+            height -= 1;
+            std::clog << "\rScanlines remaining: " << (height) << ' ' << std::flush;
+            
         }
 
         std::stringstream ss;
