@@ -101,7 +101,9 @@ namespace lux {
 
     //-----------------------------------------------------------------------------
     
+    // ------------
     // Noise Field
+    // ------------
     // Convert noise grid into a NoiseField to work with other fields
     class NoiseField : public Volume<float> {
 
@@ -116,6 +118,30 @@ namespace lux {
 
         private:
             Noise<openvdb::Vec3s> _noise;
+    };
+    
+    //-----------------------------------------------------------------------------
+    
+    // ----------------
+    // PyroSphereField
+    // ----------------
+    // Create pyroclastic sphere with a given noise pattern, radius,
+    // and gamma value
+    class PyroSphereField : public Volume<float> {
+
+        public:
+
+            using typename Volume<float>::volumeDataType;
+
+            PyroSphereField(const Noise<openvdb::Vec3s>& N, float radius, float gamma);
+            ~PyroSphereField() = default;
+
+            const volumeDataType eval(const Vector& p) const override;
+
+        private:
+            Noise<openvdb::Vec3s> _noise;
+            float _radius;
+            float _gamma;
     };
     
     //-----------------------------------------------------------------------------
@@ -151,6 +177,7 @@ namespace lux {
     // Helper functions
     // -----------------
     VSP<float> noise(const Noise<openvdb::Vec3s>& N);
+    VSP<float> pyroSphere(const Noise<openvdb::Vec3s>& N, float radius, float gamma);
     
     //-----------------------------------------------------------------------------
 
