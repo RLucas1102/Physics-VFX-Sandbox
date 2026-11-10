@@ -57,7 +57,7 @@ void Scene::init()
     // Define volumes in scene
     std::cout << "Creating volumes . . ." << std::endl;
 
-    VSP<float> pyroSphere1 = pyroSphere(noiseGrid, 1.0f, 4.0f);
+    VSP<float> noiseRegion1 = noiseRegion(noiseGrid, Vector(0,0,0), 2.0f, 2.0f);
     
     VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 1.0f, 1.0f));
 
@@ -71,7 +71,7 @@ void Scene::init()
     // Create gridded fields
     std::cout << "Gridding and manipulating fields. . ." << std::endl;
 
-    VSP<float> combined = pyroSphere1;
+    VSP<float> combined = noiseRegion1;
 
     std::cout << "Done!" << std::endl;
 
@@ -106,7 +106,7 @@ void Scene::init()
     output = output * mask(-combined) + toColor(material) * mask(combined);
 
     // Set member variables
-    _volumes.push_back(clamp(combined * constant(300.0f), 0.0, 5.0));
+    _volumes.push_back(clamp(combined * constant(50.0f), 0.0f, 3.0f));
     _materials.push_back(output);
     _lights.push_back(key);
     _lights.push_back(fill);
