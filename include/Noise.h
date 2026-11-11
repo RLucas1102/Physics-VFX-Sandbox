@@ -15,6 +15,40 @@
 
 namespace lux {
 
+    // ------------
+    // NoiseParams
+    // ------------
+    // A collection of possible parameter values for noise
+    struct NoiseParams 
+    {
+        float roughness; 
+        float gain; // Mult for roughness
+        float frequency;
+        float lacunarity; // Mult for frequency
+        openvdb::Vec3s pos;
+        openvdb::Vec3s translation;
+        int layers; // Number of noise layers to add together
+    };
+    
+    // -----------
+    // WispParams
+    // -----------
+    // A collection of possible parameter values for wisps
+    struct WispParams 
+    {
+        unsigned int numChildren;
+        float den;
+        float clump;
+        openvdb::Vec3s dP; // Displacement Vector
+        openvdb::Vec3s Pguide; // Guide particle location
+        float Pscale; // Guide particle scale
+        openvdb::Vec3s t; // Coordinate system
+        openvdb::Vec3s n;
+        openvdb::Vec3s b;
+    };
+    
+    //-----------------------------------------------------------------------------
+
     // ------------------
     // Utility functions
     // ------------------
@@ -56,8 +90,6 @@ namespace lux {
     template<typename T>
     using Noise = std::shared_ptr<NoiseBase<T>>; 
     
-    //-----------------------------------------------------------------------------
-
     // -----------
     // ValueNoise
     // -----------
@@ -76,7 +108,7 @@ namespace lux {
             {
                 if constexpr     (std::is_same_v<noiseDataType, float>)          { return Value1D(P, _bitMask, _sampler); }
                 else if constexpr(std::is_same_v<noiseDataType, openvdb::Vec2s>) { return Value2D(P, _bitMask, _sampler); }
-                else if constexpr(std::is_same_v<noiseDataType, openvdb::Vec3s>) { return Value3D(P, _grid); }
+                else if constexpr(std::is_same_v<noiseDataType, openvdb::Vec3s>) { return Value3D(P, _bitMask, _sampler); }
                 else 
                 { 
                     static_assert
@@ -118,8 +150,6 @@ namespace lux {
             Noise<openvdb::Vec3s> _noise;
     };
     
-    //-----------------------------------------------------------------------------
-    
     // -----------------
     // PyroSphere Field
     // -----------------
@@ -141,8 +171,6 @@ namespace lux {
             float _radius;
             float _gamma;
     };
-    
-    //-----------------------------------------------------------------------------
     
     // -------------------
     // Noise Region Field
@@ -167,8 +195,39 @@ namespace lux {
             float _fade;
     };
     
-    //-----------------------------------------------------------------------------
+    // -----------
+    // Wisp field
+    // -----------
+    // This creates a wisp density grid that a wisp field can use to evaluate
+    // A collection of many dots based on a single guide particle that are
+    // baked into a grid.
+    // These are known as wisps
+    class WispField : public Volume<float> {
+
+        public:
+
+            using typename Volume<float>::volumeDataType;
+
+            WispField(const Noise<openvdb::Vec3s>& N, 
+                      const WispParams& wparams, 
+                      const NoiseParams& n1params,
+                      const NoiseParams& n2params,
+                      const openvdb::CoordBBox& bbox,
+                      float vxSize);
+            ~WispField() = default;
+
+            const volumeDataType eval(const Vector& p) const override;
+
+        private:
+            openvdb::FloatGrid::Ptr _grid;
+            Noise<openvdb::Vec3s> _noise;
+            WispParams _Wparams;
+            NoiseParams _N1params;
+            NoiseParams _N2params;
+    };
     
+    //-----------------------------------------------------------------------------
+
     // -------------
     // Fractal Sums
     // -------------
@@ -202,6 +261,22 @@ namespace lux {
     VSP<float> noise(const Noise<openvdb::Vec3s>& N);
     VSP<float> pyroSphere(const Noise<openvdb::Vec3s>& N, float radius, float gamma);
     VSP<float> noiseRegion(const Noise<openvdb::Vec3s>& N, Vector cen, float radius, float fade);
+    NoiseParams noiseParams(float roughness, 
+                            float gain, // Mult for roughness
+                            float frequency, 
+                            float lacunarity, // Mult for freq.
+                            const openvdb::Vec3s& pos, 
+                            const openvdb::Vec3s& translation,
+                            int layers); // Number of noise layers to add
+    WispParams wispParams(unsigned int numChildren,
+                          float den,
+                          float clump,
+                          openvdb::Vec3s dP, // Displacement Vector
+                          openvdb::Vec3s Pguide, // Guide particle location
+                          float Pscale, // Guide particle scale
+                          openvdb::Vec3s t, // Coordinate system
+                          openvdb::Vec3s n,
+                          openvdb::Vec3s b);
     
     //-----------------------------------------------------------------------------
 
