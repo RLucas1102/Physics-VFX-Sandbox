@@ -12,7 +12,7 @@ float lux::lerp(float lo, float hi, float t)
 
 float lux::Value1D(float x,
                    unsigned int bitMask, 
-                   PointSampler sampler)
+                   const PointSampler& sampler)
 {
     float xp = std::floor(x);
     float t = x - xp;
@@ -33,7 +33,7 @@ float lux::Value1D(float x,
 
 float lux::Value2D(const openvdb::Vec2s& P,
                    unsigned int bitMask, 
-                   PointSampler sampler)
+                   const PointSampler& sampler)
 {
     float x = P.x();
     float y = P.y();
@@ -66,31 +66,30 @@ float lux::Value2D(const openvdb::Vec2s& P,
 
 float lux::Value3D(const openvdb::Vec3s& P,
                    unsigned int bitMask, 
-                   PointSampler sampler)
+                   const PointSampler& sampler)
 {
-    float x = P.x();
-    float y = P.y();
-    float z = P.z();
-    float tx = x - (float)std::floor(x);
-    float ty = y - (float)std::floor(y);
-    float tz = z - (float)std::floor(z);
+    float fx = (float)std::floor(P.x());
+    float fy = (float)std::floor(P.y());
+    float fz = (float)std::floor(P.z());
+
+    float tx = P.x() - fx;
+    float ty = P.y() - fy;
+    float tz = P.z() - fz;
+
     tx = tx * tx * (3 - 2 * tx); // Smoothstep
     ty = ty * ty * (3 - 2 * ty);
     tz = tz * tz * (3 - 2 * tz);
 
-    int xMin = std::floor(x);
-    int xMax = std::ceil(x);
-    int yMin = std::floor(y);
-    int yMax = std::ceil(y);
-    int zMin = std::floor(z);
-    int zMax = std::ceil(z);
+    int xMin = (int)fx;
+    int yMin = (int)fy;
+    int zMin = (int)fz;
 
-    xMin = xMin & bitMask;
-    xMax = xMax & bitMask;
-    yMin = yMin & bitMask;
-    yMax = yMax & bitMask;
-    zMin = zMin & bitMask;
-    zMax = zMax & bitMask;
+    int xMax = (xMin + 1) & bitMask;
+    int yMax = (yMin + 1) & bitMask;
+    int zMax = (zMin + 1) & bitMask;
+        xMin = xMin & bitMask;
+        yMin = yMin & bitMask;
+        zMin = zMin & bitMask;
 
     float fx0 = sampler->isSample(openvdb::Vec3R(xMin, yMin, zMin));
     float fx1 = sampler->isSample(openvdb::Vec3R(xMin, yMin, zMax));
@@ -112,19 +111,6 @@ float lux::Value3D(const openvdb::Vec3s& P,
     return lerp(e, f, tz);
 
 }
-
-
-float lux::Value3D(const openvdb::Vec3s& P,
-              const openvdb::FloatGrid::Ptr& grid)
-{
-    
-    openvdb::Vec3d index = grid->worldToIndex(P);
-    
-    float v = openvdb::tools::BoxSampler::sample(grid->tree(), index);
-
-    return v;
-}
-
 
 //-----------------------------------------------------------------------------
 

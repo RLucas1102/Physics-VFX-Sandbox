@@ -25,15 +25,13 @@ namespace lux {
 
     float Value1D(float x, 
                   unsigned int bitMask, 
-                  PointSampler sampler);
+                  const PointSampler& sampler);
     float Value2D(const openvdb::Vec2s& P,
                   unsigned int bitMask, 
-                  PointSampler sampler);
+                  const PointSampler& sampler);
     float Value3D(const openvdb::Vec3s& P,
                   unsigned int bitMask, 
-                  PointSampler sampler);
-    float Value3D(const openvdb::Vec3s& P,
-                  const openvdb::FloatGrid::Ptr& grid);
+                  const PointSampler& sampler);
 
     //-----------------------------------------------------------------------------
     
