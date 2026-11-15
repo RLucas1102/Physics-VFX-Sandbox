@@ -29,21 +29,6 @@ void Scene::init()
 
     // Define grids to store volumes and colors
     std::cout << "Setting up grids. . ." << std::endl;
-    
-    float colorGridDim     = 30;
-    float colorVxSize      = 0.1;
-    openvdb::Vec3s colorDg = openvdb::Vec3s(0,0,0);
-    openvdb::CoordBBox colorBBox = openvdb::CoordBBox(openvdb::Coord(-colorGridDim, -colorGridDim, -colorGridDim),
-                                                      openvdb::Coord( colorGridDim,  colorGridDim,  colorGridDim));
-    VGSP<openvdb::Vec3SGrid> colorGrid = grid<openvdb::Vec3SGrid>();
-    colorGrid->init(colorBBox,
-                    colorVxSize,
-                    colorDg);
-
-    VGSP<openvdb::FloatGrid> constantGrid = grid<openvdb::FloatGrid>();
-    constantGrid->init(colorBBox,
-                       colorVxSize,
-                       -1000.0);
 
     unsigned int seed = 2016;
     float noiseGridDim     = 256;
@@ -77,25 +62,31 @@ void Scene::init()
 
     // Create Deep Shadow Maps
     std::cout << "Creating Deep Shadow Maps. . ." << std::endl;
+    
+    float DSMGridDim     = 30;
+    float DSMVxSize      = 0.1;
+    float DSMDg          = 0.0;
+    openvdb::CoordBBox DSMBBox = openvdb::CoordBBox(openvdb::Coord(-DSMGridDim, -DSMGridDim, -DSMGridDim),
+                                                    openvdb::Coord( DSMGridDim,  DSMGridDim,  DSMGridDim));
 
     Light key = pointLight(Vector(4,4,4), Color(1.0, 0.1, 0.1, 0.0));
     key->setKappa(2);
     key->setDs(0.01);
-    key->createDSM(mask(combined), colorBBox, colorVxSize, 0);
+    key->createDSM(mask(combined), DSMBBox, DSMVxSize, DSMDg);
 
     std::cout << "Key light done!" << std::endl;
 
     Light fill = pointLight(Vector(-4,-4,4), Color(0.1, 0.1, 1.0, 0.0));
     fill->setKappa(4);
     fill->setDs(0.01);
-    fill->createDSM(mask(combined), colorBBox, colorVxSize, 0);
+    fill->createDSM(mask(combined), DSMBBox, DSMVxSize, DSMDg);
 
     std::cout << "Fill light done!" << std::endl;
 
     Light rim = pointLight(Vector(4,0,-4), Color(0.1, 1.0, 0.1, 0.0));
     rim->setKappa(8);
     rim->setDs(0.01);
-    rim->createDSM(mask(combined), colorBBox, colorVxSize, 0);
+    rim->createDSM(mask(combined), DSMBBox, DSMVxSize, DSMDg);
 
     std::cout << "Rim light done!" << std::endl;
 
