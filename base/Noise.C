@@ -253,6 +253,115 @@ const NoiseRegion::volumeDataType NoiseRegion::eval(const Vector &p) const
 
 //-----------------------------------------------------------------------------
 
+// -----------
+// Wisp field
+// -----------
+WispField::WispField(const Noise<openvdb::Vec3s>& N, 
+                     const WispParams& wparams, 
+                     const NoiseParams& n1params,
+                     const NoiseParams& n2params,
+                     float vxSize) :
+                     _noise(N),
+                     _Wparams(wparams),
+                     _N1params(n1params),
+                     _N2params(n2params)
+{
+    
+    _grid = openvdb::FloatGrid::create(0.0f);
+    
+    _grid->setTransform(openvdb::math::Transform::createLinearTransform(vxSize));
+
+    std::mt19937 gen(_Wparams.seed); 
+    std::uniform_real_distribution<float> distrFloat(-1, 1); 
+    auto randFloat = [&distrFloat, &gen](){ return distrFloat(gen); };
+
+    typename openvdb::FloatGrid::Accessor accessor = _grid->getAccessor();
+
+    float r1           = _N1params.roughness;
+    float g1           = _N1params.gain;
+    float f1           = _N1params.frequency;
+    float l1           = _N1params.lacunarity;
+    openvdb::Vec3s tx1 = _N1params.translation;
+    int o1             = _N1params.layers;
+    
+    float r2           = _N2params.roughness;
+    float g2           = _N2params.gain;
+    float f2           = _N2params.frequency;
+    float l2           = _N2params.lacunarity;
+    openvdb::Vec3s tx2 = _N2params.translation;
+    int o2             = _N2params.layers;
+
+    int num           = _Wparams.numChildren;
+    float d           = _Wparams.den;
+    float c           = _Wparams.clump;
+    openvdb::Vec3s dP = _Wparams.dP;
+    openvdb::Vec3s Pg = _Wparams.Pguide;
+    float Ps          = _Wparams.Pscale;
+    openvdb::Vec3s t   = _Wparams.t;
+    openvdb::Vec3s n   = _Wparams.n;
+    openvdb::Vec3s b   = _Wparams.b;
+
+    for (int count = 0; count < num; ++count) {
+        
+        openvdb::Vec3s P0(randFloat(), randFloat(), randFloat()); // Random position in [-1,1] cube
+
+        openvdb::Vec3s P1 = P0 / P0.length(); // Project position to unit sphere
+
+        float R = std::pow(std::fabs(fsn(_noise, r1, g1, f1, l1, P0, tx1, o1)), c); // Create radius from FSN
+
+        openvdb::Vec3s P3 = R * P1; // Move position to radius
+
+        openvdb::Vec3s P4 = Pg + Ps * (P3.x() * t + P3.y() * n + P3.z() * b); // Apply guide particle location and pscale
+
+        openvdb::Vec3s D(
+            fsn(_noise, r2, g2, f2, l2, P3, tx2, o2),    
+            fsn(_noise, r2, g2, f2, l2, P3 + dP, tx2, o2),    
+            fsn(_noise, r2, g2, f2, l2, P3 - dP, tx2, o2)    
+        );
+
+        openvdb::Vec3s P5 = P4 + D; // Move to displaced position
+
+        P5 = _grid->worldToIndex(P5);
+
+        auto makeInt = [&P5](int i){ return (int)std::floor(P5[i]); };
+
+        openvdb::Coord ijk(makeInt(0), makeInt(1), makeInt(2));
+        int i = ijk[0], j = ijk[1], k = ijk[2];
+
+        for (int ii = i; ii < i + 2; ++ii) {
+            for (int jj = j; jj < j + 2; ++jj) {
+                for (int kk = k; kk < k + 2; ++kk) {
+
+                    openvdb::Coord pqr(ii, jj, kk);
+
+                    float term1 = 1 - (t.dot((pqr.asVec3s() - P5)) / vxSize);
+                    float term2 = 1 - (n.dot((pqr.asVec3s() - P5)) / vxSize);
+                    float term3 = 1 - (b.dot((pqr.asVec3s() - P5)) / vxSize);
+                    float weight = term1 * term2 * term3;
+
+                    float g = accessor.getValue(pqr);
+                    g += d * weight;
+                    accessor.setValue(pqr, g);
+
+                }
+            }
+        }
+    }
+}
+
+const WispField::volumeDataType WispField::eval(const Vector& p) const
+{
+    const openvdb::Vec3d xyz(p.X(), p.Y(), p.Z());
+
+    openvdb::Vec3d index = _grid->worldToIndex(xyz);
+    
+    float v = openvdb::tools::BoxSampler::sample(_grid->tree(), index);
+
+    return v;
+}
+
+//-----------------------------------------------------------------------------
+
 // -------------
 // Fractal Sums
 // -------------
@@ -336,7 +445,59 @@ VSP<float> lux::noiseRegion(const Noise<openvdb::Vec3s>& N, Vector cen, float ra
     return std::make_shared<NoiseRegion>(N, cen, radius, fade);
 }
 
+VSP<float> lux::wisp(const Noise<openvdb::Vec3s>& N, 
+                     const WispParams& wparams, 
+                     const NoiseParams& n1params,
+                     const NoiseParams& n2params,
+                     float vxSize)
+{
+    return std::make_shared<WispField>(N, wparams, n1params, n2params, vxSize);
+}
 
+NoiseParams lux::noiseParams(float roughness, 
+                             float gain, 
+                             float frequency, 
+                             float lacunarity,
+                             const openvdb::Vec3s& translation,
+                             int layers)
+{
+    NoiseParams N;
+    N.roughness = roughness;
+    N.gain = gain;
+    N.frequency = frequency;
+    N.lacunarity = lacunarity;
+    N.translation = translation;
+    N.layers = layers;
+
+    return N;
+}
+
+
+WispParams lux::wispParams(unsigned int numChildren,
+                           float den,
+                           float clump,
+                           const openvdb::Vec3s& dP, // Displacement Vector
+                           const openvdb::Vec3s& Pguide, // Guide particle location
+                           float Pscale, // Guide particle scale
+                           const openvdb::Vec3s& t, // Coordinate system
+                           const openvdb::Vec3s& n,
+                           const openvdb::Vec3s& b,
+                           unsigned int seed)
+{
+    WispParams W;
+    W.numChildren = numChildren;
+    W.den = den;
+    W.clump = clump;
+    W.dP = dP;
+    W.Pguide = Pguide;
+    W.Pscale = Pscale;
+    W.t = t;
+    W.n = n;
+    W.b = b;
+    W.seed = seed;
+
+    return W;
+}
 //-----------------------------------------------------------------------------
 
 // ------------------------
