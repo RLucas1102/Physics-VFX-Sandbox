@@ -221,10 +221,10 @@ NoiseRegion::NoiseRegion(const Noise<openvdb::Vec3s>& N, const Vector& cen, floa
 
 const NoiseRegion::volumeDataType NoiseRegion::eval(const Vector &p) const
 { 
-   float roughness = 0.75;
+    float roughness = 0.75;
     float gain = 0.75;
-    float frequency = 0.025;
-    float lacunarity = 1;
+    float frequency = 2;
+    float lacunarity = 1.0;
     openvdb::Vec3s pos(p[0], p[1], p[2]);
     openvdb::Vec3s xt(0,0,0);
     int layers = 7;
