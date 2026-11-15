@@ -307,16 +307,16 @@ WispField::WispField(const Noise<openvdb::Vec3s>& N,
 
         openvdb::Vec3s P1 = P0 / P0.length(); // Project position to unit sphere
 
-        float R = std::pow(std::fabs(fsn(_noise, r1, g1, f1, l1, P0, tx1, o1)), c); // Create radius from FSN
+        float R = 2.0 * std::pow(std::fabs(fsn(_noise, r1, g1, f1, l1, P0, tx1, o1)), c) - 1.0; // Create radius from FSN
 
         openvdb::Vec3s P3 = R * P1; // Move position to radius
 
         openvdb::Vec3s P4 = Pg + Ps * (P3.x() * t + P3.y() * n + P3.z() * b); // Apply guide particle location and pscale
 
         openvdb::Vec3s D(
-            fsn(_noise, r2, g2, f2, l2, P3, tx2, o2),    
-            fsn(_noise, r2, g2, f2, l2, P3 + dP, tx2, o2),    
-            fsn(_noise, r2, g2, f2, l2, P3 - dP, tx2, o2)    
+            2.0 * fsn(_noise, r2, g2, f2, l2, P3, tx2, o2) - 1.0,    
+            2.0 * fsn(_noise, r2, g2, f2, l2, P3 + dP, tx2, o2) - 1.0,    
+            2.0 * fsn(_noise, r2, g2, f2, l2, P3 - dP, tx2, o2) - 1.0    
         );
 
         openvdb::Vec3s P5 = P4 + D; // Move to displaced position

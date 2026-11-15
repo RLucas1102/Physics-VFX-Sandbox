@@ -47,21 +47,21 @@ void Scene::init()
     VSP<float> pyroSphere1 = pyroSphere(noiseGrid, 2.0f, 3.0f);
 
     int C = 5000000;
-    float d = 0.001;
-    float cl = 0.33;
+    float d = 0.01;
+    float cl = 0.8;
     openvdb::Vec3s dP(0.0, 0.0, 0.0);
     openvdb::Vec3s Pguide(0,0,0);
-    float Pscale = 1.0f;
-    openvdb::Vec3s t(1,0,0);
-    openvdb::Vec3s n(0,1,0);
-    openvdb::Vec3s b(0,0,1);
+    float Pscale = 2.0f;
+    openvdb::Vec3s t(2,0,0);
+    openvdb::Vec3s n(0,2,0);
+    openvdb::Vec3s b(0,0,2);
 
     WispParams W = wispParams(C, d, cl, dP, Pguide, Pscale, t, n, b, seed);
 
     float r1 = 0.75;
     float g1 = 0.75;
-    float f1 = 2;
-    float l1 = 1.0;
+    float f1 = 0.1;
+    float l1 = 0.5;
     openvdb::Vec3s xt1(0,0,0);
     int ly1 = 7;
     
@@ -70,13 +70,13 @@ void Scene::init()
     float r2 = 0.75;
     float g2 = 0.75;
     float f2 = 2;
-    float l2 = 1.0;
+    float l2 = 1;
     openvdb::Vec3s xt2(0,0,0);
     int ly2 = 7;
 
     NoiseParams N2 = noiseParams(r2, g2, f2, l2, xt2, ly2);
 
-    VSP<float> wisp1 = wisp(noiseGrid, W, N1, N2, 0.001);    
+    VSP<float> wisp1 = wisp(noiseGrid, W, N1, N2, 0.01);    
     
     VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 1.0f, 1.0f));
 
@@ -90,14 +90,14 @@ void Scene::init()
     // Create gridded fields
     std::cout << "Gridding and manipulating fields. . ." << std::endl;
 
-    VSP<float> combined = scale(wisp1, 3.0f);
+    VSP<float> combined = scale(wisp1, 2.0f);
 
     std::cout << "Done!" << std::endl;
 
     // Create Deep Shadow Maps
     std::cout << "Creating Deep Shadow Maps. . ." << std::endl;
     
-    float DSMGridDim     = 30;
+    float DSMGridDim     = 80;
     float DSMVxSize      = 0.1;
     float DSMDg          = 0.0;
     openvdb::CoordBBox DSMBBox = openvdb::CoordBBox(openvdb::Coord(-DSMGridDim, -DSMGridDim, -DSMGridDim),
