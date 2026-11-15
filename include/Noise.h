@@ -25,7 +25,6 @@ namespace lux {
         float gain; // Mult for roughness
         float frequency;
         float lacunarity; // Mult for frequency
-        openvdb::Vec3s pos;
         openvdb::Vec3s translation;
         int layers; // Number of noise layers to add together
     };
@@ -45,6 +44,7 @@ namespace lux {
         openvdb::Vec3s t; // Coordinate system
         openvdb::Vec3s n;
         openvdb::Vec3s b;
+        unsigned int seed;
     };
     
     //-----------------------------------------------------------------------------
@@ -212,7 +212,6 @@ namespace lux {
                       const WispParams& wparams, 
                       const NoiseParams& n1params,
                       const NoiseParams& n2params,
-                      const openvdb::CoordBBox& bbox,
                       float vxSize);
             ~WispField() = default;
 
@@ -261,22 +260,27 @@ namespace lux {
     VSP<float> noise(const Noise<openvdb::Vec3s>& N);
     VSP<float> pyroSphere(const Noise<openvdb::Vec3s>& N, float radius, float gamma);
     VSP<float> noiseRegion(const Noise<openvdb::Vec3s>& N, Vector cen, float radius, float fade);
+    VSP<float> wisp( const Noise<openvdb::Vec3s>& N, 
+                     const WispParams& wparams, 
+                     const NoiseParams& n1params,
+                     const NoiseParams& n2params,
+                     float vxSize);
     NoiseParams noiseParams(float roughness, 
                             float gain, // Mult for roughness
                             float frequency, 
                             float lacunarity, // Mult for freq.
-                            const openvdb::Vec3s& pos, 
                             const openvdb::Vec3s& translation,
                             int layers); // Number of noise layers to add
     WispParams wispParams(unsigned int numChildren,
                           float den,
                           float clump,
-                          openvdb::Vec3s dP, // Displacement Vector
-                          openvdb::Vec3s Pguide, // Guide particle location
+                          const openvdb::Vec3s& dP, // Displacement Vector
+                          const openvdb::Vec3s& Pguide, // Guide particle location
                           float Pscale, // Guide particle scale
-                          openvdb::Vec3s t, // Coordinate system
-                          openvdb::Vec3s n,
-                          openvdb::Vec3s b);
+                          const openvdb::Vec3s& t, // Coordinate system
+                          const openvdb::Vec3s& n,
+                          const openvdb::Vec3s& b,
+                          unsigned int seed);
     
     //-----------------------------------------------------------------------------
 
