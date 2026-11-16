@@ -46,11 +46,11 @@ void Scene::init()
 
     VSP<float> pyroSphere1 = pyroSphere(noiseGrid, 2.0f, 3.0f);
 
-    int C = 5000000;
-    float d = 0.01;
+    int C = 1000000;
+    float d = 0.005;
     float cl = 0.8;
     openvdb::Vec3s dP(0.0, 0.0, 0.0);
-    openvdb::Vec3s Pguide(0,0,0);
+    openvdb::Vec3s Pguide(4,4,4);
     float Pscale = 2.0f;
     openvdb::Vec3s t(2,0,0);
     openvdb::Vec3s n(0,2,0);
@@ -60,8 +60,8 @@ void Scene::init()
 
     float r1 = 0.75;
     float g1 = 0.75;
-    float f1 = 0.1;
-    float l1 = 0.5;
+    float f1 = 2;
+    float l1 = 1;
     openvdb::Vec3s xt1(0,0,0);
     int ly1 = 7;
     
@@ -76,7 +76,7 @@ void Scene::init()
 
     NoiseParams N2 = noiseParams(r2, g2, f2, l2, xt2, ly2);
 
-    VSP<float> wisp1 = wisp(noiseGrid, W, N1, N2, 0.01);    
+    VSP<float> wisp1 = wisp(noiseGrid, W, N1, N2, 0.005);    
     
     VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 1.0f, 1.0f));
 
@@ -90,18 +90,18 @@ void Scene::init()
     // Create gridded fields
     std::cout << "Gridding and manipulating fields. . ." << std::endl;
 
-    VSP<float> combined = scale(wisp1, 2.0f);
+    VSP<float> combined = wisp1;
 
     std::cout << "Done!" << std::endl;
 
     // Create Deep Shadow Maps
     std::cout << "Creating Deep Shadow Maps. . ." << std::endl;
     
-    float DSMGridDim     = 80;
+    float DSMGridDim     = 30;
     float DSMVxSize      = 0.1;
     float DSMDg          = 0.0;
-    openvdb::CoordBBox DSMBBox = openvdb::CoordBBox(openvdb::Coord(-DSMGridDim, -DSMGridDim, -DSMGridDim),
-                                                    openvdb::Coord( DSMGridDim,  DSMGridDim,  DSMGridDim));
+    openvdb::CoordBBox DSMBBox = openvdb::CoordBBox(openvdb::Coord(-DSMGridDim + 8, -DSMGridDim + 8, -DSMGridDim + 8),
+                                                    openvdb::Coord( DSMGridDim + 8,  DSMGridDim + 8,  DSMGridDim + 8));
 
     Light key = pointLight(Vector(4,4,4), Color(1.0, 0.1, 0.1, 0.0));
     key->setKappa(2);
@@ -148,8 +148,8 @@ void Scene::setupCamera(float zdist)
 {
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
     
-    Vector pos = Vector(0,0,zdist);
-    Vector lookAt = Vector(0,0,0);
+    Vector pos = Vector(4,4,zdist);
+    Vector lookAt = Vector(4,4,0);
     Vector view = lookAt - pos;
     Vector axis = Vector(0,1,0);
 
