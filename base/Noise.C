@@ -400,15 +400,37 @@ const TerrainField::volumeDataType TerrainField::eval(const Vector& p) const
 
     openvdb::Vec3s posCPT = pos + fp * _N;
 
-    float noiseVal = 4.0 * fsn(_noise, r, g, f, l, posCPT, xt, ly) - 2.0;
+    float noiseVal = 2.0 * fsn(_noise, r, g, f, l, posCPT, xt, ly) - 1.0;
+
+    auto ym = [gamma1, gamma2, transition](float noiseVal) {
+        
+        float gamma;
+
+        if (noiseVal > transition) {
+            gamma = gamma1;
+        }
+        else if ( noiseVal > 0 && noiseVal < transition) {
+            float term1 = noiseVal/transition;
+            gamma = gamma1 * (term1) + 1 - (term1);
+        }
+        else if (noiseVal > -transition && noiseVal < 0) {
+            float term1 = std::fabs(noiseVal)/transition;
+            gamma = gamma2 * (term1) + 1 - (term1);
+        }
+        else if (noiseVal < -transition) {
+            gamma = gamma2;
+        }
+
+        return gamma;
+
+    };
 
     float terrainVal;
     if (noiseVal >= 0) {
-        terrainVal = amp1 * std::pow(noiseVal, gamma1);
+        terrainVal = amp1 * std::pow(noiseVal, ym(noiseVal));
     }
     else {
-        terrainVal = -amp2 * std::pow(std::fabs(noiseVal), gamma2);
-        // terrainVal = 0;
+        terrainVal = -amp2 * std::pow(std::fabs(noiseVal), ym(noiseVal));
     }
 
     return fp + terrainVal;
