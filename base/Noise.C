@@ -362,6 +362,26 @@ const WispField::volumeDataType WispField::eval(const Vector& p) const
 
 //-----------------------------------------------------------------------------
 
+// --------------
+// Terrain field
+// --------------
+TerrainField::TerrainField(const openvdb::Vec3s& N,
+                           const openvdb::Vec3s& X0) :
+                           _N(N),
+                           _X0(X0)
+{
+}
+
+const TerrainField::volumeDataType TerrainField::eval(const Vector& p) const
+{
+    openvdb::Vec3s pos(p[0],p[1],p[2]);
+
+    return -(_N.dot(pos - _X0));
+}
+
+
+//-----------------------------------------------------------------------------
+
 // -------------
 // Fractal Sums
 // -------------
@@ -443,6 +463,12 @@ VSP<float> lux::pyroSphere(const Noise<openvdb::Vec3s>& N, float radius, float g
 VSP<float> lux::noiseRegion(const Noise<openvdb::Vec3s>& N, Vector cen, float radius, float fade)
 {
     return std::make_shared<NoiseRegion>(N, cen, radius, fade);
+}
+
+VSP<float> lux::terrain(const openvdb::Vec3s& N,
+                        const openvdb::Vec3s& X0)
+{
+    return std::make_shared<TerrainField>(N, X0);
 }
 
 VSP<float> lux::wisp(const Noise<openvdb::Vec3s>& N, 

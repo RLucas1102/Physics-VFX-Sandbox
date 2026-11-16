@@ -224,6 +224,28 @@ namespace lux {
             NoiseParams _N1params;
             NoiseParams _N2params;
     };
+
+    // --------------
+    // Terrain field
+    // --------------
+    // This pyroclastically displaces a plane to look like procedural terrains
+    // with mountains and valleys
+    class TerrainField : public Volume<float> {
+
+        public:
+
+            using typename Volume<float>::volumeDataType;
+
+            TerrainField(const openvdb::Vec3s& N,
+                         const openvdb::Vec3s& X0);
+            ~TerrainField() = default;
+
+            const volumeDataType eval(const Vector& p) const override;
+
+        private:
+            openvdb::Vec3s _N;
+            openvdb::Vec3s _X0;
+    };
     
     //-----------------------------------------------------------------------------
 
@@ -260,11 +282,13 @@ namespace lux {
     VSP<float> noise(const Noise<openvdb::Vec3s>& N);
     VSP<float> pyroSphere(const Noise<openvdb::Vec3s>& N, float radius, float gamma);
     VSP<float> noiseRegion(const Noise<openvdb::Vec3s>& N, Vector cen, float radius, float fade);
-    VSP<float> wisp( const Noise<openvdb::Vec3s>& N, 
-                     const WispParams& wparams, 
-                     const NoiseParams& n1params,
-                     const NoiseParams& n2params,
-                     float vxSize);
+    VSP<float> terrain(const openvdb::Vec3s& N,
+                       const openvdb::Vec3s& X0);
+    VSP<float> wisp(const Noise<openvdb::Vec3s>& N, 
+                    const WispParams& wparams, 
+                    const NoiseParams& n1params,
+                    const NoiseParams& n2params,
+                    float vxSize);
     NoiseParams noiseParams(float roughness, 
                             float gain, // Mult for roughness
                             float frequency, 
