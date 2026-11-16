@@ -365,18 +365,39 @@ const WispField::volumeDataType WispField::eval(const Vector& p) const
 // --------------
 // Terrain field
 // --------------
-TerrainField::TerrainField(const openvdb::Vec3s& N,
-                           const openvdb::Vec3s& X0) :
+TerrainField::TerrainField(const Noise<openvdb::Vec3s>& No,
+                           const openvdb::Vec3s& N,
+                           const openvdb::Vec3s& X0,
+                           const NoiseParams& nparams,
+                           float gamma) :
+                           _noise(No),
                            _N(N),
-                           _X0(X0)
+                           _X0(X0),
+                           _nparams(nparams),
+                           _g(gamma)
+
 {
 }
 
 const TerrainField::volumeDataType TerrainField::eval(const Vector& p) const
 {
+
+    float r = _nparams.roughness;
+    float g = _nparams.gain;
+    float f = _nparams.frequency;
+    float l = _nparams.lacunarity;
+    openvdb::Vec3s xt = _nparams.translation;
+    float ly = _nparams.layers;
+
     openvdb::Vec3s pos(p[0],p[1],p[2]);
 
-    return -(_N.dot(pos - _X0));
+    float fp = -(_N.dot(pos - _X0));
+
+    openvdb::Vec3s posCPT = pos + fp * _N;
+
+    float noiseVal = std::pow(std::fabs(fsn(_noise, r, g, f, l, posCPT, xt, ly)), _g);
+
+    return fp + noiseVal;
 }
 
 
@@ -465,10 +486,13 @@ VSP<float> lux::noiseRegion(const Noise<openvdb::Vec3s>& N, Vector cen, float ra
     return std::make_shared<NoiseRegion>(N, cen, radius, fade);
 }
 
-VSP<float> lux::terrain(const openvdb::Vec3s& N,
-                        const openvdb::Vec3s& X0)
+VSP<float> lux::terrain(const Noise<openvdb::Vec3s>& No,
+                        const openvdb::Vec3s& N,
+                        const openvdb::Vec3s& X0,
+                        const NoiseParams& nparams,
+                        float gamma)
 {
-    return std::make_shared<TerrainField>(N, X0);
+    return std::make_shared<TerrainField>(No, N, X0, nparams, gamma);
 }
 
 VSP<float> lux::wisp(const Noise<openvdb::Vec3s>& N, 

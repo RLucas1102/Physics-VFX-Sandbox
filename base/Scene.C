@@ -46,11 +46,11 @@ void Scene::init()
 
     VSP<float> pyroSphere1 = pyroSphere(noiseGrid, 2.0f, 3.0f);
 
-    int C = 1000000;
+    int C = 100000000;
     float d = 0.005;
     float cl = 0.8;
     openvdb::Vec3s dP(0.0, 0.0, 0.0);
-    openvdb::Vec3s Pguide(4,4,4);
+    openvdb::Vec3s Pguide(0,0,0);
     float Pscale = 2.0f;
     openvdb::Vec3s t(2,0,0);
     openvdb::Vec3s n(0,2,0);
@@ -76,7 +76,17 @@ void Scene::init()
 
     NoiseParams N2 = noiseParams(r2, g2, f2, l2, xt2, ly2);
 
-    VSP<float> wisp1 = wisp(noiseGrid, W, N1, N2, 0.005);    
+    // VSP<float> wisp1 = wisp(noiseGrid, W, N1, N2, 0.005);
+    
+    openvdb::Vec3s N(0,1,0);
+    openvdb::Vec3s X0(0,-1,0);
+
+    VSP<float> terrain1 = terrain(noiseGrid, N, X0, N1, 1.0f);
+    VSP<float> plane1 = plane(Vector(-1, 0, 0), Vector(-4, 0, 0));
+    VSP<float> plane2 = plane(Vector( 1, 0, 0), Vector( 4, 0, 0));
+    VSP<float> plane3 = plane(Vector( 0, 0,-1), Vector( 0, 0,-4));
+    VSP<float> plane4 = plane(Vector( 0, 0, 1), Vector( 0, 0, 4));
+    VSP<float> plane5 = plane(Vector( 0,-1, 0), Vector( 0,-2, 0));
     
     VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 1.0f, 1.0f));
 
@@ -90,39 +100,50 @@ void Scene::init()
     // Create gridded fields
     std::cout << "Gridding and manipulating fields. . ." << std::endl;
 
-    VSP<float> combined = wisp1;
+    terrain1 = Intersection(terrain1, plane1);
+    terrain1 = Intersection(terrain1, plane2);
+    terrain1 = Intersection(terrain1, plane3);
+    terrain1 = Intersection(terrain1, plane4);
+    terrain1 = Intersection(terrain1, plane5);
+
+    VSP<float> combined = terrain1;
 
     std::cout << "Done!" << std::endl;
 
     // Create Deep Shadow Maps
     std::cout << "Creating Deep Shadow Maps. . ." << std::endl;
     
-    float DSMGridDim     = 30;
+    float DSMGridDim     = 50;
     float DSMVxSize      = 0.1;
     float DSMDg          = 0.0;
-    openvdb::CoordBBox DSMBBox = openvdb::CoordBBox(openvdb::Coord(-DSMGridDim + 8, -DSMGridDim + 8, -DSMGridDim + 8),
-                                                    openvdb::Coord( DSMGridDim + 8,  DSMGridDim + 8,  DSMGridDim + 8));
+    openvdb::CoordBBox DSMBBox = openvdb::CoordBBox(openvdb::Coord(-DSMGridDim, -DSMGridDim, -DSMGridDim),
+                                                    openvdb::Coord( DSMGridDim,  DSMGridDim,  DSMGridDim));
 
-    Light key = pointLight(Vector(4,4,4), Color(1.0, 0.1, 0.1, 0.0));
-    key->setKappa(2);
+    Light key = pointLight(Vector(1,5,1), Color(0.7, 0.7, 0.7, 0.0));
+    key->setKappa(1.0);
     key->setDs(0.01);
     key->createDSM(mask(combined), DSMBBox, DSMVxSize, DSMDg);
+    
+    // Light key = pointLight(Vector(4,4,4), Color(1.0, 0.1, 0.1, 0.0));
+    // key->setKappa(2);
+    // key->setDs(0.01);
+    // key->createDSM(mask(combined), DSMBBox, DSMVxSize, DSMDg);
 
-    std::cout << "Key light done!" << std::endl;
+    // std::cout << "Key light done!" << std::endl;
 
-    Light fill = pointLight(Vector(-4,-4,4), Color(0.1, 0.1, 1.0, 0.0));
-    fill->setKappa(4);
-    fill->setDs(0.01);
-    fill->createDSM(mask(combined), DSMBBox, DSMVxSize, DSMDg);
+    // Light fill = pointLight(Vector(-4,-4,4), Color(0.1, 0.1, 1.0, 0.0));
+    // fill->setKappa(4);
+    // fill->setDs(0.01);
+    // fill->createDSM(mask(combined), DSMBBox, DSMVxSize, DSMDg);
 
-    std::cout << "Fill light done!" << std::endl;
+    // std::cout << "Fill light done!" << std::endl;
 
-    Light rim = pointLight(Vector(4,0,-4), Color(0.1, 1.0, 0.1, 0.0));
-    rim->setKappa(8);
-    rim->setDs(0.01);
-    rim->createDSM(mask(combined), DSMBBox, DSMVxSize, DSMDg);
+    // Light rim = pointLight(Vector(4,0,-4), Color(0.1, 1.0, 0.1, 0.0));
+    // rim->setKappa(8);
+    // rim->setDs(0.01);
+    // rim->createDSM(mask(combined), DSMBBox, DSMVxSize, DSMDg);
 
-    std::cout << "Rim light done!" << std::endl;
+    // std::cout << "Rim light done!" << std::endl;
 
     // Define where color is and is not
     std::cout << "Finalizing scene. . ." << std::endl;
@@ -134,8 +155,8 @@ void Scene::init()
     _volumes.push_back(clamp(combined * constant(50.0f), 0.0f, 3.0f));
     _materials.push_back(output);
     _lights.push_back(key);
-    _lights.push_back(fill);
-    _lights.push_back(rim);
+    // _lights.push_back(fill);
+    // _lights.push_back(rim);
 
     std::cout << "Done!" << std::endl;
 
@@ -148,8 +169,8 @@ void Scene::setupCamera(float zdist)
 {
     std::shared_ptr<Camera> cam = std::make_shared<Camera>();
     
-    Vector pos = Vector(4,4,zdist);
-    Vector lookAt = Vector(4,4,0);
+    Vector pos = Vector(0,8,zdist);
+    Vector lookAt = Vector(0,0,0);
     Vector view = lookAt - pos;
     Vector axis = Vector(0,1,0);
 

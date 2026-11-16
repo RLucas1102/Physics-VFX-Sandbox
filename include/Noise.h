@@ -236,8 +236,11 @@ namespace lux {
 
             using typename Volume<float>::volumeDataType;
 
-            TerrainField(const openvdb::Vec3s& N,
-                         const openvdb::Vec3s& X0);
+            TerrainField(const Noise<openvdb::Vec3s>& No,
+                         const openvdb::Vec3s& N,
+                         const openvdb::Vec3s& X0,
+                         const NoiseParams& nparams,
+                         float gamma);
             ~TerrainField() = default;
 
             const volumeDataType eval(const Vector& p) const override;
@@ -245,6 +248,9 @@ namespace lux {
         private:
             openvdb::Vec3s _N;
             openvdb::Vec3s _X0;
+            Noise<openvdb::Vec3s> _noise;
+            NoiseParams _nparams;
+            float _g;
     };
     
     //-----------------------------------------------------------------------------
@@ -282,8 +288,11 @@ namespace lux {
     VSP<float> noise(const Noise<openvdb::Vec3s>& N);
     VSP<float> pyroSphere(const Noise<openvdb::Vec3s>& N, float radius, float gamma);
     VSP<float> noiseRegion(const Noise<openvdb::Vec3s>& N, Vector cen, float radius, float fade);
-    VSP<float> terrain(const openvdb::Vec3s& N,
-                       const openvdb::Vec3s& X0);
+    VSP<float> terrain(const Noise<openvdb::Vec3s>& No,
+                       const openvdb::Vec3s& N,
+                       const openvdb::Vec3s& X0,
+                       const NoiseParams& nparams,
+                       float gamma);
     VSP<float> wisp(const Noise<openvdb::Vec3s>& N, 
                     const WispParams& wparams, 
                     const NoiseParams& n1params,
