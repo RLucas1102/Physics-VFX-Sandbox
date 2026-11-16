@@ -78,10 +78,27 @@ void Scene::init()
 
     // VSP<float> wisp1 = wisp(noiseGrid, W, N1, N2, 0.005);
     
+    float r3 = 0.75;
+    float g3 = 0.75;
+    float f3 = 2;
+    float l3 = 1.1;
+    openvdb::Vec3s xt3(0,0,0);
+    int ly3 = 7;
+    
+    NoiseParams N3 = noiseParams(r3, g3, f3, l3, xt3, ly3);
+
+    float gamma1 = 1.5f;
+    float gamma2 = 3.0f;
+    float amp1 = 4.0;
+    float amp2 = 0.7;
+    float transition = 0.3;
+
+    TerrainParams T1 = terrainParams(gamma1, gamma2, amp1, amp2, transition);
+    
     openvdb::Vec3s N(0,1,0);
     openvdb::Vec3s X0(0,-1,0);
 
-    VSP<float> terrain1 = terrain(noiseGrid, N, X0, N1, 1.0f);
+    VSP<float> terrain1 = terrain(noiseGrid, N, X0, N3, T1);
     VSP<float> plane1 = plane(Vector(-1, 0, 0), Vector(-4, 0, 0));
     VSP<float> plane2 = plane(Vector( 1, 0, 0), Vector( 4, 0, 0));
     VSP<float> plane3 = plane(Vector( 0, 0,-1), Vector( 0, 0,-4));
@@ -152,7 +169,7 @@ void Scene::init()
     output = output * mask(-combined) + toColor(material) * mask(combined);
 
     // Set member variables
-    _volumes.push_back(clamp(combined * constant(50.0f), 0.0f, 3.0f));
+    _volumes.push_back(clamp(combined * constant(300.0f), 0.0f, 5.0f));
     _materials.push_back(output);
     _lights.push_back(key);
     // _lights.push_back(fill);

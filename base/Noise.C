@@ -369,13 +369,12 @@ TerrainField::TerrainField(const Noise<openvdb::Vec3s>& No,
                            const openvdb::Vec3s& N,
                            const openvdb::Vec3s& X0,
                            const NoiseParams& nparams,
-                           float gamma) :
+                           const TerrainParams& tparams) :
                            _noise(No),
                            _N(N),
                            _X0(X0),
                            _nparams(nparams),
-                           _g(gamma)
-
+                           _tparams(tparams)
 {
 }
 
@@ -389,15 +388,30 @@ const TerrainField::volumeDataType TerrainField::eval(const Vector& p) const
     openvdb::Vec3s xt = _nparams.translation;
     float ly = _nparams.layers;
 
+    float gamma1 = _tparams.gamma1;
+    float gamma2 = _tparams.gamma2;
+    float amp1 = _tparams.amp1;
+    float amp2 = _tparams.amp2;
+    float transition = _tparams.transition;
+
     openvdb::Vec3s pos(p[0],p[1],p[2]);
 
     float fp = -(_N.dot(pos - _X0));
 
     openvdb::Vec3s posCPT = pos + fp * _N;
 
-    float noiseVal = std::pow(std::fabs(fsn(_noise, r, g, f, l, posCPT, xt, ly)), _g);
+    float noiseVal = 4.0 * fsn(_noise, r, g, f, l, posCPT, xt, ly) - 2.0;
 
-    return fp + noiseVal;
+    float terrainVal;
+    if (noiseVal >= 0) {
+        terrainVal = amp1 * std::pow(noiseVal, gamma1);
+    }
+    else {
+        terrainVal = -amp2 * std::pow(std::fabs(noiseVal), gamma2);
+        // terrainVal = 0;
+    }
+
+    return fp + terrainVal;
 }
 
 
@@ -490,9 +504,9 @@ VSP<float> lux::terrain(const Noise<openvdb::Vec3s>& No,
                         const openvdb::Vec3s& N,
                         const openvdb::Vec3s& X0,
                         const NoiseParams& nparams,
-                        float gamma)
+                        const TerrainParams& tparams)
 {
-    return std::make_shared<TerrainField>(No, N, X0, nparams, gamma);
+    return std::make_shared<TerrainField>(No, N, X0, nparams, tparams);
 }
 
 VSP<float> lux::wisp(const Noise<openvdb::Vec3s>& N, 
@@ -547,6 +561,24 @@ WispParams lux::wispParams(unsigned int numChildren,
     W.seed = seed;
 
     return W;
+}
+
+
+TerrainParams lux::terrainParams(float gamma1,
+                                 float gamma2,
+                                 float amp1,
+                                 float amp2,
+                                 float transition)
+{
+    TerrainParams T;
+    T.gamma1 = gamma1;
+    T.gamma2 = gamma2;
+    T.amp1 = amp1;
+    T.amp2 = amp2;
+    T.transition = transition;
+
+    return T;
+
 }
 //-----------------------------------------------------------------------------
 

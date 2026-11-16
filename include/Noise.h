@@ -46,6 +46,18 @@ namespace lux {
         openvdb::Vec3s b;
         unsigned int seed;
     };
+
+    // --------------
+    // TerrainParams
+    // --------------
+    struct TerrainParams
+    {
+        float gamma1;
+        float gamma2;
+        float amp1;
+        float amp2;
+        float transition;
+    };
     
     //-----------------------------------------------------------------------------
 
@@ -240,7 +252,7 @@ namespace lux {
                          const openvdb::Vec3s& N,
                          const openvdb::Vec3s& X0,
                          const NoiseParams& nparams,
-                         float gamma);
+                         const TerrainParams& tparams);
             ~TerrainField() = default;
 
             const volumeDataType eval(const Vector& p) const override;
@@ -250,7 +262,7 @@ namespace lux {
             openvdb::Vec3s _X0;
             Noise<openvdb::Vec3s> _noise;
             NoiseParams _nparams;
-            float _g;
+            TerrainParams _tparams;
     };
     
     //-----------------------------------------------------------------------------
@@ -292,7 +304,7 @@ namespace lux {
                        const openvdb::Vec3s& N,
                        const openvdb::Vec3s& X0,
                        const NoiseParams& nparams,
-                       float gamma);
+                       const TerrainParams& tparams);
     VSP<float> wisp(const Noise<openvdb::Vec3s>& N, 
                     const WispParams& wparams, 
                     const NoiseParams& n1params,
@@ -314,6 +326,11 @@ namespace lux {
                           const openvdb::Vec3s& n,
                           const openvdb::Vec3s& b,
                           unsigned int seed);
+    TerrainParams terrainParams(float gamma1,
+                                float gamma2,
+                                float amp1,
+                                float amp2,
+                                float transition);
     
     //-----------------------------------------------------------------------------
 
