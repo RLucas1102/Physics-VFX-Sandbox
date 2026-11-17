@@ -1,0 +1,17 @@
+# Grass
+float r3 = 0.99;
+float g3 = 0.99;
+float f3 = 0.1;
+float l3 = 5.0;
+openvdb::Vec3s xt3(0,0,0);
+int ly3 = 7;
+
+NoiseParams N3 = noiseParams(r3, g3, f3, l3, xt3, ly3);
+
+float gamma1 = 1.0f;
+float gamma2 = 0.7f;
+float amp1 = 1.0;
+float amp2 = 1.0;
+float transition = 0.3;
+
+TerrainParams T1 = terrainParams(gamma1, gamma2, amp1, amp2, transition);
