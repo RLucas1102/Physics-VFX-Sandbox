@@ -30,11 +30,11 @@ void Renderer::init(const std::vector<std::string>& args)
     _raymarcher->SetKappa(1);
 
     // Animation settings
-    if (args.size() > 3) {
-        _n_frames = std::strtol(args[1].c_str(), NULL, 10);
-        _start    = std::strtol(args[2].c_str(), NULL, 10);
-        _end      = std::strtol(args[3].c_str(), NULL, 10);
-    }
+    // if (args.size() > 3) {
+    //     _n_frames = std::strtol(args[1].c_str(), NULL, 10);
+    //     _start    = std::strtol(args[2].c_str(), NULL, 10);
+    //     _end      = std::strtol(args[3].c_str(), NULL, 10);
+    // }
 
     // Initialize the renderer
     _initialized = true;
@@ -44,8 +44,8 @@ image::ImgProc Renderer::render(const SC& scene)
 {
     // Define an image
     std::shared_ptr<image::ImgProc> img = std::make_shared<image::ImgProc>();
-    int width  = 1920;
-    int height = 1080;
+    int width  = 1920/2;
+    int height = 1080/2;
     img->clear(width, height, 4);
 
     std::cout << "Starting Ray marching. . ." << std::endl;
