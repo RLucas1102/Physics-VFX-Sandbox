@@ -37,7 +37,7 @@ namespace lux
             ~Scene() = default;
 
             // Initialize the scene with objects, light, etc.
-            void init();
+            void init(const std::vector<std::string>& args);
 
             void setupCamera(float zdist);
             
