@@ -46,11 +46,11 @@ void Scene::init(const std::vector<std::string>& args)
 
     float roughness = 0.75;
     float gain = 0.75;
-    float frequency = 4;
-    float lacunarity = 1;
+    float frequency = std::stof(args[2].c_str());
+    float lacunarity = std::stof(args[3].c_str());
     openvdb::Vec3s xt(0,0,0);
-    int layers = 7;
-    float gamma = 3.0f;
+    float layers = std::stof(args[1].c_str());
+    float gamma = std::stof(args[4].c_str());
     float radius = 2.0f;
     
     NoiseParams N1 = noiseParams(roughness, gain, frequency, lacunarity, xt, layers);

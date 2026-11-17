@@ -546,7 +546,7 @@ NoiseParams lux::noiseParams(float roughness,
                              float frequency, 
                              float lacunarity,
                              const openvdb::Vec3s& translation,
-                             int layers)
+                             float layers)
 {
     NoiseParams N;
     N.roughness = roughness;

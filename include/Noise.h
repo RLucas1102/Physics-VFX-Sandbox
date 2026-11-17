@@ -26,7 +26,7 @@ namespace lux {
         float frequency;
         float lacunarity; // Mult for frequency
         openvdb::Vec3s translation;
-        int layers; // Number of noise layers to add together
+        float layers; // Number of noise layers to add together
     };
     
     // -----------
@@ -316,7 +316,7 @@ namespace lux {
                             float frequency, 
                             float lacunarity, // Mult for freq.
                             const openvdb::Vec3s& translation,
-                            int layers); // Number of noise layers to add
+                            float layers); // Number of noise layers to add
     WispParams wispParams(unsigned int numChildren,
                           float den,
                           float clump,
