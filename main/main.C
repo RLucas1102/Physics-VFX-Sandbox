@@ -21,7 +21,7 @@ int main(int argc, char** argv)
     
     // Create Scene
     SC scene = CreateScene();
-    scene->init();
+    scene->init(args);
     
     // Create Renderer
     RE tesselator = CreateRenderer();
