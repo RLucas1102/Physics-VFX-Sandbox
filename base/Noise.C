@@ -177,22 +177,23 @@ const NoiseField::volumeDataType NoiseField::eval(const Vector &p) const
 // -----------------
 // PyroSphere Field
 // -----------------
-PyroSphereField::PyroSphereField(const Noise<openvdb::Vec3s>& N, float radius, float gamma) :
+PyroSphereField::PyroSphereField(const Noise<openvdb::Vec3s>& N, float radius, float gamma, const NoiseParams& nparams) :
     _noise(N),
     _radius(radius),
-    _gamma(gamma)
+    _gamma(gamma),
+    _nparams(nparams)
 {
 }
 
 const PyroSphereField::volumeDataType PyroSphereField::eval(const Vector &p) const
 { 
-    float roughness = 0.75;
-    float gain = 0.75;
-    float frequency = 4;
-    float lacunarity = 1;
+    float roughness = _nparams.roughness;
+    float gain = _nparams.gain;
+    float frequency = _nparams.frequency;
+    float lacunarity = _nparams.lacunarity;
     openvdb::Vec3s pos(p[0], p[1], p[2]);
-    openvdb::Vec3s xt(0,0,0);
-    int layers = 7;
+    openvdb::Vec3s xt = _nparams.translation;
+    float layers = _nparams.layers;
 
     float sphereVal = _radius - p.magnitude();
 
@@ -512,9 +513,9 @@ VSP<float> lux::noise(const Noise<openvdb::Vec3s>& N)
     return std::make_shared<NoiseField>(N);
 }
 
-VSP<float> lux::pyroSphere(const Noise<openvdb::Vec3s>& N, float radius, float gamma)
+VSP<float> lux::pyroSphere(const Noise<openvdb::Vec3s>& N, float radius, float gamma, const NoiseParams& nparams)
 {
-    return std::make_shared<PyroSphereField>(N, radius, gamma);
+    return std::make_shared<PyroSphereField>(N, radius, gamma, nparams);
 }
     
 VSP<float> lux::noiseRegion(const Noise<openvdb::Vec3s>& N, Vector cen, float radius, float fade)
