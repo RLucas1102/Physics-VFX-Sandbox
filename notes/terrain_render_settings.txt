@@ -1,17 +1,70 @@
-# Grass
-float r3 = 0.99;
-float g3 = 0.99;
-float f3 = 0.1;
-float l3 = 5.0;
+# Grassy Hills
+float r3 = 0.01;
+float g3 = 4.0;
+float f3 = 0.01;
+float l3 = 3.0;
 openvdb::Vec3s xt3(0,0,0);
-int ly3 = 7;
+int ly3 = 5;
 
 NoiseParams N3 = noiseParams(r3, g3, f3, l3, xt3, ly3);
 
 float gamma1 = 1.0f;
 float gamma2 = 0.7f;
 float amp1 = 1.0;
-float amp2 = 1.0;
+float amp2 = 0.0;
 float transition = 0.3;
 
 TerrainParams T1 = terrainParams(gamma1, gamma2, amp1, amp2, transition);
+
+float r4 = 0.99;
+float g4 = 0.99;
+float f4 = 0.1;
+float l4 = 5.0;
+openvdb::Vec3s xt4(0,0,0);
+int ly4 = 7;
+
+NoiseParams N4 = noiseParams(r4, g4, f4, l4, xt4, ly4);
+
+float gamma12 = 1.0f;
+float gamma22 = 0.7f;
+float amp12 = 1.0;
+float amp22 = 1.0;
+float transition2 = 0.3;
+
+TerrainParams T2 = terrainParams(gamma12, gamma22, amp12, amp22, transition2);
+
+openvdb::Vec3s N(0,1,0);
+openvdb::Vec3s X0(0,-1,0);
+
+VSP<float> terrain1 = terrain(noiseGrid, N, X0, N3, T1);
+VSP<float> terrain2 = terrain(noiseGrid, N, X0, N4, T2);
+VSP<float> plane1 = plane(Vector(-1, 0, 0), Vector(-4, 0, 0));
+VSP<float> plane2 = plane(Vector( 1, 0, 0), Vector( 4, 0, 0));
+VSP<float> plane3 = plane(Vector( 0, 0,-1), Vector( 0, 0,-4));
+VSP<float> plane4 = plane(Vector( 0, 0, 1), Vector( 0, 0, 4));
+VSP<float> plane5 = plane(Vector( 0,-1, 0), Vector( 0,-2, 0));
+
+terrain1 = terrain1 + terrain2;
+terrain1 = Intersection(terrain1, plane1);
+terrain1 = Intersection(terrain1, plane2);
+terrain1 = Intersection(terrain1, plane3);
+terrain1 = Intersection(terrain1, plane4);
+terrain1 = Intersection(terrain1, plane5);
+    
+VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(0.2471f, 0.6078f, 0.0431f));
+
+# Terrain Lights
+float DSMGridDim     = 50;
+float DSMVxSize      = 0.1;
+float DSMDg          = 0.0;
+openvdb::CoordBBox DSMBBox = openvdb::CoordBBox(openvdb::Coord(-DSMGridDim, -DSMGridDim, -DSMGridDim),
+                                                openvdb::Coord( DSMGridDim,  DSMGridDim,  DSMGridDim));
+
+Light key = pointLight(Vector(1,5,1), Color(0.7, 0.7, 0.7, 0.0));
+key->setKappa(1.0);
+key->setDs(0.01);
+key->createDSM(mask(combined), DSMBBox, DSMVxSize, DSMDg);
+
+# Terrain Camera
+Vector pos = Vector(0,8,zdist);
+Vector lookAt = Vector(0,0,0);
