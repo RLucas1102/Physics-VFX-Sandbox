@@ -196,7 +196,7 @@ namespace lux {
 
             using typename Volume<float>::volumeDataType;
 
-            NoiseRegion(const Noise<openvdb::Vec3s>& N, const Vector& cen, float radius, float fade);
+            NoiseRegion(const Noise<openvdb::Vec3s>& N, const Vector& cen, float radius, float fade, const NoiseParams& nparams);
             ~NoiseRegion() = default;
 
             const volumeDataType eval(const Vector& p) const override;
@@ -206,6 +206,7 @@ namespace lux {
             Vector _center;
             float _radius;
             float _fade;
+            NoiseParams _nparams;
     };
     
     // -----------
@@ -300,7 +301,7 @@ namespace lux {
     // -----------------
     VSP<float> noise(const Noise<openvdb::Vec3s>& N);
     VSP<float> pyroSphere(const Noise<openvdb::Vec3s>& N, float radius, float gamma, const NoiseParams& nparams);
-    VSP<float> noiseRegion(const Noise<openvdb::Vec3s>& N, Vector cen, float radius, float fade);
+    VSP<float> noiseRegion(const Noise<openvdb::Vec3s>& N, Vector cen, float radius, float fade, const NoiseParams& nparams);
     VSP<float> terrain(const Noise<openvdb::Vec3s>& No,
                        const openvdb::Vec3s& N,
                        const openvdb::Vec3s& X0,

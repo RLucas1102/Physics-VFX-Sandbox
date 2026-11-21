@@ -48,12 +48,13 @@ void Scene::init(const std::vector<std::string>& args)
     float lacunarity = std::stof(args[3].c_str());
     openvdb::Vec3s xt(0,0,0);
     float layers = std::stof(args[1].c_str());
-    float gamma = std::stof(args[4].c_str());
+    float fade = std::stof(args[4].c_str());
+    Vector center(0,0,0);
     float radius = 2.0f;
     
     NoiseParams N1 = noiseParams(roughness, gain, frequency, lacunarity, xt, layers);
 
-    VSP<float> pyroSphere1 = pyroSphere(noiseGrid, radius, gamma, N1);
+    VSP<float> noiseRegion1 = noiseRegion(noiseGrid, center, radius, fade, N1);
 
     VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 1.0f, 1.0f));
 
@@ -67,7 +68,7 @@ void Scene::init(const std::vector<std::string>& args)
     // Create gridded fields
     std::cout << "Gridding and manipulating fields. . ." << std::endl;
 
-    VSP<float> combined = translate(pyroSphere1, Vector(4, 4, 0));
+    VSP<float> combined = translate(noiseRegion1, Vector(4, 4, 0));
 
     std::cout << "Done!" << std::endl;
 
