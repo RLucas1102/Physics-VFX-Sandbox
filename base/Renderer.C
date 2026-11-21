@@ -36,6 +36,8 @@ void Renderer::init(const std::vector<std::string>& args)
     //     _end      = std::strtol(args[3].c_str(), NULL, 10);
     // }
 
+    _filename = args[5];
+
     // Initialize the renderer
     _initialized = true;
 }
@@ -86,9 +88,9 @@ image::ImgProc Renderer::render(const SC& scene)
         std::stringstream ss;
         ss << "images/ajaxBunny." << std::setw(4) << std::setfill('0') << k << ".exr";
         std::string filename = ss.str();
-        img->Write(filename);
+        img->Write(_filename);
 
-        std::cout << "\n" << ss.str() << " complete!" << std::endl;
+        std::cout << "\n" << _filename << " complete!" << std::endl;
 
     }
     return *img;

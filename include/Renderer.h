@@ -47,6 +47,8 @@ namespace lux
             int _start = 0;
             int _end = 1;
 
+            std::string _filename;
+
             // Static renderer exists in class as a whole
             static std::shared_ptr<Renderer> pRenderer;
 
