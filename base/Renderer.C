@@ -18,7 +18,7 @@ void Renderer::init(const std::vector<std::string>& args)
     // Define a raymarcher
     double near = 10;
     double far = 20;
-    double steps = 1000;
+    double steps = 5000;
     float min_ds = (far - near) / steps;
     
     _raymarcher = raymarcherLightsFixed();

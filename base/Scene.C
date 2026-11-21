@@ -42,19 +42,37 @@ void Scene::init(const std::vector<std::string>& args)
     // Define volumes in scene
     std::cout << "Creating volumes . . ." << std::endl;
 
-    float roughness = 0.75;
-    float gain = 0.75;
-    float frequency = std::stof(args[2].c_str());
-    float lacunarity = std::stof(args[3].c_str());
-    openvdb::Vec3s xt(0,0,0);
-    float layers = std::stof(args[1].c_str());
-    float fade = std::stof(args[4].c_str());
-    Vector center(0,0,0);
-    float radius = 2.0f;
-    
-    NoiseParams N1 = noiseParams(roughness, gain, frequency, lacunarity, xt, layers);
+    int C = 10000000;
+    float d = 0.005;
+    float cl = std::stof(args[4].c_str());
+    openvdb::Vec3s dP(0.0, 0.0, 0.0);
+    openvdb::Vec3s Pguide(0,0,0);
+    float Pscale = 2.0f;
+    openvdb::Vec3s t(2,0,0);
+    openvdb::Vec3s n(0,2,0);
+    openvdb::Vec3s b(0,0,2);
 
-    VSP<float> noiseRegion1 = noiseRegion(noiseGrid, center, radius, fade, N1);
+    WispParams W = wispParams(C, d, cl, dP, Pguide, Pscale, t, n, b, seed);
+
+    float r1 = 0.75;
+    float g1 = 0.75;
+    float f1 = std::stof(args[2].c_str());
+    float l1 = std::stof(args[3].c_str());
+    openvdb::Vec3s xt1(0,0,0);
+    float ly1 = std::stof(args[1].c_str());
+
+    NoiseParams N1 = noiseParams(r1, g1, f1, l1, xt1, ly1);
+
+    float r2 = 0.75;
+    float g2 = 0.75;
+    float f2 = std::stof(args[2].c_str());;
+    float l2 = std::stof(args[3].c_str());;
+    openvdb::Vec3s xt2(0,0,0);
+    float ly2 = std::stof(args[1].c_str());
+
+    NoiseParams N2 = noiseParams(r2, g2, f2, l2, xt2, ly2);
+
+    VSP<float> wisp1 = wisp(noiseGrid, W, N1, N2, 0.005);
 
     VSP<openvdb::Vec3s> material = constant(openvdb::Vec3s(1.0f, 1.0f, 1.0f));
 
@@ -68,18 +86,18 @@ void Scene::init(const std::vector<std::string>& args)
     // Create gridded fields
     std::cout << "Gridding and manipulating fields. . ." << std::endl;
 
-    VSP<float> combined = translate(noiseRegion1, Vector(4, 4, 0));
+    VSP<float> combined = translate(wisp1, Vector(4, 4, 0));
 
     std::cout << "Done!" << std::endl;
 
     // Create Deep Shadow Maps
     std::cout << "Creating Deep Shadow Maps. . ." << std::endl;
     
-    float DSMGridDim     = 30;
-    float DSMVxSize      = 0.1;
+    float DSMGridDim     = 100;
+    float DSMVxSize      = 0.05;
     float DSMDg          = 0.0;
-    openvdb::CoordBBox DSMBBox = openvdb::CoordBBox(openvdb::Coord(-DSMGridDim + 30, -DSMGridDim + 30, -DSMGridDim + 30),
-                                                    openvdb::Coord( DSMGridDim + 30,  DSMGridDim + 30,  DSMGridDim + 30));
+    openvdb::CoordBBox DSMBBox = openvdb::CoordBBox(openvdb::Coord(-DSMGridDim + 50, -DSMGridDim + 50, -DSMGridDim + 50),
+                                                    openvdb::Coord( DSMGridDim + 50,  DSMGridDim + 50,  DSMGridDim + 50));
     
     Light key = pointLight(Vector(4 + 4, 4 + 4, 4 + 4), Color(1.0, 0.1, 0.1, 0.0));
     key->setKappa(2);
