@@ -24,7 +24,7 @@ ROOTDIR = .
 LIB = -L$(ROOTDIR)/lib -lstarter -lm
 GLLDFLAGS = -L /opt/openvdb-13.1.0/lib -lglut -lGL -lm -lGLU -lopenvdb -lOpenImageIO -lOpenImageIO_Util -ltbb -lz
 
-CXX = g++ -g -fPIC -fopenmp -fopenmp -std=c++17
+CXX = g++ -O2 -g -fPIC -fopenmp -fopenmp -std=c++17
 
 SWIGCXX = g++ -shared -g -O2 -fPIC -fopenmp -fopenmp -std=c++14
 
