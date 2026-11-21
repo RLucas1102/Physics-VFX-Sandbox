@@ -36,7 +36,7 @@ void Renderer::init(const std::vector<std::string>& args)
     //     _end      = std::strtol(args[3].c_str(), NULL, 10);
     // }
 
-    _filename = args[5];
+    _filename = args[6];
 
     // Initialize the renderer
     _initialized = true;
