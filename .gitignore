@@ -10,7 +10,3 @@ base/*.o
 
 #Grids
 /VDBgrids
-
-#Scripts
-/python
-/Scripts
