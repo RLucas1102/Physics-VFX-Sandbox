@@ -185,4 +185,7 @@ namespace lux
     template void lux::readGrid(VGSP<openvdb::FloatGrid>& g, const char* gridName, const char* filename);
     template void lux::readGrid(VGSP<openvdb::Vec3SGrid>& g, const char* gridName, const char* filename);
 
+    // Write grid helper
+    template void lux::writeGrid(const VGSP<openvdb::FloatGrid>& g, const char* gridName, const char* filename);
+
 } // namespace lux
