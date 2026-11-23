@@ -1,5 +1,5 @@
 # Grassy Hills
-float r3 = 0.01;
+float r3 = 0.005;
 float g3 = 4.0;
 float f3 = 0.01;
 float l3 = 3.0;
